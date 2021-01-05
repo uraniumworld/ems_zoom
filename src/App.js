@@ -1,25 +1,31 @@
-import logo from './logo.svg';
 import './App.css';
+import {Route, Switch} from 'react-router-dom';
+import Login from "./ui/login";
+import StateContext from "./mobx/global-context";
+import MobxStore from "./mobx/mobx-store";
+import {observer} from "mobx-react";
+import Home from "./ui/home";
+import FullLayout from "./layouts/full-layout";
+
+const mobxStore = new MobxStore();
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    return (
+        <StateContext.Provider value={mobxStore}>
+            {mobxStore.currentUser
+                ?
+                <FullLayout>
+                    <Switch>
+                        <Route path="/" exact component={Home}/>
+                    </Switch>
+                </FullLayout>
+                :
+                <Switch>
+                    <Route path="*" component={Login}/>
+                </Switch>
+            }
+        </StateContext.Provider>
+    );
 }
 
-export default App;
+export default observer(App);
