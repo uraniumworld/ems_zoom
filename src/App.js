@@ -6,6 +6,8 @@ import MobxStore from "./mobx/mobx-store";
 import {observer} from "mobx-react";
 import Home from "./ui/home";
 import FullLayout from "./layouts/full-layout";
+import ViewSchedule from "./ui/view-schedule";
+import ViewStudent from "./ui/view-student";
 
 const mobxStore = new MobxStore();
 
@@ -17,6 +19,8 @@ function App() {
                 <FullLayout>
                     <Switch>
                         <Route path="/" exact component={Home}/>
+                        <Route path="/schedule/:id(\d+)" exact component={ViewSchedule}/>
+                        <Route path="/schedule/:id(\d+)/:group" component={ViewStudent}/>
                     </Switch>
                 </FullLayout>
                 :

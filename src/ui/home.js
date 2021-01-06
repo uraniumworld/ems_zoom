@@ -1,4 +1,8 @@
+import Schedule from "../components/schedule";
+
 const Home = ()=>{
-    return <div>Home</div>
+    return <div>
+        <Schedule/>
+    </div>
 }
 export default Home;
