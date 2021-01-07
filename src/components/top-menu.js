@@ -14,6 +14,16 @@ const TopMenu=(props)=>{
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span className="navbar-toggler-icon"></span>
         </button>
+        <div className="collapse navbar-collapse" id="navbarNav">
+            <ul className="navbar-nav">
+                <li className="nav-item">
+                    <NavLink className="nav-link" to="/">Schedule</NavLink>
+                </li>
+                <li className="nav-item">
+                    <NavLink className="nav-link" to="/email">View Email</NavLink>
+                </li>
+            </ul>
+        </div>
         {/*<div className="collapse navbar-collapse" id="navbarNav">*/}
         {/*    {location && location.pathname.match(/\/schedule/) &&*/}
         {/*    <ul className="navbar-nav">*/}
