@@ -3,8 +3,9 @@ import {Form} from "react-bootstrap";
 import {useState} from "react";
 
 const currentDate=new Date();
+const currentYear=currentDate.getFullYear();
 const Home = ()=>{
-    const [selectedDate,setSelectedDate]=useState();
+    const [selectedDate,setSelectedDate]=useState(currentYear);
     return <div>
         <Form.Group>
             <Form.Label>เลือกรอบสอบ ประจำปี</Form.Label>
@@ -13,7 +14,7 @@ const Home = ()=>{
             }}>
                 {
                     [...new Array(5)].map((v,i)=>{
-                        let value = currentDate.getFullYear()-i;
+                        let value = currentYear-i;
                         return <option key={value} value={value}>{value}</option>
                     })
                 }

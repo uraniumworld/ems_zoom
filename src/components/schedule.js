@@ -34,8 +34,7 @@ const Schedule = ({year}) => {
     const state = useContext(StateContext);
 
     useEffect(()=>{
-        // let schedule = state.getScheduleYear(year);
-        console.log('=======', 'schedule');
+        state.scheduleMenu=[];
     },[]);
     function showEmail(schd){
         setTimeout(()=>{

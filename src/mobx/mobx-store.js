@@ -57,6 +57,7 @@ class MobxStore {
                 email: 'ffff@kkumail.com',
                 fullname: 'xxxx oooo',
                 approved: true,
+                logged: true,
             },
             {
                 code: '602253343-2',
@@ -80,6 +81,8 @@ class MobxStore {
             }
         ]
     };
+
+    scheduleMenu=[];
 
     constructor() {
         makeAutoObservable(this);

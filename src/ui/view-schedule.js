@@ -5,12 +5,15 @@ import {Link, useParams} from 'react-router-dom';
 import {Button, Card, Col, Row} from "react-bootstrap";
 
 const ViewSchedule = () => {
-    const {students} = useContext(StateContext);
+    const state = useContext(StateContext);
     const {id, group} = useParams();
     const [schedule,setSchedule] = useState(null);
     console.log('===', id, group);
 
     useEffect(()=>{
+        state.scheduleMenu=[
+            {to:'/schedule/'+id,title:'Group'}
+        ];
         setTimeout(()=>{
             const schedule={
                 id: 1,
@@ -24,12 +27,14 @@ const ViewSchedule = () => {
                             email: 'ffff@kkumail.com',
                             fullname: 'xxxx oooo',
                             approved: true,
+                            logined: true,
                         },
                         {
                             code: '602253343-2',
                             email: 'ttttee@kkumail.com',
                             fullname: 'ffgf ssss',
                             approved: false,
+                            logged: true,
                         }
                     ],
                     Group2:[
@@ -38,12 +43,14 @@ const ViewSchedule = () => {
                             email: 'ffff@kkumail.com',
                             fullname: 'xxxx oooo',
                             approved: true,
+                            logged: true,
                         },
                         {
                             code: '602253343-2',
                             email: 'ttttee@kkumail.com',
                             fullname: 'ffgf ssss',
                             approved: false,
+                            logged: true,
                         }
                     ]
                 }
@@ -55,7 +62,7 @@ const ViewSchedule = () => {
     function getGroup() {
         let key = Object.keys(schedule.students)[group ? group - 1 : 0];
         console.log('===', key);
-        return students[key] || [];
+        return state.students[key] || [];
     }
     if(!schedule)return <div>Loading...</div>
     return <>
@@ -66,7 +73,7 @@ const ViewSchedule = () => {
                     <Col key={grp}>
                         <Card>
                             <Card.Body>
-                                {grp} <Link to={`/schedule/${id}/${grp}`} className="btn btn-primary">View</Link>
+                                {grp} (50 คน) <Link to={`/schedule/${id}/${grp}`} className="btn btn-primary ml-2">View</Link>
                             </Card.Body>
                         </Card>
                     </Col>
