@@ -2,6 +2,7 @@
   "name": "ems_zoom",
   "version": "0.1.0",
   "private": true,
+  "proxy": "https://ems.kku.ac.th/ems_tools",
   "dependencies": {
     "@testing-library/jest-dom": "^5.11.8",
     "@testing-library/react": "^11.2.2",

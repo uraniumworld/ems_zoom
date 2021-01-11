@@ -3,9 +3,17 @@ import {observer} from "mobx-react";
 import {useContext, useEffect, useState} from "react";
 import StateContext from "../mobx/global-context";
 import {useHistory} from 'react-router-dom';
+import axios from 'axios';
+import Config from "../config";
 
 const SchdBlock = ({schd,onEmail}) => {
     const history = useHistory();
+    useEffect(()=>{
+        axios.post('/check_in_resful_api.php?method=xmuz',{m:1,y:2021})
+            .then((res)=>{
+                console.log(res);
+            })
+    },[]);
     return <Col md={4}>
         <div style={{padding: '10px'}}>
             <Card>
