@@ -5,45 +5,25 @@ import StateContext from "../mobx/global-context";
 import {useHistory} from 'react-router-dom';
 import axios from 'axios';
 import Config from "../config";
+import {getSchedules} from "./services";
+import {$mobx} from "mobx";
 
-const SchdBlock = ({schd,onEmail}) => {
-    const history = useHistory();
-    useEffect(()=>{
-        axios.post('/check_in_resful_api.php?method=xmuz',{m:1,y:2021})
-            .then((res)=>{
-                console.log(res);
-            })
-    },[]);
-    return <Col md={4}>
-        <div style={{padding: '10px'}}>
-            <Card>
-                <Card.Header>
-                    <Card.Title>เวลา: {schd.examDate}</Card.Title>
-                </Card.Header>
-                <Card.Body>
-                   <div className="text-center">
-                       <Alert variant="info">{schd.schedule}</Alert>
-                       <div className="text-center">
-                           <Button className="ml-2" onClick={e => history.push('/schedule/' + schd.id)}>Enter</Button>
-                           <Button variant="secondary" className="ml-2" onClick={onEmail}>Email</Button>
-                       </div>
-                   </div>
-                </Card.Body>
-                <Card.Footer>
-                    <Card.Text className="text-right">Student: {schd.studentCount}</Card.Text>
-                </Card.Footer>
-            </Card>
-        </div>
-    </Col>
-}
-const Schedule = ({year}) => {
+const Schedule = ({month,year}) => {
     const [showModal, setShowModal] = useState(false);
     const [modalContent, setModalContent] = useState(null);
+    const [schedules,setSchedules] = useState(null);
     const state = useContext(StateContext);
 
     useEffect(()=>{
         state.scheduleMenu=[];
     },[]);
+
+    useEffect(()=>{
+       getSchedules(month,year).then(results=>{
+           setSchedules(results);
+       });
+    },[month,year]);
+
     function showEmail(schd){
         setTimeout(()=>{
             let exampleContent={
@@ -81,18 +61,18 @@ const Schedule = ({year}) => {
     return <>
         <h3>รอบสอบของ ปี {year}</h3>
         {
-            state.daySchedule.map(day => {
+            Array.isArray(schedules) && schedules.map(schedule => {
                 return (
-                    <Card key={day.date} className="mt-2">
+                    <Card key={schedule.SchdDetailID} className="mt-2">
                         <Card.Header>
-                            <Card.Text>การสอบวันที่ {day.date}</Card.Text>
+                            <Card.Text>การสอบวันที่ {schedule.ExamDate} {schedule.ExamTimeStart}-{schedule.ExamTimeEnd}</Card.Text>
                         </Card.Header>
                         <Card.Body>
-                            <Row>
-                                {day.schedules.map((schd,i) =>
-                                    <SchdBlock key={`${schd.examDate}_${i}`} schd={schd} onEmail={showEmail.bind(this,schd)}/>
-                                )}
-                            </Row>
+                            {/*<Row>*/}
+                            {/*    {day.schedules.map((schd,i) =>*/}
+                            {/*        <SchdBlock key={`${schd.examDate}_${i}`} schd={schd} onEmail={showEmail.bind(this,schd)}/>*/}
+                            {/*    )}*/}
+                            {/*</Row>*/}
                         </Card.Body>
                     </Card>
                 )
@@ -127,4 +107,31 @@ const Schedule = ({year}) => {
         </Modal>
     </>
 }
+
+
+const SchdBlock = ({schd,onEmail}) => {
+    const history = useHistory();
+    return <Col md={4}>
+        <div style={{padding: '10px'}}>
+            <Card>
+                <Card.Header>
+                    <Card.Title>เวลา: {schd.examDate}</Card.Title>
+                </Card.Header>
+                <Card.Body>
+                    <div className="text-center">
+                        <Alert variant="info">{schd.schedule}</Alert>
+                        <div className="text-center">
+                            <Button className="ml-2" onClick={e => history.push('/schedule/' + schd.id)}>Enter</Button>
+                            <Button variant="secondary" className="ml-2" onClick={onEmail}>Email</Button>
+                        </div>
+                    </div>
+                </Card.Body>
+                <Card.Footer>
+                    <Card.Text className="text-right">Student: {schd.studentCount}</Card.Text>
+                </Card.Footer>
+            </Card>
+        </div>
+    </Col>
+}
+
 export default observer(Schedule);
