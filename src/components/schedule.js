@@ -61,18 +61,18 @@ const Schedule = ({month,year}) => {
     return <>
         <h3>รอบสอบของ ปี {year}</h3>
         {
-            Array.isArray(schedules) && schedules.map(schedule => {
+            schedules && Object.keys(schedules).map(day => {
                 return (
-                    <Card key={schedule.SchdDetailID} className="mt-2">
+                    <Card key={day} className="mt-2">
                         <Card.Header>
-                            <Card.Text>การสอบวันที่ {schedule.ExamDate} {schedule.ExamTimeStart}-{schedule.ExamTimeEnd}</Card.Text>
+                            <Card.Text>การสอบวันที่ {day}</Card.Text>
                         </Card.Header>
                         <Card.Body>
-                            {/*<Row>*/}
-                            {/*    {day.schedules.map((schd,i) =>*/}
-                            {/*        <SchdBlock key={`${schd.examDate}_${i}`} schd={schd} onEmail={showEmail.bind(this,schd)}/>*/}
-                            {/*    )}*/}
-                            {/*</Row>*/}
+                            <Row>
+                                {schedules[day].map((schd,i) =>
+                                    <SchdBlock key={`${schd.examDate}_${i}`} schd={schd} onEmail={showEmail.bind(this,schd)}/>
+                                )}
+                            </Row>
                         </Card.Body>
                     </Card>
                 )
@@ -111,15 +111,18 @@ const Schedule = ({month,year}) => {
 
 const SchdBlock = ({schd,onEmail}) => {
     const history = useHistory();
+    console.log('===', schd);
     return <Col md={4}>
         <div style={{padding: '10px'}}>
             <Card>
                 <Card.Header>
-                    <Card.Title>เวลา: {schd.examDate}</Card.Title>
+                    <Card.Title>
+                        <small>{schd.ExamTimeStart}-{schd.ExamTimeEnd}</small>
+                    </Card.Title>
                 </Card.Header>
                 <Card.Body>
                     <div className="text-center">
-                        <Alert variant="info">{schd.schedule}</Alert>
+                    {schd.ModuleType=="1"?<Alert variant="info">ทฤษฎี</Alert>:<Alert variant="dark">ปฏิบัติ</Alert>}
                         <div className="text-center">
                             <Button className="ml-2" onClick={e => history.push('/schedule/' + schd.id)}>Enter</Button>
                             <Button variant="secondary" className="ml-2" onClick={onEmail}>Email</Button>
