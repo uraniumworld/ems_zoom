@@ -6,13 +6,13 @@ import {Button, Card, Col, Row} from "react-bootstrap";
 
 const ViewSchedule = () => {
     const state = useContext(StateContext);
-    const {id, group} = useParams();
+    const {SchdID, SchdDetailID} = useParams();
     const [schedule,setSchedule] = useState(null);
-    console.log('===', id, group);
+    console.log('===', SchdID,SchdDetailID);
 
     useEffect(()=>{
         state.scheduleMenu=[
-            {to:'/schedule/'+id,title:'Group'}
+            {to:`/schedule/${SchdID}/${SchdDetailID}`,title:'Group'}
         ];
         setTimeout(()=>{
             const schedule={
@@ -60,9 +60,9 @@ const ViewSchedule = () => {
     },[]);
 
     function getGroup() {
-        let key = Object.keys(schedule.students)[group ? group - 1 : 0];
-        console.log('===', key);
-        return state.students[key] || [];
+        // let key = Object.keys(schedule.students)[group ? group - 1 : 0];
+        // console.log('===', key);
+        // return state.students[key] || [];
     }
     if(!schedule)return <div>Loading...</div>
     return <>
@@ -73,7 +73,7 @@ const ViewSchedule = () => {
                     <Col key={grp}>
                         <Card>
                             <Card.Body>
-                                {grp} (50 คน) <Link to={`/schedule/${id}/${grp}`} className="btn btn-primary ml-2">View</Link>
+                                {grp} (50 คน) <Link to={`/schedule/${SchdID}/${SchdDetailID}/${grp}`} className="btn btn-primary ml-2">View</Link>
                             </Card.Body>
                         </Card>
                     </Col>

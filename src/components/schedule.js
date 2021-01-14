@@ -5,7 +5,7 @@ import StateContext from "../mobx/global-context";
 import {useHistory} from 'react-router-dom';
 import axios from 'axios';
 import Config from "../config";
-import {getSchedules} from "./services";
+import {getEmailByScheduleDetail, getSchedules} from "./services";
 import {$mobx} from "mobx";
 
 const Schedule = ({month,year}) => {
@@ -25,6 +25,7 @@ const Schedule = ({month,year}) => {
     },[month,year]);
 
     function showEmail(schd){
+        getEmailByScheduleDetail(schd.SchdID,schd.SchdDetailID);
         setTimeout(()=>{
             let exampleContent={
                 Group1:[
@@ -124,7 +125,7 @@ const SchdBlock = ({schd,onEmail}) => {
                     <div className="text-center">
                     {schd.ModuleType=="1"?<Alert variant="info">ทฤษฎี</Alert>:<Alert variant="dark">ปฏิบัติ</Alert>}
                         <div className="text-center">
-                            <Button className="ml-2" onClick={e => history.push('/schedule/' + schd.id)}>Enter</Button>
+                            <Button className="ml-2" onClick={e => history.push(`/schedule/${schd.SchdID}/${schd.SchdDetailID}`)}>Enter</Button>
                             <Button variant="secondary" className="ml-2" onClick={onEmail}>Email</Button>
                         </div>
                     </div>

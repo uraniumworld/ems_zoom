@@ -21,8 +21,8 @@ function App() {
                     <Switch>
                         <Route path="/" exact component={Home}/>
                         <Route path="/email" component={Email}/>
-                        <Route path="/schedule/:id(\d+)" exact component={ViewSchedule}/>
-                        <Route path="/schedule/:id(\d+)/:group" component={ViewStudent}/>
+                        <Route path="/schedule/:SchdID(\d+)/:SchdDetailID(\d+)" exact component={ViewSchedule}/>
+                        <Route path="/schedule/:SchdID(\d+)/:SchdDetailID(\d+)/:group" component={ViewStudent}/>
                     </Switch>
                 </FullLayout>
                 :

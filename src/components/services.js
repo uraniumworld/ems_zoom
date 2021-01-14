@@ -34,3 +34,10 @@ export function getSchedules(month,year){
             })
     })
 }
+
+export function getEmailByScheduleDetail(SchdID,SchdDetailID){
+    axios.post('/check_in_resful_api.php?method=students',{SchdID,SchdDetailID})
+        .then(res=>{
+
+        });
+}
