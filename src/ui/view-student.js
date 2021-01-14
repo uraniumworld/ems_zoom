@@ -98,6 +98,15 @@ const ViewStudent = () => {
                     }}>{show?'Hide':'Show'}</Button>
                     <div style={{display:show?'block':'none'}}>
                         <h3>นักศึกในกลุ่ม {group}</h3>
+                        <InputGroup className="mb-3">
+                            <InputGroup.Prepend>
+                                <InputGroup.Text id="basic-addon1">ค้นหา</InputGroup.Text>
+                            </InputGroup.Prepend>
+                            <FormControl
+                                placeholder="Student ID | Name | Email"
+                            />
+                        </InputGroup>
+
                         <Table>
                             <thead>
                             <tr>
