@@ -14,9 +14,7 @@ export function getSchedules(month,year){
                    return -1;
                });
                res.data.results.map(schd=>{
-                    schd.ExamDate=schd.ExamDate.split(' ')[0];
-                    schd.ExamTimeStart=schd.ExamTimeStart.split(' ')[1];
-                    schd.ExamTimeEnd=schd.ExamTimeEnd.split(' ')[1];
+                    schd = tranformScheduleDate(schd);
                     if(!resultWithGroup[schd.ExamDate])resultWithGroup[schd.ExamDate]=[];
                     resultWithGroup[schd.ExamDate].push(schd);
                 });
@@ -47,7 +45,11 @@ export function getEmailByScheduleDetail(SchdID,SchdDetailID){
 }
 
 export function getScheduleInfo(SchdID,SchdDetailID){
-    return request('schedule-info',{SchdID,SchdDetailID})
+    return new Promise(async resolve => {
+        let schedule = await request('schedule-info',{SchdID,SchdDetailID});
+        schedule = tranformScheduleDate(schedule);
+        resolve(schedule);
+    });
 }
 
 export function getCheckInStudents(SchdID,SchdDetailID,group){
@@ -56,6 +58,17 @@ export function getCheckInStudents(SchdID,SchdDetailID,group){
 
 export function changeCheckInState(StdRegistID,state){
     return request('change-state',{StdRegistID,state})
+}
+
+export function setMeetURL(SchdID, SchdDetailID,group,url){
+    return request('set-meet-url',{SchdID,SchdDetailID,group,url})
+}
+
+function tranformScheduleDate(schedule){
+    schedule.ExamDate=schedule.ExamDate.split(' ')[0];
+    schedule.ExamTimeStart=schedule.ExamTimeStart.split(' ')[1];
+    schedule.ExamTimeEnd=schedule.ExamTimeEnd.split(' ')[1];
+    return schedule;
 }
 
 function request(method,params={}){

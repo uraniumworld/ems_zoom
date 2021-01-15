@@ -12,6 +12,7 @@
     "bootstrap": "^4.5.3",
     "form-data": "^3.0.0",
     "formik": "^2.2.6",
+    "jquery": "^3.5.1",
     "lodash": "^4.17.20",
     "mobx": "^6.0.4",
     "mobx-react": "^7.0.5",
@@ -22,6 +23,7 @@
     "react": "^17.0.1",
     "react-bootstrap": "^1.4.3",
     "react-confirm-alert": "^2.6.2",
+    "react-copy-to-clipboard": "^5.0.3",
     "react-data-table-component": "^6.11.6",
     "react-dom": "^17.0.1",
     "react-router-dom": "^5.2.0",
@@ -30,14 +32,18 @@
     "react-spinners": "^0.10.4",
     "react-toastify": "^6.2.0",
     "recompose": "^0.30.0",
+    "serve": "^11.3.2",
     "styled-components": "^5.2.1",
     "uid": "^2.0.0",
+    "watchify": "^3.11.1",
     "web-vitals": "^0.2.4",
     "yup": "^0.32.8"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "client": "serve src/student",
+    "build-client": "watchify src/student/checkin-client.js -o src/student/build/main.js",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -58,5 +64,6 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "devDependencies": {}
 }

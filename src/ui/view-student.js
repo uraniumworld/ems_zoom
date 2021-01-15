@@ -2,14 +2,15 @@ import {useParams} from "react-router-dom";
 import {observer} from "mobx-react";
 import {useContext, useEffect, useState} from "react";
 import StateContext from "../mobx/global-context";
-import {Badge, Button, Col, Form, FormControl, InputGroup, Row, Table} from "react-bootstrap";
+import {Alert, Badge, Button, Col, Form, FormControl, InputGroup, Row, Table} from "react-bootstrap";
 import {render} from "@testing-library/react";
 import { uid } from 'uid';
+import {CopyToClipboard} from 'react-copy-to-clipboard';
 import {
     changeCheckInState,
     getCheckInStudents,
     getEmailByScheduleDetail,
-    getScheduleInfo
+    getScheduleInfo, setMeetURL
 } from "../components/services";
 import {toast} from "react-toastify";
 
@@ -17,12 +18,11 @@ const ViewStudent = () => {
     const state = useContext(StateContext);
     const {SchdID, SchdDetailID,group} = useParams();
     const [schedule, setSchedule] = useState();
-    const [show,setShow] = useState(true);
-    const [room,setRoom] = useState('');
-    const [srcRoom,setSrcRoom] = useState(null);
+    const [meetRoom,setMeetRoom] = useState(null);
     const [students,setStudents] = useState([]);
     const [loadingBtn,setLoadingBtn] = useState({});
-    const [filter,setFilter] = useState(null);
+    const [filter,setFilter] = useState('');
+    const [copiedState,setCopiedState] = useState(0);
 
     useEffect(() => {
         state.scheduleMenu = [
@@ -35,33 +35,6 @@ const ViewStudent = () => {
         getScheduleInfo(SchdID,SchdDetailID).then(res=>{
             setSchedule(res);
         })
-        // setTimeout(() => {
-        //     let fakeData = {
-        //         schedule:{
-        //             id: 1,
-        //             schedule: 'ems-121212',
-        //             examDate: '12-12-12',
-        //             studentCount: 50,
-        //         },
-        //         students:[
-        //             {
-        //                 code: '602254535-2',
-        //                 email: 'ffff@kkumail.com',
-        //                 fullname: 'xxxx oooo',
-        //                 approved: false,
-        //                 logged: false,
-        //             },
-        //             {
-        //                 code: '612234350-5',
-        //                 email: 'gggg@kkumail.com',
-        //                 fullname: 'nnn qqqq',
-        //                 approved: true,
-        //                 logged: true,
-        //             },
-        //         ]
-        //     };
-        //     setSchedule(fakeData);
-        // }, 500);
 
     }, []);
 
@@ -86,40 +59,78 @@ const ViewStudent = () => {
         setLoadingBtn(prevState => ({...prevState,[std.StdRegistID]:false}))
     }
 
+    function startGoogleMeet(){
+        setCopiedState(1);
+        setTimeout(()=>{
+            setCopiedState(2);
+            setTimeout(()=>{
+                window.open("https://meet.google.com");
+                setCopiedState(3);
+            },2000);
+        },1000);
+
+    }
+
+    function getEmail(){
+        let emailText='';
+        students.map(std=>{
+            emailText+=std.email+',';
+        });
+        return emailText.substr(0,emailText.length-1);
+    }
+
+    async function broadcast(){
+        await setMeetURL(SchdID,SchdDetailID,group,meetRoom);
+        setCopiedState(4);
+        toast.success(`Broadcast success.`);
+    }
+
     return <div>
         {
             schedule
                 ? <>
-                    <Form.Group>
-                        <Button variant="outline-secondary" onClick={e=>{
-                            let id = uid();
-                            setRoom(id)
-                            setSrcRoom('https://meet.kku.ac.th/'+id);
-                        }}>Start room</Button>
-                        {room &&
-                        <>
-                            <span className="ml-2">Room: <Badge variant="info">{room}</Badge></span>
-                            <div className="text-center"><Button variant="success">Broadcast</Button></div>
-                        </>
-                        }
-                    </Form.Group>
-                    {
-                        srcRoom &&
-                        <iframe allow="camera; microphone; fullscreen; display-capture" src={srcRoom} style={
-                            {
-                                height: show?'50vh':'calc(100vh - 100px)',
-                                width: '100%',
-                                border: '0px'
-                            }
-                        }></iframe>
-                    }
-                    {/*<Button onClick={e=>{*/}
-                    {/*    setShow(old=>!old);*/}
-                    {/*}}>{show?'Hide':'Show'}</Button>*/}
+                    <Row>
+                        <Col>
+                            <div>
+                                <Form.Group>
+                                        <CopyToClipboard text={getEmail()}
+                                            onCopy={()=>{startGoogleMeet()}}
+                                        >
+                                            <Button variant="secondary">Start Google meet</Button>
+                                        </CopyToClipboard>
+                                    {!!copiedState &&
+                                    <div>
+                                        {(copiedState==1 || copiedState==2) && <Alert variant="success" className="mt-2 mb-1">Copied email to clipboard.</Alert>}
+                                        {copiedState==2 && <Alert variant="warning">Starting Google meet.</Alert>}
+                                        {copiedState==3 && <div>
+                                            <InputGroup className="mb-3 mt-4" id="search">
+                                                <InputGroup.Prepend>
+                                                    <InputGroup.Text id="basic-addon1">Google meet URL</InputGroup.Text>
+                                                </InputGroup.Prepend>
+                                                <FormControl
+                                                    placeholder="meet.google.com/xxx-yyy-zzz"
+                                                    value={meetRoom}
+                                                    onChange={e=>setMeetRoom(e.target.value)}
+                                                />
+                                                <InputGroup.Append>
+                                                    <Button variant="danger" onClick={e=>{broadcast()}}>Broadcast</Button>
+                                                </InputGroup.Append>
+                                            </InputGroup>
+                                        </div>
+                                        }
+                                        {copiedState==4 && <Alert variant="success" className="mt-2">Send <Badge variant="danger">{meetRoom}</Badge> to every client success.</Alert>}
+                                    </div>
+                                    }
+                                    </Form.Group>
+                            </div>
+                        </Col>
+                    </Row>
                     <Row>
                         <Col>
                             <h3>นักศึกในกลุ่ม <span className="text-uppercase">{group}</span></h3>
-                            <InputGroup className="mb-3" id="search">
+                            <div dangerouslySetInnerHTML={{__html:schedule.DateRegist_Desc_Th}}></div>
+                            <div>ภาค {schedule.ModuleType==1?<Badge variant="danger">ทฤษฎี</Badge>:<Badge variant="info">ปฏิบัติ</Badge>} ประจำวันที่ {schedule.ExamDate} / {schedule.ExamTimeStart}-{schedule.ExamTimeEnd}</div>
+                            <InputGroup className="mb-3 mt-4" id="search">
                                 <InputGroup.Prepend>
                                     <InputGroup.Text id="basic-addon1">ค้นหา</InputGroup.Text>
                                 </InputGroup.Prepend>

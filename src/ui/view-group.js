@@ -35,6 +35,8 @@ const ViewGroup = () => {
     if(!schedule || !studentsWithGroup)return <div>Loading...</div>
     return <>
         <h3>รอบสอบ {schedule.SchdCode} ซึ่งมีทั้งหมด {studentsWithGroup && Object.keys(studentsWithGroup).length} กลุ่ม</h3>
+        <div dangerouslySetInnerHTML={{__html:schedule.DateRegist_Desc_Th}}></div>
+        <div>ภาค {schedule.ModuleType==1?<Badge variant="danger">ทฤษฎี</Badge>:<Badge variant="info">ปฏิบัติ</Badge>} ประจำวันที่ {schedule.ExamDate} / {schedule.ExamTimeStart}-{schedule.ExamTimeEnd}</div>
         <Row>
             {
                 studentsWithGroup && Object.keys(studentsWithGroup).map(grp =>
