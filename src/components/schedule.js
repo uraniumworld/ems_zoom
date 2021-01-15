@@ -10,7 +10,7 @@ import {$mobx} from "mobx";
 
 const Schedule = ({month,year}) => {
     const [showModal, setShowModal] = useState(false);
-    const [modalContent, setModalContent] = useState(null);
+    const [studentsWithGroup, setStudentsWithGroup] = useState(null);
     const [schedules,setSchedules] = useState(null);
     const state = useContext(StateContext);
 
@@ -24,40 +24,14 @@ const Schedule = ({month,year}) => {
        });
     },[month,year]);
 
-    function showEmail(schd){
-        getEmailByScheduleDetail(schd.SchdID,schd.SchdDetailID);
-        setTimeout(()=>{
-            let exampleContent={
-                Group1:[
-                    '123456@kkumail.com',
-                    '123456@kkumail.com',
-                    '123456@kkumail.com',
-                    '123456@kkumail.com',
-                ],
-                Group2:[
-                    '123456@kkumail.com',
-                    '123456@kkumail.com',
-                    '123456@kkumail.com',
-                    '123456@kkumail.com',
-                ]
-            };
-            setModalContent({title: schd.examDate,content:getContent(exampleContent)});
-        },500);
+    async function showEmail(schd){
+        let studentsWithGroup = await getEmailByScheduleDetail(schd.SchdID,schd.SchdDetailID);
+        setStudentsWithGroup(studentsWithGroup);
         setShowModal(true);
     }
     function hideModal(){
-        setModalContent(null);
+        setStudentsWithGroup(null);
         setShowModal(false);
-    }
-    function getContent(groupData){
-        let text='';
-        Object.keys(groupData).map(group=>{
-            text+=group+'\n';
-            groupData[group].map(email=>{
-                text+=email+'\n';
-            })
-        });
-        return text;
     }
     return <>
         <h3>รอบสอบของ ปี {year}</h3>
@@ -81,20 +55,34 @@ const Schedule = ({month,year}) => {
         }
         <Modal show={showModal} onHide={hideModal}>
             <Modal.Header closeButton>
-                {modalContent
-                    ?<Modal.Title>Email ในรอบสอบ {modalContent.title}</Modal.Title>
+                {studentsWithGroup
+                    ?<Modal.Title>Email ในรอบสอบ {studentsWithGroup.title}</Modal.Title>
                     :<Modal.Title>Loading...</Modal.Title>
                 }
             </Modal.Header>
             <Modal.Body>
                 {
-                    modalContent
-                    ?<Form.Control as="textarea"
-                                   rows={20}
-                                   value={modalContent.content}
-                                   onChange={()=>{}}
-                        ></Form.Control>
-                    :'Loading...'
+                    studentsWithGroup
+                        ?<>
+                            {
+                                Object.keys(studentsWithGroup).map(group=>{
+                                    let emailText='';
+                                    return <div key={group}>
+                                        <h3 style={{textTransform:'capitalize'}}>{group}</h3>
+                                        {
+                                            studentsWithGroup[group].map(std=>{
+                                                emailText+=`${std.RegKKU.KKUMAIL},`
+                                            })
+                                        }
+                                        <Form.Control rows={5} as='textarea'
+                                                      onChange={e=>{}}
+                                                      onClick={e=>e.target.select()}
+                                                      value={emailText.substr(0,emailText.length-1)}/>
+                                    </div>
+                                })
+                            }
+                        </>
+                        :<div>Loading....</div>
                 }
             </Modal.Body>
             <Modal.Footer>
@@ -112,7 +100,6 @@ const Schedule = ({month,year}) => {
 
 const SchdBlock = ({schd,onEmail}) => {
     const history = useHistory();
-    console.log('===', schd);
     return <Col md={4}>
         <div style={{padding: '10px'}}>
             <Card>

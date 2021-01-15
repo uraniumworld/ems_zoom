@@ -36,8 +36,35 @@ export function getSchedules(month,year){
 }
 
 export function getEmailByScheduleDetail(SchdID,SchdDetailID){
-    axios.post('/check_in_resful_api.php?method=students',{SchdID,SchdDetailID})
-        .then(res=>{
-
+    return new Promise(resolve => {
+        axios.post('/check_in_resful_api.php?method=students',{SchdID,SchdDetailID})
+            .then(res=>{
+                resolve(res.data);
+            }).catch(e=>{
+                resolve(null)
         });
+    })
+}
+
+export function getScheduleInfo(SchdID,SchdDetailID){
+    return request('schedule-info',{SchdID,SchdDetailID})
+}
+
+export function getCheckInStudents(SchdID,SchdDetailID,group){
+    return request('get-check-in-students',{SchdID,SchdDetailID,group})
+}
+
+export function changeCheckInState(StdRegistID,state){
+    return request('change-state',{StdRegistID,state})
+}
+
+function request(method,params={}){
+    return new Promise(resolve => {
+        axios.post('/check_in_resful_api.php?method='+method,params)
+            .then(res=>{
+                resolve(res.data);
+            }).catch(e=>{
+            resolve(null)
+        });
+    })
 }

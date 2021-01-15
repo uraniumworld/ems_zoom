@@ -21,7 +21,7 @@ const TopMenu=(props)=>{
                 </li>
                 {
                     state.scheduleMenu.map(mn=>
-                        <li className="nav-item">
+                        <li key={mn.title} className="nav-item">
                             <NavLink className="nav-link" to={mn.to} exact>-> {mn.title}</NavLink>
                         </li>
                     )

@@ -6,9 +6,11 @@ import MobxStore from "./mobx/mobx-store";
 import {observer} from "mobx-react";
 import Home from "./ui/home";
 import FullLayout from "./layouts/full-layout";
-import ViewSchedule from "./ui/view-schedule";
+import ViewGroup from "./ui/view-group";
 import ViewStudent from "./ui/view-student";
 import Email from "./ui/email";
+import {ToastContainer, toast, Slide} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const mobxStore = new MobxStore();
 
@@ -21,7 +23,7 @@ function App() {
                     <Switch>
                         <Route path="/" exact component={Home}/>
                         <Route path="/email" component={Email}/>
-                        <Route path="/schedule/:SchdID(\d+)/:SchdDetailID(\d+)" exact component={ViewSchedule}/>
+                        <Route path="/schedule/:SchdID(\d+)/:SchdDetailID(\d+)" exact component={ViewGroup}/>
                         <Route path="/schedule/:SchdID(\d+)/:SchdDetailID(\d+)/:group" component={ViewStudent}/>
                     </Switch>
                 </FullLayout>
@@ -30,6 +32,11 @@ function App() {
                     <Route path="*" component={Login}/>
                 </Switch>
             }
+            <ToastContainer
+                transition={Slide}
+                limit={3}
+                autoClose={2000}
+            />
         </StateContext.Provider>
     );
 }

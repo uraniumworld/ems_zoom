@@ -1,6 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300&display=swap');
+
 $footerSize:100px;
 
 html,body,#root{
+  font-family: 'Sarabun', sans-serif;
   height: 100%;
 }
 .container{
@@ -19,4 +22,19 @@ html,body,#root{
 }
 .title{
   //color:#ffffff;
+}
+table{
+  position: relative;
+}
+th{
+  background: white;
+  position: sticky;
+  top: 40px;
+  box-shadow: 0 1px 1px -1px rgba(0, 0, 0, 0.4);
+}
+#search{
+  background: white;
+  position: sticky;
+  top:5px;
+  z-index: 1;
 }
