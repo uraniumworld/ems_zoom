@@ -1,12 +1,19 @@
-import React, {useContext} from 'react';
+import React, {useContext, useState} from 'react';
 import {Button, Card, Col, Form, Row} from "react-bootstrap";
 import {observer} from "mobx-react";
 import globalState from "../mobx/global-context";
+import {userLogin} from "../components/services";
 
 const Login = ()=>{
     const mobx=useContext(globalState);
-    function login(e){
-        mobx.setUser('xmuz');
+    const [formUsername,setFormUsername]=useState('');
+    const [formPassword,setFormPassword]=useState('');
+    async function login(e){
+       let user =await userLogin(formUsername,formPassword);
+       if(user){
+           mobx.setUser(user);
+       }
+        console.log(user);
     }
     return <Row className="justify-content-md-center">
     <Col xs={12} md={6} className="">
@@ -18,11 +25,11 @@ const Login = ()=>{
                 <Form>
                     <Form.Group>
                         <Form.Label>Username</Form.Label>
-                        <Form.Control type="text"/>
+                        <Form.Control type="text" value={formUsername} onChange={e=>setFormUsername(e.target.value)}/>
                     </Form.Group>
                     <Form.Group>
                         <Form.Label>Password</Form.Label>
-                        <Form.Control type="password"/>
+                        <Form.Control type="password" value={formPassword} onChange={e=>setFormPassword(e.target.value)}/>
                     </Form.Group>
                     <Form.Group>
                         <Button variant="primary" onClick={login}>Submit</Button>

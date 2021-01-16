@@ -2,7 +2,7 @@ import {useParams} from "react-router-dom";
 import {observer} from "mobx-react";
 import {useContext, useEffect, useState} from "react";
 import StateContext from "../mobx/global-context";
-import {Alert, Badge, Button, Col, Form, FormControl, InputGroup, Row, Table} from "react-bootstrap";
+import {Alert, Badge, Button, Col, Form, FormControl, InputGroup, Modal, Row, Table} from "react-bootstrap";
 import {render} from "@testing-library/react";
 import { uid } from 'uid';
 import {CopyToClipboard} from 'react-copy-to-clipboard';
@@ -10,10 +10,12 @@ import {
     changeCheckInState,
     getCheckInStudents,
     getEmailByScheduleDetail, getMeetURL,
-    getScheduleInfo, removeMeetURL, setMeetURL,pairUserData
+    getScheduleInfo, removeMeetURL, setMeetURL, pairUserData, confirmBox
 } from "../components/services";
 import {toast} from "react-toastify";
+import { confirmAlert } from 'react-confirm-alert'; // Import
 
+let reloadStudentsTimer=void 0;
 const ViewStudent = () => {
     const state = useContext(StateContext);
     const {SchdID, SchdDetailID,group} = useParams();
@@ -25,6 +27,7 @@ const ViewStudent = () => {
     const [copiedState,setCopiedState] = useState(0);
     const [userPairingText,setUserPairingText] = useState('');
     const [userPairing,setUserPairing] = useState(null);
+    const [showEmail,setShowEmail] = useState(false);
 
     useEffect(() => {
         state.scheduleMenu = [
@@ -37,9 +40,7 @@ const ViewStudent = () => {
                 setCopiedState(4);
             }
         });
-        getCheckInStudents(SchdID,SchdDetailID,group).then(res=>{
-            setStudents(res);
-        });
+        reloadStudents();
         getScheduleInfo(SchdID,SchdDetailID).then(res=>{
             setSchedule(res);
         })
@@ -59,8 +60,13 @@ const ViewStudent = () => {
                 currentName=name[1].trim();
             }else if(currentName && code){
                 let existed = students.find(student=>student.StudentID==fixStudentCode(code[1]));
-                if(existed){
-                    buffer[currentName]=existed;
+                let existedCopied={...existed};
+                if(existedCopied){
+                    if(existedCopied.avatar_name && existedCopied.avatar_name!=currentName){
+                        console.log(existedCopied.avatar_name,currentName);
+                        existedCopied.pairError=true;
+                    }
+                    buffer[currentName]=existedCopied;
                 }
             }
         })
@@ -71,6 +77,21 @@ const ViewStudent = () => {
             setUserPairing(null);
         }
     },[userPairingText]);
+
+    function reloadStudents(){
+        getCheckInStudents(SchdID,SchdDetailID,group).then(res=>{
+            setStudents(sortState(res));
+        });
+    }
+
+    function sortState(students){
+        students.sort((a,b)=>{
+            if(a.check_in_status=='1' && b.check_in_status=='0')return 1;
+            if(a.check_in_status=='0' && b.check_in_status=='1')return -1;
+            return 0;
+        })
+        return students;
+    }
 
     function approve(std) {
         chState(std,1);
@@ -90,14 +111,23 @@ const ViewStudent = () => {
     async function chState(std,state){
         setLoadingBtn(prevState => ({...prevState,[std.StdRegistID]:true}))
         await changeCheckInState(std.StdRegistID,state);
-        let reloadData = await getCheckInStudents(SchdID,SchdDetailID,group);
         if(state==1){
             toast.success(std.StudentID+' Approved.');
         }else{
-            toast.warning(std.StudentID+' Rejected.');
+            toast.success(std.StudentID+' Rejected.');
         }
-        setStudents(reloadData);
-        setLoadingBtn(prevState => ({...prevState,[std.StdRegistID]:false}))
+        setTimeout(()=>{
+            setStudents(old => {
+                let existed = old.find(v=>v.Username==std.Username);
+                existed.check_in_status=state;
+                return sortState(old);
+            });
+            setLoadingBtn(prevState => ({...prevState,[std.StdRegistID]:false}))
+        },300);
+        clearTimeout(reloadStudentsTimer);
+        reloadStudentsTimer=setTimeout(async ()=>{
+            reloadStudents();
+        },2000);
     }
 
     function startGoogleMeet(){
@@ -121,12 +151,16 @@ const ViewStudent = () => {
     }
 
     async function broadcast(){
-        await setMeetURL(SchdID,SchdDetailID,group,meetRoom);
-        setCopiedState(4);
-        toast.success(`Broadcast success.`);
+        if(meetRoom.match(/meet.google.com\//)){
+            await setMeetURL(SchdID,SchdDetailID,group,meetRoom);
+            setCopiedState(4);
+            toast.success(`Broadcast success.`);
+        }else{
+            toast.warn('Please fill Google meet link.')
+        }
     }
 
-    async function pairUser(){
+    async function pairUser(approve=false){
         if(!userPairing) return;
         let buffer=[];
         Object.keys(userPairing).map(pair=>{
@@ -134,6 +168,7 @@ const ViewStudent = () => {
             if(student){
                 let {Username,StudentID}=student;
                 buffer.push({
+                    approve,
                     Username,
                     avatar_name:pair,
                     SchdID,
@@ -143,16 +178,25 @@ const ViewStudent = () => {
             }
 
         })
-        console.log(buffer);
         await pairUserData(buffer);
-        let reloadData = await getCheckInStudents(SchdID,SchdDetailID,group);
-        setStudents(reloadData);
+        setUserPairingText('');
+        reloadStudents();
+        if(approve){
+            toast.success('Pair user and approve success.')
+        }else{
+            toast.success('Pair user success.')
+        }
+    }
 
+    function pairUserAndApprove(){
+        confirmBox('Pair user and Approve',null,()=>{
+            pairUser(true);
+        })
     }
 
     return <div>
         {
-            schedule
+            (schedule && students)
                 ? <>
                     <Row>
                         <Col>
@@ -161,16 +205,18 @@ const ViewStudent = () => {
                                     {copiedState==4
                                         ?
                                         <Button variant="danger" onClick={e=>{
-                                            removeMeetURL(SchdID,SchdDetailID,group).then(()=>{
-                                                setCopiedState(0);
-                                                setMeetRoom('');
+                                            confirmBox('Stop broadcast',null,()=>{
+                                                removeMeetURL(SchdID,SchdDetailID,group).then(()=>{
+                                                    setCopiedState(0);
+                                                    setMeetRoom('');
+                                                })
                                             })
                                         }}>Stop Google meet</Button>
                                         :
                                         <CopyToClipboard text={getEmail()}
                                                           onCopy={()=>{startGoogleMeet()}}
                                         >
-                                            <Button variant="secondary">Start Google meet</Button>
+                                            <Button variant="primary">Start Google meet</Button>
                                         </CopyToClipboard>
                                     }
                                     {!!copiedState &&
@@ -197,13 +243,13 @@ const ViewStudent = () => {
                                         <>
                                             <Alert variant="success" className="mt-2">Broadcasting... <Badge variant="danger">{meetRoom}</Badge> to every client.</Alert>
                                             <Row>
-                                                <Col>
+                                                <Col md={6}>
                                                     <Form.Group>
                                                         <Form.Label>User pairing tool</Form.Label>
                                                         <Form.Control as="textarea" rows={7} value={userPairingText} onChange={e=>setUserPairingText(e.target.value)}/>
                                                     </Form.Group>
                                                 </Col>
-                                                <Col>
+                                                <Col md={6}>
                                                     <Form.Group>
                                                         <Form.Label>User pairing results</Form.Label>
                                                         {userPairing
@@ -217,10 +263,19 @@ const ViewStudent = () => {
                                                                 </tr>
                                                                 </thead>
                                                                 <tbody>
-                                                                {Object.keys(userPairing).map(pair=>{
+                                                                {Object.keys(userPairing).map((pair,i)=>{
                                                                     let student=userPairing[pair];
-                                                                   return  <tr key={student.StudentID}>
-                                                                       <td>{student.StudentID}</td>
+                                                                   return  <tr key={student.StudentID+'_'+i}>
+                                                                       <td>{student.pairError
+                                                                           ?
+                                                                           <div>{student.StudentID}
+                                                                               <Badge className="ml-1" variant="danger">
+                                                                                   Existed -> {student.avatar_name}
+                                                                               </Badge>
+                                                                           </div>
+                                                                           :
+                                                                           student.StudentID}
+                                                                       </td>
                                                                        <td>{student.FirstName_Th} {student.LastName_Th}</td>
                                                                        <td>{pair}</td>
                                                                    </tr>
@@ -235,9 +290,14 @@ const ViewStudent = () => {
                                                     </Form.Group>
                                                 </Col>
                                             </Row>
-                                            <Form.Group className="text-center">
-                                                <Button onClick={e=>pairUser()}>Pair</Button>
-                                            </Form.Group>
+                                            {userPairing && Object.keys(userPairing).length>0 &&
+                                            <>
+                                                <Form.Group className="text-center">
+                                                    <Button onClick={e=>pairUser()} className="mr-4">Pair</Button>
+                                                    <Button onClick={e=>pairUserAndApprove()} variant="secondary">Pair and approve</Button>
+                                                </Form.Group>
+                                            </>
+                                            }
                                         </>
                                         }
                                     </div>
@@ -248,7 +308,14 @@ const ViewStudent = () => {
                     </Row>
                     <Row>
                         <Col>
-                            <h3>นักศึกในกลุ่ม <span className="text-uppercase">{group}</span></h3>
+                            <Row>
+                                <Col xs={'auto'}>
+                                    <h3>นักศึกในกลุ่ม <span className="text-uppercase">{group}</span></h3>
+                                </Col>
+                                <Col>
+                                    <Button variant="outline-secondary" className="ml-2" onClick={e=>setShowEmail(true)}>View email</Button>
+                                </Col>
+                            </Row>
                             <div dangerouslySetInnerHTML={{__html:schedule.DateRegist_Desc_Th}}></div>
                             <div>ภาค {schedule.ModuleType==1?<Badge variant="danger">ทฤษฎี</Badge>:<Badge variant="info">ปฏิบัติ</Badge>} ประจำวันที่ {schedule.ExamDate} / {schedule.ExamTimeStart}-{schedule.ExamTimeEnd}</div>
                             <InputGroup className="mb-3 mt-4" id="search">
@@ -281,7 +348,7 @@ const ViewStudent = () => {
                                     students && students
                                         .filter(std=>{
                                             if(!filter)return true;
-                                            let regExp=new RegExp(`^${filter}`,'ig');
+                                            let regExp=new RegExp(`${filter}`,'ig');
                                             return (
                                                 std.StudentID.match(regExp)
                                                 || std.FirstName_Th.match(regExp)
@@ -290,12 +357,8 @@ const ViewStudent = () => {
                                                 || (std.avatar_name && std.avatar_name.match(regExp))
                                             )
                                         })
-                                        .sort((a,b)=>{
-                                            if(a.check_in_status=='1' && b.check_in_status=='0')return 1;
-                                            if(a.check_in_status=='0' && b.check_in_status=='1')return -1;
-                                            return 0;
-                                        }).map((std, i) =>
-                                            <tr key={std.StudentID} className={std.check_in_status=='1' ? 'bg-success text-white' : ''}>
+                                        .map((std, i) =>
+                                            <tr key={'std_'+i} className={std.check_in_status=='1' ? 'bg-success text-white' : ''}>
                                                 <td>{i + 1}</td>
                                                 <td>{std.StudentID}</td>
                                                 <td>{std.avatar_name?<strong variant='info' style={{fontSize:'110%'}}>{std.avatar_name}</strong>:'Not pair'}</td>
@@ -306,6 +369,9 @@ const ViewStudent = () => {
                                                         std.check_in_status=='1'
                                                             ? <Badge variant="light" className="ml-1">Approved</Badge>
                                                             : <Badge variant="info" className="ml-1">Waiting</Badge>
+                                                    }
+                                                    {
+                                                        std.IPAddress && <Badge variant="warning" className="ml-1">{std.IPAddress}</Badge>
                                                     }
                                                     <div>
                                                         {
@@ -318,8 +384,8 @@ const ViewStudent = () => {
                                                 </td>
                                                 <td>
                                                     {std.check_in_status=='1'
-                                                        ? <Button variant="danger" disabled={loadingBtn[std.StdRegistID]} onClick={reject.bind(this, std)}>Reject{loadingBtn[std.StdRegistID]?'...':''}</Button>
-                                                        : <Button variant="success" disabled={loadingBtn[std.StdRegistID]} onClick={approve.bind(this, std)}>Approve{loadingBtn[std.StdRegistID]?'...':''}</Button>
+                                                        ? <Button variant="danger" type="button" disabled={loadingBtn[std.StdRegistID]} onClick={reject.bind(this, std)}>Reject{loadingBtn[std.StdRegistID]?'...':''}</Button>
+                                                        : <Button variant="success" type="button" disabled={loadingBtn[std.StdRegistID]} onClick={approve.bind(this, std)}>Approve{loadingBtn[std.StdRegistID]?'...':''}</Button>
                                                     }
                                                 </td>
                                             </tr>
@@ -329,6 +395,19 @@ const ViewStudent = () => {
                             </Table>
                         </Col>
                     </Row>
+                    <Modal show={showEmail} onHide={e=>setShowEmail(false)}>
+                        <Modal.Header closeButton>
+                            <span className="text-uppercase">Email {group}:</span>
+                        </Modal.Header>
+                        <Modal.Body>
+                            <Form.Control rows={20} as="textarea" onChange={e=>{}} onClick={e=>e.target.select()} value={getEmail()}/>
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <Button variant="secondary" onClick={e=>setShowEmail(false)}>
+                                Close
+                            </Button>
+                        </Modal.Footer>
+                    </Modal>
                 </>
                 : <div>Loading...</div>
         }

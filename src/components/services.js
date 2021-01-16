@@ -1,5 +1,6 @@
 import axios from "axios";
 import moment from "moment";
+import {confirmAlert} from "react-confirm-alert";
 
 export function getSchedules(month,year){
     return  new Promise(resolve => {
@@ -37,7 +38,8 @@ export function getEmailByScheduleDetail(SchdID,SchdDetailID){
     return new Promise(resolve => {
         axios.post('/check_in_resful_api.php?method=students',{SchdID,SchdDetailID})
             .then(res=>{
-                resolve(res.data);
+                let {data} = res;
+                resolve(data);
             }).catch(e=>{
                 resolve(null)
         });
@@ -76,6 +78,34 @@ export function pairUserData(pairData=[]){
     return request('pair-user',{pairData})
 }
 
+export function checkLogin(){
+    return request('check-login')
+}
+
+export function userLogout(){
+    return request('logout')
+}
+
+export function userLogin(username,password){
+    return request('login',{username,password})
+}
+
+export function confirmBox(title,detail,fn){
+    confirmAlert({
+        title:title,
+        message:detail?detail:'Do you want to do?',
+        buttons:[
+            {
+                label: 'Yes',
+                onClick: () => fn()
+            },
+            {
+                label: 'No',
+            }
+        ]
+    });
+}
+
 function tranformScheduleDate(schedule){
     schedule.ExamDate=schedule.ExamDate.split(' ')[0];
     schedule.ExamTimeStart=schedule.ExamTimeStart.split(' ')[1];
@@ -89,7 +119,8 @@ function request(method,params={}){
             .then(res=>{
                 resolve(res.data);
             }).catch(e=>{
-            resolve(null)
+                document.location.href='/login'
+            // resolve(null)
         });
     })
 }

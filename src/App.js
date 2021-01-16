@@ -11,10 +11,28 @@ import ViewStudent from "./ui/view-student";
 import Email from "./ui/email";
 import {ToastContainer, toast, Slide} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import 'react-confirm-alert/src/react-confirm-alert.css';
+import {useEffect} from "react";
+import {checkLogin} from "./components/services";
+import {Alert} from "react-bootstrap"; // Import css
 
 const mobxStore = new MobxStore();
 
 function App() {
+    useEffect(()=>{
+        checker();
+        setInterval(()=>{checker()},5*60000)
+    },[]);
+    function checker(){
+        checkLogin().then(user=>{
+            if(user){
+                mobxStore.setUser(user);
+            }else{
+                mobxStore.setUser(null);
+            }
+        })
+    }
+    if(typeof mobxStore.currentUser == 'undefined')return <Alert variant='info'>Loading...</Alert>
     return (
         <StateContext.Provider value={mobxStore}>
             {mobxStore.currentUser

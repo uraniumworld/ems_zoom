@@ -2,12 +2,17 @@ import {observer} from "mobx-react";
 import {useContext} from "react";
 import StateContext from "../mobx/global-context";
 import {useLocation,NavLink,useParams,withRouter} from 'react-router-dom';
+import {Badge, Button} from "react-bootstrap";
+import {userLogout} from "./services";
 
 const TopMenu=(props)=>{
     const state = useContext(StateContext);
     // const location = useLocation();
     const params = useParams();
-    console.log('top===',params);
+    async function logout(){
+        await userLogout();
+        state.setUser(null);
+    }
     return <nav className="navbar navbar-expand-lg navbar-light bg-light">
         <a className="navbar-brand" href="#">Ems Check-in</a>
         <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
@@ -27,20 +32,14 @@ const TopMenu=(props)=>{
                     )
                 }
             </ul>
+            <ul className="navbar-nav ml-auto">
+                <li className="nav-item">
+                    <NavLink className="nav-link" to="/" exact>
+                        Username: <strong className="mr-2">{state.currentUser.username}</strong><Button variant="danger" onClick={e=>{logout()}}>Logout</Button>
+                    </NavLink>
+                </li>
+            </ul>
         </div>
-        {/*<div className="collapse navbar-collapse" id="navbarNav">*/}
-        {/*    {location && location.pathname.match(/\/schedule/) &&*/}
-        {/*    <ul className="navbar-nav">*/}
-        {/*        {*/}
-        {/*            Object.keys(students).map(grp=>(*/}
-        {/*                <li className="nav-item">*/}
-        {/*                    <NavLink className="nav-link" to={`/schedule/${id}/group/${group}`}>{grp}</NavLink>*/}
-        {/*                </li>*/}
-        {/*            ))*/}
-        {/*        }*/}
-        {/*    </ul>*/}
-        {/*    }*/}
-        {/*</div>*/}
     </nav>
 }
 export default observer(TopMenu);
