@@ -79,7 +79,9 @@ const Workshop = ()=>{
                         <Navbar.Toggle aria-controls="basic-navbar-nav" />
                         <Navbar.Collapse>
                             <Nav className="ml-auto">
-                                <Nav.Link href="#home">Home</Nav.Link>
+                                <Nav.Link href="#home">
+                                    <Button variant='primary'>Submit and exit</Button>
+                                </Nav.Link>
                                 <Nav.Link href="#link">
                                     <Button variant="danger">Logout</Button>
                                 </Nav.Link>
@@ -96,6 +98,9 @@ const Workshop = ()=>{
                                         <Card>
                                             <Card.Header>{getPracticeName(question.PracticeID)}</Card.Header>
                                             <Card.Body><div dangerouslySetInnerHTML={{__html:question.PracticeQuestionTh}}></div></Card.Body>
+                                            <Card.Footer className="bg-dark text-light">
+                                                <strong className="mr-4">Upload document for score:</strong> <input type='file'/>
+                                            </Card.Footer>
                                         </Card>
                                     </div>
                                 </Col>
