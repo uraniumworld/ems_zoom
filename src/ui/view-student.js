@@ -51,13 +51,17 @@ const ViewStudent = () => {
         let textArr=userPairingText.split(/\n/);
         let buffer={};
         let currentName=null;
-        let expGetName=new RegExp('([a-zA-Z\\. _\\-]+)(?:\\d+:\\d+) ?(?:AM|PM)?',);
-        let expGetCode=new RegExp('((?:\\d{9}\\-\\d{1})|(?:\\d{10}))',);
+        let expGetName=new RegExp('(.+)(?:\\d+:\\d+) ?(?:AM|PM)?');
+        let expGetCode=new RegExp('((?:\\d{9}\\-\\d{1})|(?:\\d{10}))');
         textArr.map(line=>{
             let name=line.match(expGetName);
             let code=line.match(expGetCode);
+            if(name && (name[1]=='You'||name[1]=='คุณ'))return;
             if(name){
                 currentName=name[1].trim();
+                if(currentName.substr(-1).match(/\d+/)){
+                    currentName=currentName.substr(0,currentName.length-1);
+                }
             }else if(currentName && code){
                 let existed = students.find(student=>student.StudentID==fixStudentCode(code[1]));
                 let existedCopied={...existed};
