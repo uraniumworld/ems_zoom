@@ -60,8 +60,20 @@ export function changeCheckInState(StdRegistID,state){
     return request('change-state',{StdRegistID,state})
 }
 
+export function getMeetURL(SchdID, SchdDetailID,group){
+    return request('get-meet-url',{SchdID,SchdDetailID,group})
+}
+
 export function setMeetURL(SchdID, SchdDetailID,group,url){
     return request('set-meet-url',{SchdID,SchdDetailID,group,url})
+}
+
+export function removeMeetURL(SchdID, SchdDetailID,group){
+    return request('remove-meet-url',{SchdID,SchdDetailID,group})
+}
+
+export function pairUserData(pairData=[]){
+    return request('pair-user',{pairData})
 }
 
 function tranformScheduleDate(schedule){
