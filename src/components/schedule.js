@@ -110,9 +110,9 @@ const SchdBlock = ({schd,onEmail}) => {
                 </Card.Header>
                 <Card.Body>
                     <div className="text-center">
-                    {schd.ModuleType=="1"?<Alert variant="info">ทฤษฎี</Alert>:<Alert variant="dark">ปฏิบัติ</Alert>}
+                    {schd.ModuleType=="1"?<Alert variant="danger">ทฤษฎี</Alert>:<Alert variant="info">ปฏิบัติ</Alert>}
                         <div className="text-center">
-                            <Button className="ml-2" onClick={e => history.push(`/schedule/${schd.SchdID}/${schd.SchdDetailID}`)}>Enter</Button>
+                            <Button className="ml-2" onClick={e => history.push(Config.adminPath(`/schedule/${schd.SchdID}/${schd.SchdDetailID}`))}>Enter</Button>
                             <Button variant="secondary" className="ml-2" onClick={onEmail}>Email</Button>
                         </div>
                     </div>

@@ -59,7 +59,7 @@ const ViewStudent = () => {
             if(name && (name[1]=='You'||name[1]=='คุณ'))return;
             if(name){
                 currentName=name[1].trim();
-                if(currentName.substr(-1).match(/\d+/)){
+                if(currentName.substr(-1).match(/1/)){
                     currentName=currentName.substr(0,currentName.length-1);
                 }
             }else if(currentName && code){
@@ -74,7 +74,6 @@ const ViewStudent = () => {
                 }
             }
         })
-        console.log('==',buffer);
         if(Object.keys(buffer).length>0){
             setUserPairing({...buffer});
         }else{
@@ -127,7 +126,7 @@ const ViewStudent = () => {
                 return sortState(old);
             });
             setLoadingBtn(prevState => ({...prevState,[std.StdRegistID]:false}))
-        },300);
+        },200);
         clearTimeout(reloadStudentsTimer);
         reloadStudentsTimer=setTimeout(async ()=>{
             reloadStudents();
@@ -335,7 +334,7 @@ const ViewStudent = () => {
                                     <Button variant="dark" onClick={e=>setFilter('')}>Reset</Button>
                                 </InputGroup.Append>
                             </InputGroup>
-                            <Table className="sticky">
+                            <Table className="sticky table-hover">
                                 <thead>
                                 <tr>
                                     <th>#</th>
@@ -362,7 +361,7 @@ const ViewStudent = () => {
                                             )
                                         })
                                         .map((std, i) =>
-                                            <tr key={'std_'+i} className={std.check_in_status=='1' ? 'bg-success text-white' : ''}>
+                                            <tr key={'std_'+i} className={std.check_in_status=='1' ? 'text-success text-white' : ''}>
                                                 <td>{i + 1}</td>
                                                 <td>{std.StudentID}</td>
                                                 <td>{std.avatar_name?<strong variant='info' style={{fontSize:'110%'}}>{std.avatar_name}</strong>:'Not pair'}</td>
@@ -371,7 +370,7 @@ const ViewStudent = () => {
                                                 <td>
                                                     {
                                                         std.check_in_status=='1'
-                                                            ? <Badge variant="light" className="ml-1">Approved</Badge>
+                                                            ? <Badge variant="success" className="ml-1">Approved</Badge>
                                                             : <Badge variant="info" className="ml-1">Waiting</Badge>
                                                     }
                                                     {

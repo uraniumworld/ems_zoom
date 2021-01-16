@@ -4,6 +4,7 @@ import StateContext from "../mobx/global-context";
 import {Link, useParams} from 'react-router-dom';
 import {Badge, Button, Card, Col, Form, Modal, Row} from "react-bootstrap";
 import {getEmailByScheduleDetail, getScheduleInfo} from "../components/services";
+import Config from "../config";
 
 const ViewGroup = () => {
     const state = useContext(StateContext);
@@ -43,7 +44,7 @@ const ViewGroup = () => {
                     <Col key={grp} md={6}>
                         <Card className="mt-2">
                             <Card.Body>
-                                <Badge className="text-uppercase">{grp}</Badge> ({studentsWithGroup[grp].length} คน) <Link to={`/schedule/${SchdID}/${SchdDetailID}/${grp}`} className="btn btn-primary ml-2">View</Link>
+                                <Badge className="text-uppercase">{grp}</Badge> ({studentsWithGroup[grp].length} คน) <Link to={Config.adminPath(`/schedule/${SchdID}/${SchdDetailID}/${grp}`)} className="btn btn-primary ml-2">View</Link>
                                 <Button variant="secondary" className="ml-2" onClick={setShowingGroup.bind(this,grp)}>Email</Button>
                             </Card.Body>
                         </Card>

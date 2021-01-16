@@ -1,5 +1,5 @@
 import './App.css';
-import {Route, Switch} from 'react-router-dom';
+import {Route, Switch, useLocation} from 'react-router-dom';
 import Login from "./ui/login";
 import StateContext from "./mobx/global-context";
 import MobxStore from "./mobx/mobx-store";
@@ -8,17 +8,21 @@ import Home from "./ui/home";
 import FullLayout from "./layouts/full-layout";
 import ViewGroup from "./ui/view-group";
 import ViewStudent from "./ui/view-student";
-import Email from "./ui/email";
 import {ToastContainer, toast, Slide} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import {useEffect} from "react";
 import {checkLogin} from "./components/services";
 import {Alert} from "react-bootstrap"; // Import css
+import Config from './config';
+import Workshop from "./client-ui/workshop";
+import ClientHome from "./client-ui/client-home";
+import Theory from "./client-ui/theory";
 
 const mobxStore = new MobxStore();
 
 function App() {
+    let location = useLocation();
     useEffect(()=>{
         checker();
         setInterval(()=>{checker()},5*60000)
@@ -33,23 +37,34 @@ function App() {
         })
     }
     if(typeof mobxStore.currentUser == 'undefined')return <Alert variant='info'>Loading...</Alert>
+    let {adminPath} = Config;
     return (
         <StateContext.Provider value={mobxStore}>
-            {mobxStore.currentUser
-                ?
-                <FullLayout>
+            <Switch>
+                <Route path={adminPath()}>
+                    {mobxStore.currentUser
+                        ?
+                        <FullLayout>
+                            <Switch>
+                                <Route path={adminPath()} exact component={Home}/>
+                                <Route path={adminPath('/schedule/:SchdID(\\d+)/:SchdDetailID(\\d+)')} exact component={ViewGroup}/>
+                                <Route path={adminPath('/schedule/:SchdID(\\d+)/:SchdDetailID(\\d+)/:group')} component={ViewStudent}/>
+                            </Switch>
+                        </FullLayout>
+                        :
+                        <Switch>
+                            <Route path="*" component={Login}/>
+                        </Switch>
+                    }
+                </Route>
+                <Route path="/">
                     <Switch>
-                        <Route path="/" exact component={Home}/>
-                        <Route path="/email" component={Email}/>
-                        <Route path="/schedule/:SchdID(\d+)/:SchdDetailID(\d+)" exact component={ViewGroup}/>
-                        <Route path="/schedule/:SchdID(\d+)/:SchdDetailID(\d+)/:group" component={ViewStudent}/>
+                        <Route path="/" exact component={ClientHome}/>
+                        <Route path="/exam/workshop/:id" component={Workshop}/>
+                        <Route path="/exam/theory/:id" component={Theory}/>
                     </Switch>
-                </FullLayout>
-                :
-                <Switch>
-                    <Route path="*" component={Login}/>
-                </Switch>
-            }
+                </Route>
+            </Switch>
             <ToastContainer
                 transition={Slide}
                 limit={3}

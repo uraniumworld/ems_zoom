@@ -3,17 +3,20 @@ import {Button, Card, Col, Form, Row} from "react-bootstrap";
 import {observer} from "mobx-react";
 import globalState from "../mobx/global-context";
 import {userLogin} from "../components/services";
+import {useHistory} from 'react-router-dom';
+import Config from "../config";
 
 const Login = ()=>{
     const mobx=useContext(globalState);
     const [formUsername,setFormUsername]=useState('');
     const [formPassword,setFormPassword]=useState('');
+    let history = useHistory();
     async function login(e){
        let user =await userLogin(formUsername,formPassword);
        if(user){
            mobx.setUser(user);
+           history.push(Config.adminPath());
        }
-        console.log(user);
     }
     return <Row className="justify-content-md-center">
     <Col xs={12} md={6} className="">

@@ -1,0 +1,65 @@
+$sidebarSize:100px;
+
+.exam{
+  &-top-menu{
+    top:0px;
+    left:$sidebarSize;
+    z-index: 1;
+    width: calc(100% - 100px) !important;
+    position: fixed;
+  }
+  &-sidebar{
+    width: $sidebarSize;
+    position: fixed;
+    top: 0px;
+    //height: calc(100vh);
+    height: 100%;
+    background: #1d2124;
+    color:white;
+    ul{
+      list-style: none;
+      padding: 0px;
+      margin: 0px;
+      margin-top: 80px;
+      li{
+        padding-top: 25px;
+        text-align: center;
+        height: 100px;
+        background: #61dafb;
+        margin-bottom: 20px;
+        position: relative;
+      }
+    }
+  }
+  &-container{
+    margin-left: $sidebarSize;
+    margin-top: 60px;
+  }
+  &-content{
+    padding: 10px;
+  }
+  &-workshop-active::after{
+    content: '';
+    position: absolute;
+    display: block;
+    left: 100px;
+    top:0px;
+    width: 15px;
+    height: 100px;
+    -webkit-box-shadow: 8px 0px 9px -3px rgba(0,0,0,0.45);
+    -moz-box-shadow: 8px 0px 9px -3px rgba(0,0,0,0.45);
+    box-shadow: 8px 0px 9px -3px rgba(0,0,0,0.45);
+  }
+  &-word-color::after{
+    background: #0062cc;
+  }
+  &-excel-color::after{
+    background: #1e7e34;
+  }
+  &-powerpoint-color::after{
+    background: #d39e00;
+  }
+  &-access-color::after{
+    background: #ea2971;
+  }
+}
