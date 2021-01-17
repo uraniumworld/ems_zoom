@@ -18,6 +18,7 @@ import Config from './config';
 import Workshop from "./client-ui/workshop";
 import ClientHome from "./client-ui/client-home";
 import Theory from "./client-ui/theory";
+import Exam from "./client-ui/exam";
 
 const mobxStore = new MobxStore();
 
@@ -60,8 +61,8 @@ function App() {
                 <Route path="/">
                     <Switch>
                         <Route path="/" exact component={ClientHome}/>
-                        <Route path="/exam/workshop/:id" component={Workshop}/>
-                        <Route path="/exam/theory/:id" component={Theory}/>
+                        <Route path="/exam" exact exact component={Exam}/>
+                        <Route path="/exam/:type/:StdRegistID/:SchdDetailID" component={Exam}/>
                     </Switch>
                 </Route>
             </Switch>

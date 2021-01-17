@@ -1,5 +1,7 @@
 $sidebarSize:100px;
-
+body{
+  //padding-left: 120px;
+}
 .exam{
   &-top-menu{
     top:0px;
@@ -11,6 +13,7 @@ $sidebarSize:100px;
   &-sidebar{
     width: $sidebarSize;
     position: fixed;
+    left:0px;
     top: 0px;
     //height: calc(100vh);
     height: 100%;
@@ -32,11 +35,10 @@ $sidebarSize:100px;
     }
   }
   &-container{
-    margin-left: $sidebarSize;
     margin-top: 60px;
   }
   &-content{
-    padding: 10px;
+    padding: 20px;
   }
   &-workshop-active::after{
     content: '';
@@ -50,6 +52,12 @@ $sidebarSize:100px;
     -moz-box-shadow: 8px 0px 9px -3px rgba(0,0,0,0.45);
     box-shadow: 8px 0px 9px -3px rgba(0,0,0,0.45);
   }
+  &-workshop-active{
+    span{
+      font-size: 25px;
+      transition: 300ms all ease-out;
+    }
+  }
   &-word-color::after{
     background: #0062cc;
   }
@@ -61,5 +69,10 @@ $sidebarSize:100px;
   }
   &-access-color::after{
     background: #ea2971;
+  }
+  &-confirm-modal{
+    a:link{
+      text-decoration: none;
+    }
   }
 }
