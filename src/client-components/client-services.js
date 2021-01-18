@@ -1,6 +1,13 @@
 import axios from "axios";
+import {tranformScheduleDate} from "../components/services";
 
 
+
+
+export async function getExamSchedules(Username){
+    let schedules=await request('exam-schedule',{Username});
+    return schedules && schedules.map(schd=>tranformScheduleDate(schd));
+}
 
 export function getWorkshopQuestion(StdRegistID,SchdDetailID){
     return  request('workshop-question',{StdRegistID,SchdDetailID});
@@ -22,10 +29,18 @@ export function download(RowID){
     window.open('https://ems.kku.ac.th/ems_tools/examination_resful_api.php?method=download&id='+RowID)
 }
 
+export function checkLogin(user,pass){
+    return request('check-login');
+}
 
-function request(method,params={}){
+export function studentLogin(user,pass){
+    return request('login',{user,pass});
+}
+
+
+function request(method,params={},scriptName='examination_resful_api.php'){
     return new Promise(resolve => {
-        axios.post('/examination_resful_api.php?method='+method,params)
+        axios.post(`/${scriptName}?method=`+method,params)
             .then(res=>{
                 resolve(res.data);
             }).catch(e=>{

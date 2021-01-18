@@ -2,6 +2,7 @@ import {makeAutoObservable} from "mobx";
 
 class MobxStore {
     currentUser = void 0;
+    currentStudent = void 0;
 
     scheduleMenu=[];
 
@@ -11,6 +12,10 @@ class MobxStore {
 
     setUser(user) {
         this.currentUser = user;
+    }
+
+    setStudent(student){
+        this.currentStudent=student;
     }
 
     studentApprove(code) {

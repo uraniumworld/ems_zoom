@@ -106,7 +106,7 @@ export function confirmBox(title,detail,fn){
     });
 }
 
-function tranformScheduleDate(schedule){
+export function tranformScheduleDate(schedule){
     schedule.ExamDate=schedule.ExamDate.split(' ')[0];
     schedule.ExamTimeStart=schedule.ExamTimeStart.split(' ')[1];
     schedule.ExamTimeEnd=schedule.ExamTimeEnd.split(' ')[1];
