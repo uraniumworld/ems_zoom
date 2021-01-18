@@ -37,6 +37,9 @@ const Exam=()=>{
         {type=='workshop' &&
             <Workshop/>
         }
+        {type=='theory' &&
+        <Workshop/>
+        }
     </CheckInProcess>
 }
 export default observer(Exam);
