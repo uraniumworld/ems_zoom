@@ -7,18 +7,18 @@ import {studentLogin} from "../client-components/client-services";
 import {toast} from "react-toastify";
 
 const LoginClient = ()=>{
-    const mobx=useContext(globalState);
+    const state=useContext(globalState);
     const [formUsername,setFormUsername]=useState('603290342-0');
     const [formPassword,setFormPassword]=useState('**123456');
     let history = useHistory();
     async function login(e){
         e.preventDefault();
-        let user =await studentLogin(formUsername,formPassword);
-        if(user && !user.error){
-            mobx.setUser(user);
+        let student =await studentLogin(formUsername,formPassword);
+        if(student && !student.error){
+            state.setStudent(student);
             history.push('/exam');
         }else{
-            toast.error(user.error)
+            toast.error(student.error)
         }
     }
     return <Row className="justify-content-md-center">

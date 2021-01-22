@@ -37,6 +37,14 @@ export function studentLogin(user,pass){
     return request('login',{user,pass});
 }
 
+export function studentLogout(){
+    return request('logout');
+}
+
+export function getMyPicture(){
+    return  request('get-my-picture');
+}
+
 
 function request(method,params={},scriptName='examination_resful_api.php'){
     return new Promise(resolve => {

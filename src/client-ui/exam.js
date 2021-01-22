@@ -30,6 +30,7 @@ const Exam=()=>{
         return <ExamScheduleDay schedules={examSchedule}/>
     }
     return <CheckInProcess
+        state={state}
         StdRegistID={StdRegistID}
         onApproved={onApproved}
         onDenied={onDenied}
