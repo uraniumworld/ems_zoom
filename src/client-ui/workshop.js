@@ -200,9 +200,7 @@ const Workshop = () => {
                                             <div className="mb-4">
                                                 <Card>
                                                     <Card.Header>
-                                                        <Card.Text>
-                                                            <h4 style={{color: practice.color}}>{practice.icon} {practice.name} Questions</h4>
-                                                        </Card.Text>
+                                                        <div style={{color: practice.color}}>{practice.icon} {practice.name} Questions</div>
                                                     </Card.Header>
                                                     <Card.Body style={{overflowX: 'auto'}}>
                                                         <div
@@ -226,7 +224,7 @@ const Workshop = () => {
                         {
                             currentUserWorkshop.practice_answer.map(answer => {
                                 let practice = getPracticeName(answer.PracticeID);
-                                return <Alert variant={practice.class}>
+                                return <Alert key={'wk_'+answer.PracticeID} variant={practice.class}>
                                     <strong className='mr-2'>{practice.icon} {practice.name}</strong>
                                     <a href='#' className={'text-'+practice.class} onClick={e=>{e.preventDefault();download(answer.RowID)}}>{answer.FileName}</a>
                                 </Alert>

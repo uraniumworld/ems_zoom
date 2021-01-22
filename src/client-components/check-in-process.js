@@ -1,24 +1,28 @@
-import {useEffect, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {checkClient} from "./client-services";
-import {Card, Col, Container, Row} from "react-bootstrap";
-
-let last_update = 0;
-let last_update_url = 0;
+import {Alert, Card, Col, Container, Row} from "react-bootstrap";
 
 const CheckInProcess = ({StdRegistID, onApproved, onDenied, children}) => {
 
     const [approve, setApprove] = useState(void 0);
     const [meetUrl, setMeetUrl] = useState(null);
+    const timer = useRef(null);
+    const last_update = useRef(null);
+    const last_update_url = useRef(null);
 
     useEffect(() => {
-        // document.body.style.paddingLeft='0px';
         checker();
-        setInterval(()=>checker(),5000);
+        timer.current=setInterval(()=>checker(),5000);
+        return ()=>{
+            console.log('CLEAR');
+            clearInterval(timer.current);
+        }
     }, []);
 
     function checker() {
         checkClient(StdRegistID).then(data => {
-            if (last_update != data.last_update || last_update_url != data.last_update_url) {
+            console.log(data);
+            if (last_update.current != data.last_update || last_update_url.current != data.last_update_url) {
                 if (data.check_in_status == "1") {
                     setApprove(true);
                     onApproved();
@@ -32,13 +36,13 @@ const CheckInProcess = ({StdRegistID, onApproved, onDenied, children}) => {
                     setApprove(false);
                     onDenied();
                 }
-                last_update = data.last_update;
-                last_update_url = data.last_update_url;
+                last_update.current = data.last_update;
+                last_update_url.current = data.last_update_url;
             }
         });
     }
 
-    if (typeof approve == 'undefined') return <div>Loading...</div>;
+    if (typeof approve == 'undefined') return <Alert variant='info'>Loading...</Alert>;
     if (!approve) {
         return <Container>
             <Row>
