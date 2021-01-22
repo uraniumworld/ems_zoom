@@ -2,20 +2,22 @@ import {useParams} from "react-router-dom";
 import {observer} from "mobx-react";
 import {useContext, useEffect, useState} from "react";
 import StateContext from "../mobx/global-context";
-import {Alert, Badge, Button, Col, Form, FormControl, InputGroup, Modal, Row, Table} from "react-bootstrap";
+import {Alert, Badge, Button, Col, Form, FormControl, Image, InputGroup, Modal, Row, Table} from "react-bootstrap";
 import {render} from "@testing-library/react";
 import { uid } from 'uid';
 import {CopyToClipboard} from 'react-copy-to-clipboard';
+import ScrollToTop from 'react-scroll-up';
 import {
     changeCheckInState,
     getCheckInStudents,
     getEmailByScheduleDetail, getMeetURL,
-    getScheduleInfo, removeMeetURL, setMeetURL, pairUserData, confirmBox
+    getScheduleInfo, removeMeetURL, setMeetURL, pairUserData, confirmBox, loadStudentPicture
 } from "../components/services";
 import {toast} from "react-toastify";
 import { confirmAlert } from 'react-confirm-alert'; // Import
 
 let reloadStudentsTimer=void 0;
+let reloadStudentPicturesTimer=void 0;
 const ViewStudent = () => {
     const state = useContext(StateContext);
     const {SchdID, SchdDetailID,group} = useParams();
@@ -44,7 +46,11 @@ const ViewStudent = () => {
         getScheduleInfo(SchdID,SchdDetailID).then(res=>{
             setSchedule(res);
         })
-
+        reloadStudentPicturesTimer=setInterval(()=>{reloadStudents()},15*1000);
+        return ()=>{
+            clearInterval(reloadStudentsTimer);
+            clearInterval(reloadStudentPicturesTimer);
+        }
     }, []);
 
     useEffect(()=>{
@@ -83,6 +89,9 @@ const ViewStudent = () => {
 
     function reloadStudents(){
         getCheckInStudents(SchdID,SchdDetailID,group).then(res=>{
+            res.map(std=>{
+                loadStudentPicture(std.Username).then(()=>{});
+            })
             setStudents(sortState(res));
         });
     }
@@ -338,6 +347,7 @@ const ViewStudent = () => {
                                 <thead>
                                 <tr>
                                     <th>#</th>
+                                    <th>Picture</th>
                                     <th>Code</th>
                                     <th>Avatar name</th>
                                     <th>Name</th>
@@ -363,7 +373,20 @@ const ViewStudent = () => {
                                         .map((std, i) =>
                                             <tr key={'std_'+i} className={std.check_in_status=='1' ? 'text-success text-white' : ''}>
                                                 <td>{i + 1}</td>
-                                                <td>{std.StudentID}</td>
+                                                <td width="150">
+                                                    {typeof state.studentPicture[std.Username] == 'undefined'?
+                                                        <Alert variant='info'>Loading...</Alert>
+                                                        :
+                                                        <>
+                                                            {state.studentPicture[std.Username]?
+                                                                <Image src={state.studentPicture[std.Username]} fluid rounded/>
+                                                                :
+                                                                <Image style={{opacity:'0.3'}} src='/images/user_avatar.svg' fluid rounded/>
+                                                            }
+                                                        </>
+                                                    }
+                                                </td>
+                                                <td style={{whiteSpace:'nowrap'}}>{std.StudentID}</td>
                                                 <td>{std.avatar_name?<strong variant='info' style={{fontSize:'110%'}}>{std.avatar_name}</strong>:'Not pair'}</td>
                                                 <td>{std.FirstName_Th} {std.LastName_Th}</td>
                                                 <td>{std.email}</td>
@@ -411,6 +434,9 @@ const ViewStudent = () => {
                             </Button>
                         </Modal.Footer>
                     </Modal>
+                    <ScrollToTop showUnder={160}>
+                        <img src="/images/up_arrow_round.png"/>
+                    </ScrollToTop>
                 </>
                 : <div>Loading...</div>
         }

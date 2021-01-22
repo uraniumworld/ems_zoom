@@ -23,7 +23,7 @@ import LoginClient from "./client-ui/login-client";
 import Admin from "./ui/admin";
 import Student from "./client-ui/student";
 
-const mobxStore = new MobxStore();
+export const mobxStore = new MobxStore();
 
 function App() {
     let location = useLocation();

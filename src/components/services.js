@@ -1,6 +1,7 @@
 import axios from "axios";
 import moment from "moment";
 import {confirmAlert} from "react-confirm-alert";
+import {mobxStore} from "../App";
 
 export function getSchedules(month,year){
     return  new Promise(resolve => {
@@ -111,6 +112,17 @@ export function tranformScheduleDate(schedule){
     schedule.ExamTimeStart=schedule.ExamTimeStart.split(' ')[1];
     schedule.ExamTimeEnd=schedule.ExamTimeEnd.split(' ')[1];
     return schedule;
+}
+
+export async function loadStudentPicture(Username){
+    if(!mobxStore.studentPicture[Username]){
+        let results = await request('get-student-picture',{Username});
+        if(results){
+            mobxStore.setStudentPicture(Username,results.student_image_data);
+        }else{
+            mobxStore.setStudentPicture(Username,null);
+        }
+    }
 }
 
 function request(method,params={}){

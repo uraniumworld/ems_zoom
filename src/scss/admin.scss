@@ -28,9 +28,10 @@ html,body,#root{
 table.sticky{
   position: relative;
   th{
+    z-index: 1;
     background: white;
     position: sticky;
-    top: 40px;
+    top: 42px;
     box-shadow: 0 1px 1px -1px rgba(0, 0, 0, 0.4);
   }
 }
@@ -40,6 +41,7 @@ table.sticky{
   position: sticky;
   top:5px;
   z-index: 1;
+  background: white;
 }
 
 .react-confirm-alert-body{

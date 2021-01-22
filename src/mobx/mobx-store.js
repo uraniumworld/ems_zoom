@@ -6,8 +6,17 @@ class MobxStore {
 
     scheduleMenu=[];
 
+    studentPicture={};
+
     constructor() {
         makeAutoObservable(this);
+    }
+
+    setStudentPicture(Username,student_image_data){
+        this.studentPicture={
+            ...this.studentPicture,
+            [Username]:student_image_data
+        }
     }
 
     setUser(user) {

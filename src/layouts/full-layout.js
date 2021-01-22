@@ -6,7 +6,6 @@ import {useParams,withRouter} from "react-router-dom";
 
 const FullLayout = (props)=>{
     const params = useParams();
-    console.log('top layout===',props);
     return <>
         <div className="container-wrapper">
             <TopMenu/>
