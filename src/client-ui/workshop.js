@@ -1,4 +1,17 @@
-import {Alert, Badge, Button, Card, Col, Container, FormControl, Modal, Nav, Navbar, Row} from "react-bootstrap";
+import {
+    Alert,
+    Badge,
+    Button,
+    Card,
+    Col,
+    Container,
+    FormControl,
+    InputGroup,
+    Modal,
+    Nav,
+    Navbar,
+    Row
+} from "react-bootstrap";
 import Footer from "../components/footer";
 import React, {useEffect, useState} from "react";
 import {Form} from "formik";
@@ -7,6 +20,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faFileWord, faFileExcel, faFilePowerpoint, faDatabase, faCheckCircle} from '@fortawesome/free-solid-svg-icons'
 import classNames from "classnames";
 import {useParams} from "react-router-dom";
+import ClientTopMenu from "../client-components/client-top-menu";
 
 
 //http://localhost:3000/exam/workshop/125180/3474
@@ -78,6 +92,19 @@ const Workshop = () => {
         setShowConfirmSubmit(true);
     }
 
+    function getWorkshopType(typeID){
+        switch (typeID) {
+            case '1':
+                return <strong>Microsoft Word</strong>;
+            case '2':
+                return <strong>Microsoft Excel</strong>;
+            case '3':
+                return <strong>Microsoft Powerpoint</strong>;
+            case '4':
+                return <strong>Microsoft Access</strong>;
+        }
+    }
+
     return <>
         {(questions && currentUserWorkshop)
             ?
@@ -122,33 +149,7 @@ const Workshop = () => {
                     </ul>
                 </div>
                 <Container className="exam-container">
-                    <div className="exam-top-menu">
-                        <Navbar bg="light" expand="md">
-                            <Navbar.Brand href="#home">EMS KKU - Workshop</Navbar.Brand>
-                            <Navbar.Toggle aria-controls="basic-navbar-nav"/>
-                            <Navbar.Collapse>
-                                <Nav className="mr-auto">
-                                    <Nav.Link href="#home">
-                                        <Button variant='primary' onClick={e => confirmSubmit()}>Submit and
-                                            exit</Button>
-                                    </Nav.Link>
-                                </Nav>
-                                <Nav className="ml-auto">
-
-                                    <Nav.Link href="#link">
-                                        <div>
-                                            <Badge className="mr-2">
-                                                <span className="mr-2">{currentUserWorkshop.student.StudentID}</span>
-                                                <span className="mr-2">|</span>
-                                                <span>{currentUserWorkshop.student.FirstName_Th} {currentUserWorkshop.student.LastName_Th}</span>
-                                            </Badge>
-                                            <Button variant="danger">Logout</Button>
-                                        </div>
-                                    </Nav.Link>
-                                </Nav>
-                            </Navbar.Collapse>
-                        </Navbar>
-                    </div>
+                    <ClientTopMenu type="workshop" student={currentUserWorkshop} confirmSubmit={confirmSubmit}/>
                     <div className="exam-content">
                         <Card className={classNames(' mb-4', {
                             'bg-primary text-light': filter == '1',
@@ -156,30 +157,25 @@ const Workshop = () => {
                             'bg-warning text-dark': filter == '3',
                             'bg-danger text-light': filter == '4',
                         })}>
-                            <Card.Header>Your workshop documents {(() => {
-                                switch (filter) {
-                                    case '1':
-                                        return <strong>Microsoft Word</strong>;
-                                    case '2':
-                                        return <strong>Microsoft Excel</strong>;
-                                    case '3':
-                                        return <strong>Microsoft Powerpoint</strong>;
-                                    case '4':
-                                        return <strong>Microsoft Access</strong>;
-                                }
-                            })()}</Card.Header>
+                            <Card.Header>Your workshop documents {getWorkshopType(filter)}</Card.Header>
                             <Card.Body>
                                 {
                                     (() => {
                                         let existed = currentUserWorkshop['practice_answer'].find(v => v.PracticeID == filter);
                                         if (existed) {
-                                            return <Badge variant='light' style={{fontSize: '15px'}}>
-                                                <Button variant='light' onClick={e => download(existed.RowID)}>
+                                            return <div>
+                                                <Button variant='light' className="mb-2" onClick={e => download(existed.RowID)}>
                                                     <FontAwesomeIcon style={{fontSize: '20px'}} className='mr-1'
                                                                      icon={faCheckCircle}/>
                                                     <span>{existed.FileName}</span>
                                                 </Button>
-                                            </Badge>
+                                                <InputGroup>
+                                                    <InputGroup.Prepend>
+                                                        <InputGroup.Text>{getWorkshopType(filter)}<span className="ml-2">o365 link</span></InputGroup.Text>
+                                                    </InputGroup.Prepend>
+                                                    <FormControl type="text"></FormControl>
+                                                </InputGroup>
+                                            </div>
                                         } else {
                                             return <span>After you finish please upload your file here.</span>
                                         }
