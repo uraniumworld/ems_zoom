@@ -88,7 +88,7 @@ const ViewStudent = () => {
     },[userPairingText]);
 
     function reloadStudents(){
-        getCheckInStudents(SchdID,SchdDetailID,group).then(res=>{
+        getCheckInStudents(SchdID,SchdDetailID,group).then(async res=>{
             res.map(std=>{
                 loadStudentPicture(std.Username).then(()=>{});
             })
