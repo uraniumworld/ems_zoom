@@ -7,6 +7,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faFileWord, faFileExcel, faFilePowerpoint, faDatabase, faCheckCircle} from '@fortawesome/free-solid-svg-icons'
 import classNames from "classnames";
 import {useParams} from "react-router-dom";
+import ClientTopMenu from "../client-components/client-top-menu";
 
 
 //http://localhost:3000/exam/workshop/125180/3474
@@ -122,33 +123,7 @@ const Workshop = () => {
                     </ul>
                 </div>
                 <Container className="exam-container">
-                    <div className="exam-top-menu">
-                        <Navbar bg="light" expand="md">
-                            <Navbar.Brand href="#home">EMS KKU - Workshop</Navbar.Brand>
-                            <Navbar.Toggle aria-controls="basic-navbar-nav"/>
-                            <Navbar.Collapse>
-                                <Nav className="mr-auto">
-                                    <Nav.Link href="#home">
-                                        <Button variant='primary' onClick={e => confirmSubmit()}>Submit and
-                                            exit</Button>
-                                    </Nav.Link>
-                                </Nav>
-                                <Nav className="ml-auto">
-
-                                    <Nav.Link href="#link">
-                                        <div>
-                                            <Badge className="mr-2">
-                                                <span className="mr-2">{currentUserWorkshop.student.StudentID}</span>
-                                                <span className="mr-2">|</span>
-                                                <span>{currentUserWorkshop.student.FirstName_Th} {currentUserWorkshop.student.LastName_Th}</span>
-                                            </Badge>
-                                            <Button variant="danger">Logout</Button>
-                                        </div>
-                                    </Nav.Link>
-                                </Nav>
-                            </Navbar.Collapse>
-                        </Navbar>
-                    </div>
+                    <ClientTopMenu type="workshop" student={currentUserWorkshop} confirmSubmit={confirmSubmit}/>
                     <div className="exam-content">
                         <Card className={classNames(' mb-4', {
                             'bg-primary text-light': filter == '1',
