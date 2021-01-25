@@ -1,4 +1,17 @@
-import {Alert, Badge, Button, Card, Col, Container, FormControl, Modal, Nav, Navbar, Row} from "react-bootstrap";
+import {
+    Alert,
+    Badge,
+    Button,
+    Card,
+    Col,
+    Container,
+    FormControl,
+    InputGroup,
+    Modal,
+    Nav,
+    Navbar,
+    Row
+} from "react-bootstrap";
 import Footer from "../components/footer";
 import React, {useEffect, useState} from "react";
 import {Form} from "formik";
@@ -79,6 +92,19 @@ const Workshop = () => {
         setShowConfirmSubmit(true);
     }
 
+    function getWorkshopType(typeID){
+        switch (typeID) {
+            case '1':
+                return <strong>Microsoft Word</strong>;
+            case '2':
+                return <strong>Microsoft Excel</strong>;
+            case '3':
+                return <strong>Microsoft Powerpoint</strong>;
+            case '4':
+                return <strong>Microsoft Access</strong>;
+        }
+    }
+
     return <>
         {(questions && currentUserWorkshop)
             ?
@@ -131,30 +157,25 @@ const Workshop = () => {
                             'bg-warning text-dark': filter == '3',
                             'bg-danger text-light': filter == '4',
                         })}>
-                            <Card.Header>Your workshop documents {(() => {
-                                switch (filter) {
-                                    case '1':
-                                        return <strong>Microsoft Word</strong>;
-                                    case '2':
-                                        return <strong>Microsoft Excel</strong>;
-                                    case '3':
-                                        return <strong>Microsoft Powerpoint</strong>;
-                                    case '4':
-                                        return <strong>Microsoft Access</strong>;
-                                }
-                            })()}</Card.Header>
+                            <Card.Header>Your workshop documents {getWorkshopType(filter)}</Card.Header>
                             <Card.Body>
                                 {
                                     (() => {
                                         let existed = currentUserWorkshop['practice_answer'].find(v => v.PracticeID == filter);
                                         if (existed) {
-                                            return <Badge variant='light' style={{fontSize: '15px'}}>
-                                                <Button variant='light' onClick={e => download(existed.RowID)}>
+                                            return <div>
+                                                <Button variant='light' className="mb-2" onClick={e => download(existed.RowID)}>
                                                     <FontAwesomeIcon style={{fontSize: '20px'}} className='mr-1'
                                                                      icon={faCheckCircle}/>
                                                     <span>{existed.FileName}</span>
                                                 </Button>
-                                            </Badge>
+                                                <InputGroup>
+                                                    <InputGroup.Prepend>
+                                                        <InputGroup.Text>{getWorkshopType(filter)}<span className="ml-2">o365 link</span></InputGroup.Text>
+                                                    </InputGroup.Prepend>
+                                                    <FormControl type="text"></FormControl>
+                                                </InputGroup>
+                                            </div>
                                         } else {
                                             return <span>After you finish please upload your file here.</span>
                                         }
