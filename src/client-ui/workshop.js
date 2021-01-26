@@ -21,6 +21,8 @@ import {faFileWord, faFileExcel, faFilePowerpoint, faDatabase, faCheckCircle} fr
 import classNames from "classnames";
 import {useParams} from "react-router-dom";
 import ClientTopMenu from "../client-components/client-top-menu";
+import {toast} from "react-toastify";
+import TimerClock from "../client-components/timer-clock";
 
 
 //http://localhost:3000/exam/workshop/125180/3474
@@ -31,6 +33,7 @@ const Workshop = () => {
     const [filter, setFilter] = useState('1');
     const [currentUserWorkshop, setCurrentUserWorkshop] = useState(null);
     const [showConfirmSubmit, setShowConfirmSubmit] = useState(false);
+    const [o365Link, setO365Link] = useState({});
     const {StdRegistID, SchdDetailID} = useParams();
 
     useEffect(() => {
@@ -110,6 +113,7 @@ const Workshop = () => {
             ?
             <div className="container-wrapper" style={{paddingLeft: '120px'}}>
                 <div className="exam-sidebar">
+                    <TimerClock serverDiff={0} expire={'2021-01-26 17:00'}/>
                     <ul>
                         {questions.map((q, i) => {
                             let icon;
@@ -169,18 +173,26 @@ const Workshop = () => {
                                                                      icon={faCheckCircle}/>
                                                     <span>{existed.FileName}</span>
                                                 </Button>
-                                                <InputGroup>
-                                                    <InputGroup.Prepend>
-                                                        <InputGroup.Text>{getWorkshopType(filter)}<span className="ml-2">o365 link</span></InputGroup.Text>
-                                                    </InputGroup.Prepend>
-                                                    <FormControl type="text"></FormControl>
-                                                </InputGroup>
                                             </div>
                                         } else {
-                                            return <span>After you finish please upload your file here.</span>
+                                            return <div className="mb-2">After you finish please upload your file and share o365 url here.</div>
                                         }
                                     })()
                                 }
+                                <InputGroup>
+                                    <InputGroup.Prepend>
+                                        <InputGroup.Text>{getWorkshopType(filter)}<span className="ml-2">o365 link</span></InputGroup.Text>
+                                    </InputGroup.Prepend>
+                                    <FormControl type="text" onChange={e=>{
+                                        let value=e.target.value;
+                                        setO365Link(prevState => ({
+                                            ...prevState,
+                                            [filter]:value,
+                                        }))
+                                    }} value={o365Link[filter] || ''}
+                                                 placeholder='URL start with: https://kkumail-my.sharepoint.com'
+                                    ></FormControl>
+                                </InputGroup>
                             </Card.Body>
                             <Card.Footer className="bg-dark text-light">
                                 <strong className="mr-4">Upload document for score:</strong>
@@ -223,6 +235,7 @@ const Workshop = () => {
                                 return <Alert key={'wk_'+answer.PracticeID} variant={practice.class}>
                                     <strong className='mr-2'>{practice.icon} {practice.name}</strong>
                                     <a href='#' className={'text-'+practice.class} onClick={e=>{e.preventDefault();download(answer.RowID)}}>{answer.FileName}</a>
+                                    <div><span className="mr-2 font-weight-bold">o360 Link:</span><span>{o365Link[answer.PracticeID]?<a href={o365Link[answer.PracticeID]} target='_blank'>{o365Link[answer.PracticeID].substr(0,50)+'...'}</a>:'- No Link -'}</span></div>
                                 </Alert>
                             })
                         }

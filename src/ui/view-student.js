@@ -1,6 +1,6 @@
 import {useParams} from "react-router-dom";
 import {observer} from "mobx-react";
-import {useContext, useEffect, useState} from "react";
+import {useContext, useEffect, useRef, useState} from "react";
 import StateContext from "../mobx/global-context";
 import {Alert, Badge, Button, Col, Form, FormControl, Image, InputGroup, Modal, Row, Table} from "react-bootstrap";
 import {render} from "@testing-library/react";
@@ -15,6 +15,9 @@ import {
 } from "../components/services";
 import {toast} from "react-toastify";
 import { confirmAlert } from 'react-confirm-alert'; // Import
+import queue from 'async/queue';
+
+
 
 let reloadStudentsTimer=void 0;
 let reloadStudentPicturesTimer=void 0;
@@ -30,6 +33,7 @@ const ViewStudent = () => {
     const [userPairingText,setUserPairingText] = useState('');
     const [userPairing,setUserPairing] = useState(null);
     const [showEmail,setShowEmail] = useState(false);
+    const q = useRef(null);
 
     useEffect(() => {
         state.scheduleMenu = [
@@ -46,10 +50,10 @@ const ViewStudent = () => {
         getScheduleInfo(SchdID,SchdDetailID).then(res=>{
             setSchedule(res);
         })
-        reloadStudentPicturesTimer=setInterval(()=>{reloadStudents()},15*1000);
         return ()=>{
             clearInterval(reloadStudentsTimer);
             clearInterval(reloadStudentPicturesTimer);
+            if(q.current)q.current.kill();
         }
     }, []);
 
@@ -89,9 +93,19 @@ const ViewStudent = () => {
 
     function reloadStudents(){
         getCheckInStudents(SchdID,SchdDetailID,group).then(async res=>{
+            q.current = queue((std, callback)=>{
+                loadStudentPicture(std.Username).then(()=>{
+                    callback();
+                });
+            }, 3);
+            q.current.drain(function() {
+                console.log('PIC FINISHED');
+                clearInterval(reloadStudentPicturesTimer);
+                reloadStudentPicturesTimer=setInterval(()=>{reloadStudents()},15*1000);
+            });
             res.map(std=>{
-                loadStudentPicture(std.Username).then(()=>{});
-            })
+                q.current.push(std);
+            });
             setStudents(sortState(res));
         });
     }

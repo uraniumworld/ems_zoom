@@ -31,6 +31,8 @@ const CheckInProcess = ({state, StdRegistID, onApproved, onDenied, children}) =>
             getMyPicture().then(picture=>{
                 if(picture){
                     setMyPicture(picture.student_image_data)
+                }else{
+                    setMyPicture(null);
                 }
             })
         }
@@ -54,6 +56,10 @@ const CheckInProcess = ({state, StdRegistID, onApproved, onDenied, children}) =>
     function checker() {
         checkClient(StdRegistID).then(data => {
             console.log(data);
+            if(!data){
+                data={};
+                data.last_update=0;
+            }
             if (last_update.current != data.last_update || last_update_url.current != data.last_update_url) {
                 if (data.check_in_status == "1") {
                     setApprove(true);
@@ -143,7 +149,7 @@ const CheckInProcess = ({state, StdRegistID, onApproved, onDenied, children}) =>
                                                         <Alert variant='info' className="mb-2">Use your mobile devices scan this
                                                             QR-CODE to start Google Meet</Alert>
                                                         <div className="mb-2"><Image src={meetQRCode} rounded></Image></div>
-                                                        <div><Badge variant='success' className='mr-2'>Google Meet - Join:</Badge>
+                                                        <div><Badge variant='success' className='mr-2'>Google Meet - Key:</Badge>
                                                             <span style={{fontSize:'20px'}}>
                                                                 {(()=>{
                                                                     let u = meetUrl.split('/');
