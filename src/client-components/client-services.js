@@ -45,6 +45,12 @@ export function getMyPicture(){
     return  request('get-my-picture');
 }
 
+export async function getScheduleInfo(StdRegistID){
+    let result = await request('get-schedule-info',{StdRegistID});
+    tranformScheduleDate(result);
+    return result;
+}
+
 
 function request(method,params={},scriptName='examination_resful_api.php'){
     return new Promise(resolve => {

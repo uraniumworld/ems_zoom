@@ -3,8 +3,9 @@ import moment from "moment";
 import {StyleSheet,css} from 'aphrodite';
 import {Alert, Badge} from "react-bootstrap";
 let timer;
-const TimerClock = ({serverDiff=0,expire})=>{
+const TimerClock = ({serverTime=0,expire})=>{
     const [duration,setDuration] = useState();
+    const timeDiff = useRef(0);
     useEffect(()=>{
         updateUI();
         timer=setInterval(()=>{
@@ -14,9 +15,16 @@ const TimerClock = ({serverDiff=0,expire})=>{
             clearInterval(timer);
         }
     },[]);
+
+    useEffect(()=>{
+        let clientTime=moment().unix();
+        timeDiff.current=serverTime-clientTime;
+    },[serverTime])
+
     function updateUI(){
         let expireTime = moment(expire);
-        let diff = expireTime.diff()+serverDiff;
+        let diff = expireTime.diff()+timeDiff.current
+        console.log(timeDiff.current);
         if(diff>0){
             let d = moment.utc(diff).format("HH:mm:ss")
             setDuration(d);
@@ -26,7 +34,7 @@ const TimerClock = ({serverDiff=0,expire})=>{
     }
     return <div className={css(styles.container)}>
         <div>Expire in</div>
-        <div>{duration}</div>
+        <div>{duration} hours</div>
     </div>
 }
 const styles=StyleSheet.create({

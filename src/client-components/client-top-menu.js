@@ -5,7 +5,7 @@ import {studentLogout} from "./client-services";
 import StateContext from "../mobx/global-context";
 import {observer} from "mobx-react";
 
-const ClientTopMenu = ({type,student,confirmSubmit})=>{
+const ClientTopMenu = ({scheduleInfo,type,student,confirmSubmit})=>{
     const state = useContext(StateContext);
     function logout(){
         confirmBox('Logout','Do you want to logout?',async (e)=>{
@@ -15,7 +15,7 @@ const ClientTopMenu = ({type,student,confirmSubmit})=>{
     }
     return <div className="exam-top-menu">
         <Navbar bg="light" expand="md">
-            <Navbar.Brand href="#home">EMS KKU - Workshop</Navbar.Brand>
+            <Navbar.Brand href="#home">EMS KKU - Workshop / {scheduleInfo.ExamDate} {scheduleInfo.ExamTimeStart}-{scheduleInfo.ExamTimeEnd}</Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav"/>
             <Navbar.Collapse>
                 <Nav className="mr-auto">

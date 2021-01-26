@@ -28,7 +28,7 @@ import TimerClock from "../client-components/timer-clock";
 //http://localhost:3000/exam/workshop/125180/3474
 
 
-const Workshop = () => {
+const Workshop = ({scheduleInfo,serverTime}) => {
     const [questions, setQuestions] = useState();
     const [filter, setFilter] = useState('1');
     const [currentUserWorkshop, setCurrentUserWorkshop] = useState(null);
@@ -109,11 +109,11 @@ const Workshop = () => {
     }
 
     return <>
-        {(questions && currentUserWorkshop)
+        {(scheduleInfo && questions && currentUserWorkshop)
             ?
             <div className="container-wrapper" style={{paddingLeft: '120px'}}>
                 <div className="exam-sidebar">
-                    <TimerClock serverDiff={0} expire={'2021-01-26 17:00'}/>
+                    <TimerClock serverTime={serverTime} expire={`${scheduleInfo.ExamDate} ${scheduleInfo.ExamTimeEnd}`}/>
                     <ul>
                         {questions.map((q, i) => {
                             let icon;
@@ -153,7 +153,7 @@ const Workshop = () => {
                     </ul>
                 </div>
                 <Container className="exam-container">
-                    <ClientTopMenu type="workshop" student={currentUserWorkshop} confirmSubmit={confirmSubmit}/>
+                    <ClientTopMenu type="workshop" scheduleInfo={scheduleInfo} student={currentUserWorkshop} confirmSubmit={confirmSubmit}/>
                     <div className="exam-content">
                         <Card className={classNames(' mb-4', {
                             'bg-primary text-light': filter == '1',

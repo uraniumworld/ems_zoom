@@ -1,5 +1,5 @@
 import {useContext, useEffect, useRef, useState} from "react";
-import {checkClient, getMyPicture, studentLogout} from "./client-services";
+import {checkClient, getMyPicture, getScheduleInfo, studentLogout} from "./client-services";
 import {Alert, Badge, Button, Card, Col, Container, Image, Row, Table} from "react-bootstrap";
 import {useHistory} from 'react-router-dom';
 import QRCode from 'qrcode';
@@ -12,14 +12,21 @@ const CheckInProcess = ({state, StdRegistID, onApproved, onDenied, children}) =>
     const [meetUrl, setMeetUrl] = useState(null);
     const [meetQRCode, setMeetQRCode] = useState(null);
     const [myPicture, setMyPicture] = useState(void 0);
+    const [scheduleInfo, setScheduleInfo] = useState(void 0);
+    const [serverTime, setServerTime] = useState(0);
     const timer = useRef(null);
     const last_update = useRef(null);
     const last_update_url = useRef(null);
     const history = useHistory();
 
     useEffect(() => {
-        checker();
-        timer.current = setInterval(() => checker(), 5000);
+        new Promise(async resolve => {
+            let schdInfo = await getScheduleInfo(StdRegistID);
+            setScheduleInfo(schdInfo);
+            console.log(schdInfo);
+            await checker();
+            timer.current = setInterval(() => checker(), 10000);
+        })
         return () => {
             console.log('CLEAR');
             clearInterval(timer.current);
@@ -55,11 +62,13 @@ const CheckInProcess = ({state, StdRegistID, onApproved, onDenied, children}) =>
 
     function checker() {
         checkClient(StdRegistID).then(data => {
-            console.log(data);
+            // console.log(data);
             if(!data){
                 data={};
+                data.serverTime=0;
                 data.last_update=0;
             }
+            setServerTime(data.serverTime);
             if (last_update.current != data.last_update || last_update_url.current != data.last_update_url) {
                 if (data.check_in_status == "1") {
                     setApprove(true);
@@ -88,17 +97,17 @@ const CheckInProcess = ({state, StdRegistID, onApproved, onDenied, children}) =>
         history.push('/login');
     }
 
-    if (typeof approve == 'undefined') return <Alert variant='info'>Loading...</Alert>;
+    if (typeof approve == 'undefined' || !scheduleInfo) return <Alert variant='info'>Loading...</Alert>;
     if (!approve) {
         return <Container>
             <Row>
                 <Col>
                     <Card className="mt-4 bg-dark text-white">
-                        <Card.Header>EMS Check-In</Card.Header>
+                        <Card.Header>EMS Check-In: #{scheduleInfo.SchdCode} / {scheduleInfo.ExamDate} {scheduleInfo.ExamTimeStart} - {scheduleInfo.ExamTimeEnd}</Card.Header>
                         <Card.Body>
                             <div className="text-center">
                                 <Row>
-                                    <Col className="col-auto">
+                                    <Col className="col-12 col-md-auto">
                                         {typeof myPicture == 'undefined'?
                                          <Alert variant="info">Loading...</Alert>
                                             :
@@ -113,7 +122,7 @@ const CheckInProcess = ({state, StdRegistID, onApproved, onDenied, children}) =>
                                             </>
                                         }
                                     </Col>
-                                    <Col>
+                                    <Col className="col-12 col-md-6">
                                         <div style={{width:'400px'}}>
                                             <Table className="text-white">
                                                 <tbody>
@@ -137,13 +146,13 @@ const CheckInProcess = ({state, StdRegistID, onApproved, onDenied, children}) =>
                                             !meetQRCode
                                                 ?
                                                 <>
-                                        <Alert variant='danger'>Please <span
+                                        <Alert variant='warning'>Please <span
                                             className="badge badge-info">Check-in</span> before start</Alert>
                                                     <a className="btn btn-primary btn-sm ml-2 disabled">Waiting meet...</a>
                                                 </>
                                                 :
                                                 <div className="text-center">
-                                        <Alert variant="danger" className="mb-2">Please <span
+                                        <Alert variant="warning" className="mb-2">Please <span
                                             className="badge badge-info">Check-in</span> before start exam.</Alert>
                                                     <div>
                                                         <Alert variant='info' className="mb-2">Use your mobile devices scan this
@@ -173,6 +182,6 @@ const CheckInProcess = ({state, StdRegistID, onApproved, onDenied, children}) =>
             </Row>
         </Container>
     }
-    return children;
+    return children(scheduleInfo,serverTime);
 }
 export default observer(CheckInProcess);

@@ -114,7 +114,9 @@ export function confirmBox(title,detail,fn){
 export function tranformScheduleDate(schedule){
     schedule.ExamDate=schedule.ExamDate.split(' ')[0];
     schedule.ExamTimeStart=schedule.ExamTimeStart.split(' ')[1];
+    schedule.ExamTimeStart=schedule.ExamTimeStart.substr(0,schedule.ExamTimeStart.length-3)
     schedule.ExamTimeEnd=schedule.ExamTimeEnd.split(' ')[1];
+    schedule.ExamTimeEnd=schedule.ExamTimeEnd.substr(0,schedule.ExamTimeEnd.length-3);
     return schedule;
 }
 

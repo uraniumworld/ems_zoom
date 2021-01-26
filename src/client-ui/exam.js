@@ -35,12 +35,17 @@ const Exam=()=>{
         onApproved={onApproved}
         onDenied={onDenied}
     >
-        {type=='workshop' &&
-            <Workshop/>
-        }
-        {type=='theory' &&
-        <Workshop/>
-        }
+        {(scheduelInfo,serverTime)=>{
+            return <>
+                {type=='workshop' &&
+                <Workshop scheduleInfo={scheduelInfo} serverTime={serverTime}/>
+                }
+                {type=='theory' &&
+                <Workshop scheduleInfo={scheduelInfo} serverTime={serverTime}/>
+                }
+            </>
+        }}
+
     </CheckInProcess>
 }
 export default observer(Exam);
