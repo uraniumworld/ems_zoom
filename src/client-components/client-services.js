@@ -54,12 +54,12 @@ export async function getScheduleInfo(StdRegistID){
 
 function request(method,params={},scriptName='examination_resful_api.php'){
     return new Promise(resolve => {
-        axios.post(`/${scriptName}?method=`+method,params)
+        axios.post(`/ems_tools/${scriptName}?method=`+method,params)
             .then(res=>{
                 resolve(res.data);
             }).catch(e=>{
-            document.location.href='/login'
-            // resolve(null)
+            // document.location.href='/login'
+            resolve(null)
         });
     })
 }

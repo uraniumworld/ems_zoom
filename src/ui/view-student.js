@@ -450,7 +450,7 @@ const ViewStudent = () => {
                         </Modal.Footer>
                     </Modal>
                     <ScrollToTop showUnder={160}>
-                        <img src="/images/up_arrow_round.png"/>
+                        <img src="/v2/images/up_arrow_round.png"/>
                     </ScrollToTop>
                 </>
                 : <div>Loading...</div>

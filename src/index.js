@@ -8,7 +8,7 @@ import './scss/all.scss';
 
 ReactDOM.render(
     // <React.StrictMode>
-        <BrowserRouter>
+        <BrowserRouter basename="/v2">
             <App/>
         </BrowserRouter>,
     // </React.StrictMode>,

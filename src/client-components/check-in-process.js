@@ -19,6 +19,7 @@ const CheckInProcess = ({state, StdRegistID, onApproved, onDenied, children}) =>
     const timer = useRef(null);
     const last_update = useRef(null);
     const last_update_url = useRef(null);
+    const last_approve_state = useRef(null);
     const history = useHistory();
 
     useEffect(() => {
@@ -52,11 +53,12 @@ const CheckInProcess = ({state, StdRegistID, onApproved, onDenied, children}) =>
     }, [state.currentStudent])
 
     useEffect(()=>{
-        if(approve){
+        if(!last_approve_state.current && approve){
             toast.success('Admin has been approved your profile.');
-        }else{
+        }else if(typeof approve !='undefined' && last_approve_state.current){
             toast.error('Admin has been rejected your profile.');
         }
+        last_approve_state.current=approve;
     },[approve])
 
 
@@ -157,7 +159,7 @@ const CheckInProcess = ({state, StdRegistID, onApproved, onDenied, children}) =>
                                     </Col>
                                     <Col>
                                         {
-                                            !meetQRCode
+                                            !meetQRCode || !meetUrl
                                                 ?
                                                 <>
                                         <Alert variant='warning'>Please <span

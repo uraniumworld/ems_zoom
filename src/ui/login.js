@@ -5,6 +5,7 @@ import globalState from "../mobx/global-context";
 import {userLogin} from "../components/services";
 import {useHistory} from 'react-router-dom';
 import Config from "../config";
+import {toast} from "react-toastify";
 
 const Login = ()=>{
     const mobx=useContext(globalState);
@@ -16,6 +17,8 @@ const Login = ()=>{
        if(user){
            mobx.setUser(user);
            history.push(Config.adminPath());
+       }else{
+           toast.error('No user existed.');
        }
     }
     return <Row className="justify-content-md-center">

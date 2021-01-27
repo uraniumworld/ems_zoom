@@ -5,7 +5,7 @@ import {mobxStore} from "../App";
 
 export function getSchedules(month,year){
     return  new Promise(resolve => {
-        axios.post('/check_in_resful_api.php?method=schedule',{m:parseInt(month),y:parseInt(year)})
+        axios.post('/ems_tools/check_in_resful_api.php?method=schedule',{m:parseInt(month),y:parseInt(year)})
             .then(res=>{
                let resultWithGroup={};
                res.data.results.sort((a,b)=>{
@@ -38,7 +38,7 @@ export function getSchedules(month,year){
 
 export function getEmailByScheduleDetail(SchdID,SchdDetailID){
     return new Promise(resolve => {
-        axios.post('/check_in_resful_api.php?method=students',{SchdID,SchdDetailID})
+        axios.post('/ems_tools/check_in_resful_api.php?method=students',{SchdID,SchdDetailID})
             .then(res=>{
                 let {data} = res;
                 if(typeof data == 'object'){
@@ -134,12 +134,12 @@ export async function loadStudentPicture(Username){
 
 function request(method,params={}){
     return new Promise(resolve => {
-        axios.post('/check_in_resful_api.php?method='+method,params)
+        axios.post('/ems_tools/check_in_resful_api.php?method='+method,params)
             .then(res=>{
                 resolve(res.data);
             }).catch(e=>{
-                document.location.href='/login'
-            // resolve(null)
+                // document.location.href='/login'
+            resolve(null)
         });
     })
 }
