@@ -27,7 +27,7 @@ const CheckInProcess = ({state, StdRegistID, onApproved, onDenied, children}) =>
                 setScheduleInfo(schdInfo);
                 console.log(schdInfo);
                 await checker();
-                timer.current = setInterval(() => checker(), 10000);
+                timer.current = setInterval(() => checker(), 5000);
             }else{
                 toast.error('Page not found.');
                 history.push('/');
