@@ -125,7 +125,7 @@ export async function loadStudentPicture(Username){
     if(!mobxStore.studentPicture[Username]){
         let results = await request('get-student-picture',{Username});
         if(results){
-            mobxStore.setStudentPicture(Username,results.student_image_data);
+            mobxStore.setStudentPicture(Username,results);
         }else{
             mobxStore.setStudentPicture(Username,null);
         }

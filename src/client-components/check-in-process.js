@@ -6,6 +6,7 @@ import QRCode from 'qrcode';
 import StateContext from "../mobx/global-context";
 import {observer} from "mobx-react";
 import {toast} from "react-toastify";
+import Config from "../config";
 
 const CheckInProcess = ({state, StdRegistID, onApproved, onDenied, children}) => {
 
@@ -43,7 +44,7 @@ const CheckInProcess = ({state, StdRegistID, onApproved, onDenied, children}) =>
         if (state.currentStudent) {
             getMyPicture().then(picture=>{
                 if(picture){
-                    setMyPicture(picture.student_image_data)
+                    setMyPicture(picture)
                 }else{
                     setMyPicture(null);
                 }
@@ -119,7 +120,7 @@ const CheckInProcess = ({state, StdRegistID, onApproved, onDenied, children}) =>
                                             :
                                             <>
                                                 {myPicture ?
-                                                    <div className="text-center"><Image width="150px" src={myPicture} fluid rounded></Image>
+                                                    <div className="text-center"><Image width="150px" src={myPicture.cache?Config.baseUrl+myPicture.student_image_data:myPicture.student_image_data} fluid rounded></Image>
                                                     </div>
                                                     :
                                                     <div className="text-center"><Image width="150px" src='/images/user_avatar.svg'

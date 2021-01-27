@@ -16,6 +16,7 @@ import {
 import {toast} from "react-toastify";
 import { confirmAlert } from 'react-confirm-alert'; // Import
 import queue from 'async/queue';
+import Config from "../config";
 
 
 
@@ -393,7 +394,7 @@ const ViewStudent = () => {
                                                         :
                                                         <>
                                                             {state.studentPicture[std.Username]?
-                                                                <Image src={state.studentPicture[std.Username]} fluid rounded/>
+                                                                <Image src={(state.studentPicture[std.Username].cache?Config.baseUrl:'')+state.studentPicture[std.Username].student_image_data} fluid rounded/>
                                                                 :
                                                                 <Image style={{opacity:'0.3'}} src='/images/user_avatar.svg' fluid rounded/>
                                                             }
