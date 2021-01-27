@@ -15,7 +15,8 @@ const ClientTopMenu = ({scheduleInfo,type,student,confirmSubmit})=>{
     }
     return <div className="exam-top-menu">
         <Navbar bg="light" expand="md">
-            <Navbar.Brand href="#home">EMS KKU - Workshop / {scheduleInfo.ExamDate} {scheduleInfo.ExamTimeStart}-{scheduleInfo.ExamTimeEnd}</Navbar.Brand>
+            <Navbar.Brand>EMS - Workshop</Navbar.Brand>
+            <Navbar.Text>{scheduleInfo.ExamDate} {scheduleInfo.ExamTimeStart}-{scheduleInfo.ExamTimeEnd}</Navbar.Text>
             <Navbar.Toggle aria-controls="basic-navbar-nav"/>
             <Navbar.Collapse>
                 <Nav className="mr-auto">

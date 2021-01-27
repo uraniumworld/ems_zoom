@@ -81,13 +81,17 @@ const Workshop = ({scheduleInfo,serverTime}) => {
         getWorkshopUser(StdRegistID, SchdDetailID).then(data => setCurrentUserWorkshop(data));
     }
 
-    function uploadFile(e) {
+    async function uploadFile(e) {
         let file = e.target.files[0];
+        if(!file)return;
         const formData = new FormData();
         formData.append('file', file, file.name);
         formData.append('StdRegistID', StdRegistID);
         formData.append('SchdDetailID', SchdDetailID);
-        uploadWorkshopFile(formData);
+        let uploaded = await uploadWorkshopFile(formData);
+        if(uploaded){
+            console.log(uploaded);
+        }
     }
 
     async function confirmSubmit() {
@@ -175,7 +179,10 @@ const Workshop = ({scheduleInfo,serverTime}) => {
                                                 </Button>
                                             </div>
                                         } else {
-                                            return <div className="mb-2">After you finish please upload your file and share o365 url here.</div>
+                                            return <div className="mb-2">
+                                                <div>After you finish please upload your file and share o365 url here.</div>
+                                                <Badge variant='danger'>- No attached file -</Badge>
+                                            </div>
                                         }
                                     })()
                                 }

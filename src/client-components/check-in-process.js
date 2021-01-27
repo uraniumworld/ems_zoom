@@ -5,6 +5,7 @@ import {useHistory} from 'react-router-dom';
 import QRCode from 'qrcode';
 import StateContext from "../mobx/global-context";
 import {observer} from "mobx-react";
+import {toast} from "react-toastify";
 
 const CheckInProcess = ({state, StdRegistID, onApproved, onDenied, children}) => {
 
@@ -22,10 +23,15 @@ const CheckInProcess = ({state, StdRegistID, onApproved, onDenied, children}) =>
     useEffect(() => {
         new Promise(async resolve => {
             let schdInfo = await getScheduleInfo(StdRegistID);
-            setScheduleInfo(schdInfo);
-            console.log(schdInfo);
-            await checker();
-            timer.current = setInterval(() => checker(), 10000);
+            if(schdInfo){
+                setScheduleInfo(schdInfo);
+                console.log(schdInfo);
+                await checker();
+                timer.current = setInterval(() => checker(), 10000);
+            }else{
+                toast.error('Page not found.');
+                history.push('/');
+            }
         })
         return () => {
             console.log('CLEAR');

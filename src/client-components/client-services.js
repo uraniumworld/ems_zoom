@@ -47,7 +47,7 @@ export function getMyPicture(){
 
 export async function getScheduleInfo(StdRegistID){
     let result = await request('get-schedule-info',{StdRegistID});
-    tranformScheduleDate(result);
+    if(result)tranformScheduleDate(result);
     return result;
 }
 

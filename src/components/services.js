@@ -17,8 +17,9 @@ export function getSchedules(month,year){
                });
                res.data.results.map(schd=>{
                     schd = tranformScheduleDate(schd);
-                    if(!resultWithGroup[schd.ExamDate])resultWithGroup[schd.ExamDate]=[];
-                    resultWithGroup[schd.ExamDate].push(schd);
+                    let groupName=`#${schd.SchdCode} / ${schd.ExamDate}`;
+                    if(!resultWithGroup[groupName])resultWithGroup[groupName]=[];
+                    resultWithGroup[groupName].push(schd);
                 });
                 Object.keys(resultWithGroup).map(key=>{
                     resultWithGroup[key].sort((a,b)=>{

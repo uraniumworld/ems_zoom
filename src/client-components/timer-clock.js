@@ -1,7 +1,7 @@
 import {useEffect, useRef, useState} from "react";
 import moment from "moment";
 import {StyleSheet,css} from 'aphrodite';
-import {Alert, Badge} from "react-bootstrap";
+import {Alert, Badge, Card} from "react-bootstrap";
 let timer;
 const TimerClock = ({serverTime=0,expire})=>{
     const [duration,setDuration] = useState();
@@ -34,7 +34,7 @@ const TimerClock = ({serverTime=0,expire})=>{
     }
     return <div className={css(styles.container)}>
         <div>Expire in</div>
-        <div>{duration} hours</div>
+        <div>{duration} Hours</div>
     </div>
 }
 const styles=StyleSheet.create({
