@@ -35,7 +35,6 @@ const CheckInProcess = ({state, StdRegistID, onApproved, onDenied, children}) =>
             }
         })
         return () => {
-            console.log('CLEAR');
             clearInterval(timer.current);
         }
     }, []);
@@ -51,6 +50,14 @@ const CheckInProcess = ({state, StdRegistID, onApproved, onDenied, children}) =>
             })
         }
     }, [state.currentStudent])
+
+    useEffect(()=>{
+        if(approve){
+            toast.success('Admin has been approved your profile.');
+        }else{
+            toast.error('Admin has been rejected your profile.');
+        }
+    },[approve])
 
 
     function getQRCodeToState(url) {
