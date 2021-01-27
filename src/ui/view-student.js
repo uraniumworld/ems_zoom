@@ -396,7 +396,7 @@ const ViewStudent = () => {
                                                             {state.studentPicture[std.Username]?
                                                                 <Image src={(state.studentPicture[std.Username].cache?Config.baseUrl:'')+state.studentPicture[std.Username].student_image_data} fluid rounded/>
                                                                 :
-                                                                <Image style={{opacity:'0.3'}} src='/images/user_avatar.svg' fluid rounded/>
+                                                                <Image style={{opacity:'0.3'}} src='/v2/images/user_avatar.svg' fluid rounded/>
                                                             }
                                                         </>
                                                     }
