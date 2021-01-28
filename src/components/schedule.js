@@ -118,7 +118,7 @@ const SchdBlock = ({schd,onEmail}) => {
                     </div>
                 </Card.Body>
                 <Card.Footer>
-                    <Card.Text className="text-right">Student: {schd.studentCount}</Card.Text>
+                    <Card.Text className="text-right">Seats: {schd.NumberOfSeats}</Card.Text>
                 </Card.Footer>
             </Card>
         </div>

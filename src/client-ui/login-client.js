@@ -28,7 +28,7 @@ const LoginClient = ()=>{
                     <Card.Title>Student Login</Card.Title>
                 </Card.Header>
                 <Card.Body>
-                    <Form>
+                    <Form onSubmit={e=>login(e)}>
                         <Form.Group>
                             <Form.Label>Username</Form.Label>
                             <Form.Control type="text" value={formUsername} onChange={e=>setFormUsername(e.target.value)}/>
@@ -38,7 +38,7 @@ const LoginClient = ()=>{
                             <Form.Control type="password" value={formPassword} onChange={e=>setFormPassword(e.target.value)}/>
                         </Form.Group>
                         <Form.Group>
-                            <Button variant="primary" onClick={login}>Submit</Button>
+                            <Button variant="primary" type="submit">Submit</Button>
                         </Form.Group>
                     </Form>
                 </Card.Body>

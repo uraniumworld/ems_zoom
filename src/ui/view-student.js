@@ -22,6 +22,7 @@ import Config from "../config";
 
 let reloadStudentsTimer=void 0;
 let reloadStudentPicturesTimer=void 0;
+const pictureQueueSize=5;
 const ViewStudent = () => {
     const state = useContext(StateContext);
     const {SchdID, SchdDetailID,group} = useParams();
@@ -98,7 +99,7 @@ const ViewStudent = () => {
                 loadStudentPicture(std.Username).then(()=>{
                     callback();
                 });
-            }, 3);
+            }, pictureQueueSize);
             q.current.drain(function() {
                 console.log('PIC FINISHED');
                 clearInterval(reloadStudentPicturesTimer);
@@ -358,7 +359,8 @@ const ViewStudent = () => {
                                     <Button variant="dark" onClick={e=>setFilter('')}>Reset</Button>
                                 </InputGroup.Append>
                             </InputGroup>
-                            <Table className="sticky table-hover">
+                            {/*<div className="table-responsive">*/}
+                                <Table className="sticky table-hover">
                                 <thead>
                                 <tr>
                                     <th>#</th>
@@ -434,6 +436,7 @@ const ViewStudent = () => {
                                 }
                                 </tbody>
                             </Table>
+                            {/*</div>*/}
                         </Col>
                     </Row>
                     <Modal show={showEmail} onHide={e=>setShowEmail(false)}>

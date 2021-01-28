@@ -13,6 +13,7 @@ const Login = ()=>{
     const [formPassword,setFormPassword]=useState('');
     let history = useHistory();
     async function login(e){
+        e.preventDefault();
        let user =await userLogin(formUsername,formPassword);
        if(user){
            mobx.setUser(user);
@@ -28,7 +29,7 @@ const Login = ()=>{
                 <Card.Title>Login</Card.Title>
             </Card.Header>
             <Card.Body>
-                <Form onSubmit={e=>login()}>
+                <Form onSubmit={e=>login(e)}>
                     <Form.Group>
                         <Form.Label>Username</Form.Label>
                         <Form.Control type="text" value={formUsername} onChange={e=>setFormUsername(e.target.value)}/>

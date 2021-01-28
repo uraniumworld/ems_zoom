@@ -33,7 +33,7 @@ const ExamScheduleDay = ({schedules})=>{
                                             <div className="text-right">
                                                 <Button variant='primary' className="ml-auto" onClick={e=>{
                                                     let examType = schd.ModuleType?'workshop':'theory';
-                                                    history.push(`/exam/${examType}/${schd.StdRegistID}/${schd.SchdDetailID}`)
+                                                    history.push(`/exam/${examType}/${schd.StdRegistID}`)
                                                 }}>Start Exam</Button>
                                             </div>
                                         </Card.Footer>

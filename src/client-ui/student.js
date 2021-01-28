@@ -36,7 +36,7 @@ const Student = ()=>{
             <Switch>
                 <Route path="/" exact component={ClientHome}/>
                 <Route path="/exam" exact exact component={Exam}/>
-                <Route path="/exam/:type/:StdRegistID/:SchdDetailID" component={Exam}/>
+                <Route path="/exam/:type/:StdRegistID" component={Exam}/>
                 <Redirect to="/exam"/>
             </Switch>
             :
