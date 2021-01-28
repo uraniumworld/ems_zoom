@@ -5,6 +5,7 @@ const Config={
         }
         return '/admin';
     },
-    baseUrl:'https://ems.kku.ac.th'
+    baseUrl:'https://ems.kku.ac.th',
+    basePath:'/dev'
 };
 export default Config

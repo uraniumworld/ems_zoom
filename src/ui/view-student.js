@@ -396,7 +396,7 @@ const ViewStudent = () => {
                                                             {state.studentPicture[std.Username]?
                                                                 <Image src={(state.studentPicture[std.Username].cache?Config.baseUrl:'')+state.studentPicture[std.Username].student_image_data} fluid rounded/>
                                                                 :
-                                                                <Image style={{opacity:'0.3'}} src='/v2/images/user_avatar.svg' fluid rounded/>
+                                                                <Image style={{opacity:'0.3'}} src={`${Config.basePath}/images/user_avatar.svg`} fluid rounded/>
                                                             }
                                                         </>
                                                     }
@@ -450,7 +450,7 @@ const ViewStudent = () => {
                         </Modal.Footer>
                     </Modal>
                     <ScrollToTop showUnder={160}>
-                        <img src="/v2/images/up_arrow_round.png"/>
+                        <img src={`${Config.basePath}/images/up_arrow_round.png`}/>
                     </ScrollToTop>
                 </>
                 : <div>Loading...</div>

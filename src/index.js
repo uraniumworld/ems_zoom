@@ -5,10 +5,11 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import {BrowserRouter} from "react-router-dom";
 import './scss/all.scss';
+import Config from "./config";
 
 ReactDOM.render(
     // <React.StrictMode>
-        <BrowserRouter basename="/v2">
+        <BrowserRouter basename={Config.basePath}>
             <App/>
         </BrowserRouter>,
     // </React.StrictMode>,
