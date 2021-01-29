@@ -28,7 +28,7 @@ import TimerClock from "../client-components/timer-clock";
 //http://localhost:3000/exam/workshop/125180/3474
 
 
-const Workshop = ({scheduleInfo,serverTime}) => {
+const Workshop = ({scheduleInfo, serverTime}) => {
     const [questions, setQuestions] = useState();
     const [filter, setFilter] = useState('1');
     const [currentUserWorkshop, setCurrentUserWorkshop] = useState(null);
@@ -81,17 +81,22 @@ const Workshop = ({scheduleInfo,serverTime}) => {
         getWorkshopUser(StdRegistID, SchdDetailID).then(data => setCurrentUserWorkshop(data));
     }
 
-    async function uploadFile(e) {
+    async function uploadFile(PracticeID, e) {
         let file = e.target.files[0];
-        if(!file)return;
+        if (!file) return;
         const formData = new FormData();
         formData.append('file', file, file.name);
         formData.append('StdRegistID', StdRegistID);
-        formData.append('SchdDetailID', SchdDetailID);
+        formData.append('PracticeID', PracticeID);
         let uploaded = await uploadWorkshopFile(formData);
-        if(uploaded){
+        if (uploaded) {
             console.log(uploaded);
+            if (!uploaded.error) {
+                toast.success('Upload completed.');
+                reloadWorkshopFile();
+            }
         }
+        e.target.value = null;
     }
 
     async function confirmSubmit() {
@@ -99,7 +104,7 @@ const Workshop = ({scheduleInfo,serverTime}) => {
         setShowConfirmSubmit(true);
     }
 
-    function getWorkshopType(typeID){
+    function getWorkshopType(typeID) {
         switch (typeID) {
             case '1':
                 return <strong>Microsoft Word</strong>;
@@ -117,7 +122,8 @@ const Workshop = ({scheduleInfo,serverTime}) => {
             ?
             <div className="container-wrapper" style={{paddingLeft: '120px'}}>
                 <div className="exam-sidebar">
-                    <TimerClock serverTime={serverTime} expire={`${scheduleInfo.ExamDate} ${scheduleInfo.ExamTimeEnd}`}/>
+                    <TimerClock serverTime={serverTime}
+                                expire={`${scheduleInfo.ExamDate} ${scheduleInfo.ExamTimeEnd}`}/>
                     <ul>
                         {questions.map((q, i) => {
                             let icon;
@@ -157,7 +163,8 @@ const Workshop = ({scheduleInfo,serverTime}) => {
                     </ul>
                 </div>
                 <Container className="exam-container">
-                    <ClientTopMenu type="workshop" scheduleInfo={scheduleInfo} student={currentUserWorkshop} confirmSubmit={confirmSubmit}/>
+                    <ClientTopMenu type="workshop" scheduleInfo={scheduleInfo} student={currentUserWorkshop}
+                                   confirmSubmit={confirmSubmit}/>
                     <div className="exam-content">
                         <Card className={classNames(' mb-4', {
                             'bg-primary text-light': filter == '1',
@@ -171,95 +178,116 @@ const Workshop = ({scheduleInfo,serverTime}) => {
                                     (() => {
                                         let existed = currentUserWorkshop['practice_answer'].find(v => v.PracticeID == filter);
                                         if (existed) {
-                                            return <div>
-                                                <Button variant='light' className="mb-2" onClick={e => download(existed.RowID)}>
-                                                    <FontAwesomeIcon style={{fontSize: '20px'}} className='mr-1'
-                                                                     icon={faCheckCircle}/>
-                                                    <span>{existed.FileName}</span>
-                                                </Button>
-                                            </div>
+                                            return <Row>
+                                                <Col className="col-auto">
+                                                    <span className="font-weight-bold mr-2">1.</span>
+                                                </Col>
+                                                <Col>
+                                                    <Button variant='light' className="mb-2"
+                                                            onClick={e => download(existed.RowID)}>
+                                                        <FontAwesomeIcon style={{fontSize: '20px'}} className='mr-1'
+                                                                         icon={faCheckCircle}/>
+                                                        <span>{existed.FileName}</span>
+                                                    </Button>
+                                                </Col>
+                                            </Row>
                                         } else {
-                                            return <div className="mb-2">
-                                                <div>After you finish please upload your file and share o365 url here.</div>
-                                                <Badge variant='danger'>- No attached file -</Badge>
-                                            </div>
+                                            return <Row>
+                                                <Col className="col-auto">
+                                                    <span className="font-weight-bold mr-2">1.</span>
+                                                </Col>
+                                                <Col>
+                                                    <div className="mb-2">
+                                                        <div>After you finish please upload your file and share o365 url here.
+                                                        </div>
+                                                        <Badge variant='danger'>- No attached file -</Badge>
+                                                    </div>
+                                                </Col>
+                                            </Row>
                                         }
                                     })()
-                                }
-                                <InputGroup>
-                                    <InputGroup.Prepend>
-                                        <InputGroup.Text>{getWorkshopType(filter)}<span className="ml-2">o365 link</span></InputGroup.Text>
-                                    </InputGroup.Prepend>
-                                    <FormControl type="text" onChange={e=>{
-                                        let value=e.target.value;
-                                        setO365Link(prevState => ({
-                                            ...prevState,
-                                            [filter]:value,
-                                        }))
-                                    }} value={o365Link[filter] || ''}
-                                                 placeholder='URL start with: https://kkumail-my.sharepoint.com'
-                                    ></FormControl>
-                                </InputGroup>
-                            </Card.Body>
-                            <Card.Footer className="bg-dark text-light">
-                                <strong className="mr-4">Upload document for score:</strong>
-                                <input type='file' onChange={e => uploadFile(e)}/>
-                            </Card.Footer>
-                        </Card>
-                        <div>
-                            {
-                                questions.filter(question => question.PracticeID == filter).map((question, i) => {
+                                    }
+                                        <Row>
+                                            <Col className="col-auto">
+                                                <span className="font-weight-bold mr-2">2.</span>
+                                            </Col>
+                                            <Col>
+                                                <InputGroup>
+                                                    <InputGroup.Prepend>
+                                                        <InputGroup.Text>{getWorkshopType(filter)}<span className="ml-2">o365 link</span></InputGroup.Text>
+                                                    </InputGroup.Prepend>
+                                                    <FormControl type="text" onChange={e=>{
+                                                        let value=e.target.value;
+                                                        setO365Link(prevState => ({
+                                                            ...prevState,
+                                                            [filter]:value,
+                                                        }))
+                                                    }} value={o365Link[filter] || ''}
+                                                                 placeholder='URL start with: https://kkumail-my.sharepoint.com'
+                                                    ></FormControl>
+                                                </InputGroup>
+                                            </Col>
+                                        </Row>
+                                    </Card.Body>
+                                    <Card.Footer className="bg-dark text-light">
+                                    <strong className="mr-4">Upload document for score:</strong>
+                                    <input type='file' onChange={e => uploadFile(filter,e)}/>
+                                    </Card.Footer>
+                                    </Card>
+                                    <div>
+                                {
+                                    questions.filter(question => question.PracticeID == filter).map((question, i) => {
                                     let practice = getPracticeName(question.PracticeID);
                                     return <Row key={'question_' + i}>
-                                        <Col>
-                                            <div className="mb-4">
-                                                <Card>
-                                                    <Card.Header>
-                                                        <div style={{color: practice.color}}>{practice.icon} {practice.name} Questions</div>
-                                                    </Card.Header>
-                                                    <Card.Body style={{overflowX: 'auto'}}>
-                                                        <div
-                                                            dangerouslySetInnerHTML={{__html: question.PracticeQuestionTh}}></div>
-                                                    </Card.Body>
-                                                </Card>
-                                            </div>
-                                        </Col>
+                                    <Col>
+                                    <div className="mb-4">
+                                    <Card>
+                                    <Card.Header>
+                                    <div style={{color: practice.color}}>{practice.icon} {practice.name} Questions</div>
+                                    </Card.Header>
+                                    <Card.Body style={{overflowX: 'auto'}}>
+                                    <div
+                                    dangerouslySetInnerHTML={{__html: question.PracticeQuestionTh}}></div>
+                                    </Card.Body>
+                                    </Card>
+                                    </div>
+                                    </Col>
                                     </Row>
                                 })
-                            }
-                        </div>
-                    </div>
-                </Container>
-                <Modal className='exam-confirm-modal' size='lg' show={showConfirmSubmit} onHide={e => setShowConfirmSubmit(false)}>
-                    <Modal.Header closeButton>
-                        <span className="text-uppercase">Confirm to submit</span>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <div className='mb-2'><strong>Uploaded file:</strong></div>
-                        {
-                            currentUserWorkshop.practice_answer.map(answer => {
-                                let practice = getPracticeName(answer.PracticeID);
-                                return <Alert key={'wk_'+answer.PracticeID} variant={practice.class}>
+                                }
+                                    </div>
+                                    </div>
+                                    </Container>
+                                    <Modal className='exam-confirm-modal' size='lg' show={showConfirmSubmit} onHide={e => setShowConfirmSubmit(false)}>
+                                    <Modal.Header closeButton>
+                                    <span className="text-uppercase">Confirm to submit</span>
+                                    </Modal.Header>
+                                    <Modal.Body>
+                                    <div className='mb-2'><strong>Uploaded file:</strong></div>
+                                {
+                                    currentUserWorkshop.practice_answer.map(answer => {
+                                    let practice = getPracticeName(answer.PracticeID);
+                                    return <Alert key={'wk_'+answer.PracticeID} variant={practice.class}>
                                     <strong className='mr-2'>{practice.icon} {practice.name}</strong>
                                     <a href='#' className={'text-'+practice.class} onClick={e=>{e.preventDefault();download(answer.RowID)}}>{answer.FileName}</a>
                                     <div><span className="mr-2 font-weight-bold">o360 Link:</span><span>{o365Link[answer.PracticeID]?<a href={o365Link[answer.PracticeID]} target='_blank'>{o365Link[answer.PracticeID].substr(0,50)+'...'}</a>:'- No Link -'}</span></div>
-                                </Alert>
-                            })
-                        }
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <Button variant="primary" onClick={e => setShowConfirmSubmit(false)}>
-                            Yes, Submit and exit
-                        </Button>
-                        <Button variant="secondary" onClick={e => setShowConfirmSubmit(false)}>
-                            Close
-                        </Button>
-                    </Modal.Footer>
-                </Modal>
-            </div>
-            :
-            <Alert variant='info'>Loading...</Alert>
-        }
-    </>
-}
-export default Workshop;
+                                    </Alert>
+                                })
+                                }
+                                    </Modal.Body>
+                                    <Modal.Footer>
+                                    <Button variant="primary" onClick={e => setShowConfirmSubmit(false)}>
+                                    Yes, Submit and exit
+                                    </Button>
+                                    <Button variant="secondary" onClick={e => setShowConfirmSubmit(false)}>
+                                    Close
+                                    </Button>
+                                    </Modal.Footer>
+                                    </Modal>
+                                    </div>
+                                    :
+                                    <Alert variant='info'>Loading...</Alert>
+                                }
+                            </>
+                            }
+        export default Workshop;
