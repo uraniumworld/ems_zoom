@@ -25,14 +25,14 @@ const CheckInProcess = ({state, StdRegistID, onApproved, onDenied, children}) =>
     useEffect(() => {
         new Promise(async resolve => {
             let schdInfo = await getScheduleInfo(StdRegistID);
-            if(schdInfo){
+            if(typeof schdInfo == 'object' && schdInfo){
                 setScheduleInfo(schdInfo);
-                console.log(schdInfo);
                 await checker();
                 timer.current = setInterval(() => checker(), 5000);
             }else{
                 toast.error('Page not found.');
-                history.push('/');
+                clearInterval(timer.current);
+                history.push(Config.basePath);
             }
         })
         return () => {

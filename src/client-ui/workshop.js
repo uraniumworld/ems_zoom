@@ -23,6 +23,7 @@ import {useParams} from "react-router-dom";
 import ClientTopMenu from "../client-components/client-top-menu";
 import {toast} from "react-toastify";
 import TimerClock from "../client-components/timer-clock";
+import ClientWorkshopUploader from "../client-components/client-workshop-uploader";
 
 
 //http://localhost:3000/exam/workshop/125180/3474
@@ -40,9 +41,6 @@ const Workshop = ({scheduleInfo, serverTime}) => {
         getWorkshopQuestion(StdRegistID, SchdDetailID).then(data => setQuestions(data))
         reloadWorkshopFile();
     }, []);
-
-    useEffect(() => {
-    }, [filter]);
 
     function getPracticeName(PracticeID, size) {
         switch (PracticeID) {
@@ -78,25 +76,7 @@ const Workshop = ({scheduleInfo, serverTime}) => {
     }
 
     function reloadWorkshopFile() {
-        getWorkshopUser(StdRegistID, SchdDetailID).then(data => setCurrentUserWorkshop(data));
-    }
-
-    async function uploadFile(PracticeID, e) {
-        let file = e.target.files[0];
-        if (!file) return;
-        const formData = new FormData();
-        formData.append('file', file, file.name);
-        formData.append('StdRegistID', StdRegistID);
-        formData.append('PracticeID', PracticeID);
-        let uploaded = await uploadWorkshopFile(formData);
-        if (uploaded) {
-            console.log(uploaded);
-            if (!uploaded.error) {
-                toast.success('Upload completed.');
-                reloadWorkshopFile();
-            }
-        }
-        e.target.value = null;
+       getWorkshopUser(StdRegistID, SchdDetailID).then(data => setCurrentUserWorkshop(data));
     }
 
     async function confirmSubmit() {
@@ -166,74 +146,22 @@ const Workshop = ({scheduleInfo, serverTime}) => {
                     <ClientTopMenu type="workshop" scheduleInfo={scheduleInfo} student={currentUserWorkshop}
                                    confirmSubmit={confirmSubmit}/>
                     <div className="exam-content">
-                        <Card className={classNames(' mb-4', {
-                            'bg-primary text-light': filter == '1',
-                            'bg-success text-light': filter == '2',
-                            'bg-warning text-dark': filter == '3',
-                            'bg-danger text-light': filter == '4',
-                        })}>
-                            <Card.Header>Your workshop documents {getWorkshopType(filter)}</Card.Header>
-                            <Card.Body>
-                                {
-                                    (() => {
-                                        let existed = currentUserWorkshop['practice_answer'].find(v => v.PracticeID == filter);
-                                        if (existed) {
-                                            return <Row>
-                                                <Col className="col-auto">
-                                                    <span className="font-weight-bold mr-2">1.</span>
-                                                </Col>
-                                                <Col>
-                                                    <Button variant='light' className="mb-2"
-                                                            onClick={e => download(existed.RowID)}>
-                                                        <FontAwesomeIcon style={{fontSize: '20px'}} className='mr-1'
-                                                                         icon={faCheckCircle}/>
-                                                        <span>{existed.FileName}</span>
-                                                    </Button>
-                                                </Col>
-                                            </Row>
-                                        } else {
-                                            return <Row>
-                                                <Col className="col-auto">
-                                                    <span className="font-weight-bold mr-2">1.</span>
-                                                </Col>
-                                                <Col>
-                                                    <div className="mb-2">
-                                                        <div>After you finish please upload your file and share o365 url here.
-                                                        </div>
-                                                        <Badge variant='danger'>- No attached file -</Badge>
-                                                    </div>
-                                                </Col>
-                                            </Row>
-                                        }
-                                    })()
-                                    }
-                                        <Row>
-                                            <Col className="col-auto">
-                                                <span className="font-weight-bold mr-2">2.</span>
-                                            </Col>
-                                            <Col>
-                                                <InputGroup>
-                                                    <InputGroup.Prepend>
-                                                        <InputGroup.Text>{getWorkshopType(filter)}<span className="ml-2">o365 link</span></InputGroup.Text>
-                                                    </InputGroup.Prepend>
-                                                    <FormControl type="text" onChange={e=>{
-                                                        let value=e.target.value;
-                                                        setO365Link(prevState => ({
-                                                            ...prevState,
-                                                            [filter]:value,
-                                                        }))
-                                                    }} value={o365Link[filter] || ''}
-                                                                 placeholder='URL start with: https://kkumail-my.sharepoint.com'
-                                                    ></FormControl>
-                                                </InputGroup>
-                                            </Col>
-                                        </Row>
-                                    </Card.Body>
-                                    <Card.Footer className="bg-dark text-light">
-                                    <strong className="mr-4">Upload document for score:</strong>
-                                    <input type='file' onChange={e => uploadFile(filter,e)}/>
-                                    </Card.Footer>
-                                    </Card>
+                        <ClientWorkshopUploader
+                        title={getWorkshopType(filter)}
+                        PracticeID={filter}
+                        currentUserWorkshop={currentUserWorkshop}
+                        StdRegistID={StdRegistID}
+                        onUploadSuccess={(uploaded,e)=>{
+                            reloadWorkshopFile();
+                        }}
+                        onLinkChanged={e=>{
+                            let value=e.target.value;
+                            setO365Link(prevState => ({
+                                ...prevState,
+                                [filter]:value,
+                            }))
+                        }}
+                        />
                                     <div>
                                 {
                                     questions.filter(question => question.PracticeID == filter).map((question, i) => {
