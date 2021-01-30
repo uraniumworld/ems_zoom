@@ -24,7 +24,6 @@ const TimerClock = ({serverTime=0,expire})=>{
     function updateUI(){
         let expireTime = moment(expire);
         let diff = expireTime.diff()+timeDiff.current
-        console.log(timeDiff.current);
         if(diff>0){
             let d = moment.utc(diff).format("HH:mm:ss")
             setDuration(d);

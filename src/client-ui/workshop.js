@@ -188,10 +188,10 @@ const Workshop = ({scheduleInfo, serverTime}) => {
                                     </Container>
                                     <Modal className='exam-confirm-modal' size='lg' show={showConfirmSubmit} onHide={e => setShowConfirmSubmit(false)}>
                                     <Modal.Header closeButton>
-                                    <span className="text-uppercase">Confirm to submit</span>
+                                    <span>Confirm to submit</span>
                                     </Modal.Header>
                                     <Modal.Body>
-                                    <div className='mb-2'><strong>Uploaded file:</strong></div>
+                                    <div className='mb-2'><strong>Uploaded files:</strong></div>
                                 {
                                     currentUserWorkshop.practice_answer.map(answer => {
                                     let practice = getPracticeName(answer.PracticeID);

@@ -95,7 +95,7 @@ const ClientWorkshopUploader = ({
                 <InputGroup.Prepend>
                     <InputGroup.Text>{title}<span className="ml-2">o365 link</span></InputGroup.Text>
                 </InputGroup.Prepend>
-                <FormControl type="text" onChange={onLinkChanged}></FormControl>
+                <FormControl type="text" onChange={e=>{onLinkChanged(e)}}></FormControl>
             </InputGroup>
         </Card.Body>
         {(!getCurrentQuestion() || newUpload) &&
