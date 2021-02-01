@@ -10,8 +10,10 @@ const ClientWorkshopUploader = ({
                                     title,
                                     StdRegistID,
                                     PracticeID,
+                                    o365URL,
                                     currentUserWorkshop,
                                     onLinkChanged,
+                                    onLinkBlur,
                                     onUploadSuccess
                                 }) => {
 
@@ -95,7 +97,7 @@ const ClientWorkshopUploader = ({
                 <InputGroup.Prepend>
                     <InputGroup.Text>{title}<span className="ml-2">o365 link</span></InputGroup.Text>
                 </InputGroup.Prepend>
-                <FormControl type="text" onChange={e=>{onLinkChanged(e)}}></FormControl>
+                <FormControl value={(o365URL && o365URL[PracticeID]) || ''} type="text" onBlur={e=>onLinkBlur && onLinkBlur(e)} onChange={e=>onLinkChanged && onLinkChanged(e)}></FormControl>
             </InputGroup>
         </Card.Body>
         {(!getCurrentQuestion() || newUpload) &&

@@ -151,8 +151,12 @@ const Workshop = ({scheduleInfo, serverTime}) => {
                         PracticeID={filter}
                         currentUserWorkshop={currentUserWorkshop}
                         StdRegistID={StdRegistID}
+                        o365URL={o365Link}
                         onUploadSuccess={(uploaded,e)=>{
                             reloadWorkshopFile();
+                        }}
+                        onLinkBlur={e=>{
+                            console.log('UPDATE O365',o365Link[filter]);
                         }}
                         onLinkChanged={e=>{
                             let value=e.target.value;
