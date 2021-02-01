@@ -51,6 +51,10 @@ export async function getScheduleInfo(StdRegistID){
     return result;
 }
 
+export function updateO365URL(StdRegistID,PracticeID,url){
+    return request('update-o365-url',{StdRegistID,PracticeID,url});
+}
+
 
 function request(method,params={},scriptName='examination_resful_api.php'){
     return new Promise(resolve => {

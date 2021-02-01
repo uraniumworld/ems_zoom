@@ -13,9 +13,15 @@ import {
     Row
 } from "react-bootstrap";
 import Footer from "../components/footer";
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {Form} from "formik";
-import {download, getWorkshopQuestion, getWorkshopUser, uploadWorkshopFile} from "../client-components/client-services";
+import {
+    download,
+    getWorkshopQuestion,
+    getWorkshopUser,
+    updateO365URL,
+    uploadWorkshopFile
+} from "../client-components/client-services";
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faFileWord, faFileExcel, faFilePowerpoint, faDatabase, faCheckCircle} from '@fortawesome/free-solid-svg-icons'
 import classNames from "classnames";
@@ -24,7 +30,7 @@ import ClientTopMenu from "../client-components/client-top-menu";
 import {toast} from "react-toastify";
 import TimerClock from "../client-components/timer-clock";
 import ClientWorkshopUploader from "../client-components/client-workshop-uploader";
-
+import {getPracticeName, getWorkshopType, textLimit} from "../client-components/client-tools";
 
 //http://localhost:3000/exam/workshop/125180/3474
 
@@ -42,41 +48,11 @@ const Workshop = ({scheduleInfo, serverTime}) => {
         reloadWorkshopFile();
     }, []);
 
-    function getPracticeName(PracticeID, size) {
-        switch (PracticeID) {
-            case '1':
-                return {
-                    name: 'Microsoft Word',
-                    icon: <FontAwesomeIcon style={{fontSize: size}} icon={faFileWord}/>,
-                    color: '#0062cc',
-                    class: 'primary',
-                };
-            case '2':
-                return {
-                    name: 'Microsoft Excel',
-                    icon: <FontAwesomeIcon style={{fontSize: size}} icon={faFileExcel}/>,
-                    color: '#1e7e34',
-                    class: 'success',
-                };
-            case '3':
-                return {
-                    name: 'Microsoft Powerpoint',
-                    icon: <FontAwesomeIcon style={{fontSize: size}} icon={faFilePowerpoint}/>,
-                    color: '#d39e00',
-                    class: 'warning',
-                };
-            case '4':
-                return {
-                    name: 'Microsoft Access',
-                    icon: <FontAwesomeIcon style={{fontSize: size}} icon={faDatabase}/>,
-                    color: '#ea2971',
-                    class: 'danger',
-                };
-        }
-    }
 
-    function reloadWorkshopFile() {
-       getWorkshopUser(StdRegistID, SchdDetailID).then(data => setCurrentUserWorkshop(data));
+
+    async function reloadWorkshopFile() {
+       let result =await getWorkshopUser(StdRegistID, SchdDetailID);
+        setCurrentUserWorkshop(result);
     }
 
     async function confirmSubmit() {
@@ -84,17 +60,9 @@ const Workshop = ({scheduleInfo, serverTime}) => {
         setShowConfirmSubmit(true);
     }
 
-    function getWorkshopType(typeID) {
-        switch (typeID) {
-            case '1':
-                return <strong>Microsoft Word</strong>;
-            case '2':
-                return <strong>Microsoft Excel</strong>;
-            case '3':
-                return <strong>Microsoft Powerpoint</strong>;
-            case '4':
-                return <strong>Microsoft Access</strong>;
-        }
+    function getQuestion() {
+        let workshop=currentUserWorkshop['practice_answer'].find(v => v.PracticeID == filter);
+        return workshop
     }
 
     return <>
@@ -147,23 +115,16 @@ const Workshop = ({scheduleInfo, serverTime}) => {
                                    confirmSubmit={confirmSubmit}/>
                     <div className="exam-content">
                         <ClientWorkshopUploader
-                        title={getWorkshopType(filter)}
-                        PracticeID={filter}
-                        currentUserWorkshop={currentUserWorkshop}
+                        workshop={getQuestion()}
                         StdRegistID={StdRegistID}
-                        o365URL={o365Link}
                         onUploadSuccess={(uploaded,e)=>{
                             reloadWorkshopFile();
                         }}
-                        onLinkBlur={e=>{
-                            console.log('UPDATE O365',o365Link[filter]);
-                        }}
-                        onLinkChanged={e=>{
-                            let value=e.target.value;
-                            setO365Link(prevState => ({
-                                ...prevState,
-                                [filter]:value,
-                            }))
+                        onLinkUpdated={result=>{
+                            let question=getQuestion();
+                            let title=getWorkshopType(question.PracticeID,true);
+                            toast.success(`${title} O365 Link Updated.`)
+                            reloadWorkshopFile();
                         }}
                         />
                                     <div>
@@ -202,7 +163,7 @@ const Workshop = ({scheduleInfo, serverTime}) => {
                                     return <Alert key={'wk_'+answer.PracticeID} variant={practice.class}>
                                     <strong className='mr-2'>{practice.icon} {practice.name}</strong>
                                     <a href='#' className={'text-'+practice.class} onClick={e=>{e.preventDefault();download(answer.RowID)}}>{answer.FileName}</a>
-                                    <div><span className="mr-2 font-weight-bold">o360 Link:</span><span>{o365Link[answer.PracticeID]?<a href={o365Link[answer.PracticeID]} target='_blank'>{o365Link[answer.PracticeID].substr(0,50)+'...'}</a>:'- No Link -'}</span></div>
+                                    <div><span className="mr-2 font-weight-bold">o360 Link:</span><span>{answer.url?<a href={answer.url} target='_blank'>{textLimit(answer.url)}</a>:'- No Link -'}</span></div>
                                     </Alert>
                                 })
                                 }

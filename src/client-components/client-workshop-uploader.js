@@ -1,27 +1,26 @@
 import {Badge, Button, Card, Col, FormControl, InputGroup, Row} from "react-bootstrap";
 import classNames from "classnames";
-import {download, uploadWorkshopFile} from "./client-services";
+import {download, updateO365URL, uploadWorkshopFile} from "./client-services";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCheckCircle, faTimes, faTimesCircle, faUndo} from "@fortawesome/free-solid-svg-icons";
-import React, {useEffect, useState} from "react";
+import React, {createRef, useEffect, useRef, useState} from "react";
 import {toast} from "react-toastify";
+import {getWorkshopType} from "./client-tools";
 
 const ClientWorkshopUploader = ({
-                                    title,
+                                    workshop,
                                     StdRegistID,
-                                    PracticeID,
-                                    o365URL,
-                                    currentUserWorkshop,
-                                    onLinkChanged,
-                                    onLinkBlur,
+                                    onLinkUpdated,
                                     onUploadSuccess
                                 }) => {
 
     const [newUpload, setNewUpload] = useState(false);
+    const [o365URL,setO365URL] = useState('');
+    const lastO365Updated = useRef({});
 
     useEffect(()=>{
-        setNewUpload(false);
-    },[PracticeID])
+        setO365URL(workshop.url);
+    },[workshop]);
 
     async function uploadFile(e) {
         let file = e.target.files[0];
@@ -29,7 +28,7 @@ const ClientWorkshopUploader = ({
         const formData = new FormData();
         formData.append('file', file, file.name);
         formData.append('StdRegistID', StdRegistID);
-        formData.append('PracticeID', PracticeID);
+        formData.append('PracticeID', workshop.PracticeID);
         let uploaded = await uploadWorkshopFile(formData);
         if (uploaded) {
             if (!uploaded.error) {
@@ -45,26 +44,36 @@ const ClientWorkshopUploader = ({
         }
     }
 
-    function getCurrentQuestion() {
-        return currentUserWorkshop['practice_answer'].find(v => v.PracticeID == PracticeID);
-    }
-
     function removeUpload(val) {
         setNewUpload(val);
     }
 
+    async function _updateO365URL(){
+        if(lastO365Updated.current[workshop.PracticeID]!=o365URL){
+            let result = await updateO365URL(StdRegistID,workshop.PracticeID,o365URL);
+            if(!result.error){
+                onLinkUpdated(result);
+                lastO365Updated.current[workshop.PracticeID]=o365URL;
+            }
+        }
+    }
+
+    function onO365Blur(e){
+       _updateO365URL();
+    }
+
+    if(!workshop)return <div>Loading...</div>
     return <Card className={classNames(' mb-4', {
-        'bg-primary text-light': PracticeID == '1',
-        'bg-success text-light': PracticeID == '2',
-        'bg-warning text-dark': PracticeID == '3',
-        'bg-danger text-light': PracticeID == '4',
+        'bg-primary text-light': workshop.PracticeID == '1',
+        'bg-success text-light': workshop.PracticeID == '2',
+        'bg-warning text-dark': workshop.PracticeID == '3',
+        'bg-danger text-light': workshop.PracticeID == '4',
     })}>
-        <Card.Header>Your workshop documents {title}</Card.Header>
+        <Card.Header>Your workshop documents {getWorkshopType(workshop.PracticeID)}</Card.Header>
         <Card.Body>
             {
                 (() => {
-                    let existed = getCurrentQuestion();
-                    if (existed) {
+                    if (workshop) {
                         return <div>
                             {newUpload ?
                                 <>
@@ -74,10 +83,10 @@ const ClientWorkshopUploader = ({
                                 </>
                                 :
                                 <>
-                                    <Button variant='light' className="mb-2" onClick={e => download(existed.RowID)}>
+                                    <Button variant='light' className="mb-2" onClick={e => download(workshop.RowID)}>
                                         <FontAwesomeIcon style={{fontSize: '20px'}} className='mr-1'
                                                          icon={faCheckCircle}/>
-                                        <span>{existed.FileName}</span>
+                                        <span>{workshop.FileName}</span>
                                     </Button>
                                     <Button variant="danger" className="mb-2 ml-2"
                                             onClick={e => removeUpload(true)}><FontAwesomeIcon icon={faTimes}/> Remove</Button>
@@ -95,12 +104,14 @@ const ClientWorkshopUploader = ({
             }
             <InputGroup>
                 <InputGroup.Prepend>
-                    <InputGroup.Text>{title}<span className="ml-2">o365 link</span></InputGroup.Text>
+                    <InputGroup.Text>{getWorkshopType(workshop.PracticeID)}<span className="ml-2">o365 link</span></InputGroup.Text>
                 </InputGroup.Prepend>
-                <FormControl value={(o365URL && o365URL[PracticeID]) || ''} type="text" onBlur={e=>onLinkBlur && onLinkBlur(e)} onChange={e=>onLinkChanged && onLinkChanged(e)}></FormControl>
+                <FormControl value={o365URL||''} type="text" onBlur={e=>onO365Blur(e)} onChange={e=>setO365URL(e.target.value)} onKeyUp={e=>{
+                    if(e.keyCode==13)_updateO365URL();
+                }}></FormControl>
             </InputGroup>
         </Card.Body>
-        {(!getCurrentQuestion() || newUpload) &&
+        {(!workshop || newUpload) &&
         <Card.Footer className="bg-dark text-light">
             <strong className="mr-4">Upload document for score:</strong>
             <input type='file' onChange={e => uploadFile(e)}/>
