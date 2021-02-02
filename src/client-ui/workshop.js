@@ -185,7 +185,7 @@ const Workshop = ({scheduleInfo, serverTime}) => {
                                                     </Card.Header>
                                                     <Card.Body style={{overflowX: 'auto'}}>
                                                         <div
-                                                            dangerouslySetInnerHTML={{__html: question.PracticeQuestionTh}}></div>
+                                                            dangerouslySetInnerHTML={{__html: question.question}}></div>
                                                     </Card.Body>
                                                 </Card>
                                             </div>
