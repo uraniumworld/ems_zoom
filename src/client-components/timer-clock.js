@@ -3,7 +3,7 @@ import moment from "moment";
 import {StyleSheet,css} from 'aphrodite';
 import {Alert, Badge, Card} from "react-bootstrap";
 let timer;
-const TimerClock = ({serverTime=0,expire})=>{
+const TimerClock = ({serverTime=0,expire,onTimeout})=>{
     const [duration,setDuration] = useState();
     const timeDiff = useRef(0);
     useEffect(()=>{
@@ -29,6 +29,10 @@ const TimerClock = ({serverTime=0,expire})=>{
             setDuration(d);
         }else{
             setDuration(<Alert variant='danger'>Time is up!</Alert>);
+            if(typeof onTimeout == 'function') {
+                onTimeout();
+                clearInterval(timer);
+            }
         }
     }
     return <div className={css(styles.container)}>

@@ -55,6 +55,13 @@ export function updateO365URL(StdRegistID,PracticeID,url){
     return request('update-o365-url',{StdRegistID,PracticeID,url});
 }
 
+export function submitAndExit(StdRegistID){
+    return request('submit-and-exit',{StdRegistID});
+}
+
+export function getTheoryQuestions(StdRegistID){
+    return request('theory-question',{StdRegistID});
+}
 
 function request(method,params={},scriptName='examination_resful_api.php'){
     return new Promise(resolve => {

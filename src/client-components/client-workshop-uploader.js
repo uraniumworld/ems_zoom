@@ -19,7 +19,9 @@ const ClientWorkshopUploader = ({
     const lastO365Updated = useRef({});
 
     useEffect(()=>{
+        lastO365Updated.current[workshop.PracticeID]=workshop.url;
         setO365URL(workshop.url);
+        setNewUpload(false);
     },[workshop]);
 
     async function uploadFile(e) {
@@ -49,6 +51,29 @@ const ClientWorkshopUploader = ({
     }
 
     async function _updateO365URL(){
+        let type;
+        switch (workshop.PracticeID){
+            case '1':
+                type='w';
+                break;
+            case '2':
+                type='x'
+                break;
+            case '3':
+                type='p'
+                break;
+            case '4':
+                type='a'
+                break;
+        }
+        let regExp=new RegExp(`^https:\/\/kkumail\-my\.sharepoint\.com\/:${type}:\/`,'i')
+        if(typeof o365URL== 'string' && !o365URL.match(regExp)
+        && o365URL!=''){
+            setO365URL(lastO365Updated.current[workshop.PracticeID]);
+            let name=getWorkshopType(workshop.PracticeID,true);
+            toast.error(`No "${name}" of KKU Office 365 URL.`);
+            return;
+        }
         if(lastO365Updated.current[workshop.PracticeID]!=o365URL){
             let result = await updateO365URL(StdRegistID,workshop.PracticeID,o365URL);
             if(!result.error){
@@ -75,6 +100,7 @@ const ClientWorkshopUploader = ({
                 (() => {
                     if (workshop) {
                         return <div>
+                            <div variant="primary" className="font-weight-bold mr-2">1. Upload file.</div>
                             {newUpload ?
                                 <>
                                     <span className="mr-2">[ Please upload a new file ]</span>
@@ -102,6 +128,7 @@ const ClientWorkshopUploader = ({
                     }
                 })()
             }
+            <div className="font-weight-bold">2. Shared Office 365 link</div>
             <InputGroup>
                 <InputGroup.Prepend>
                     <InputGroup.Text>{getWorkshopType(workshop.PracticeID)}<span className="ml-2">o365 link</span></InputGroup.Text>

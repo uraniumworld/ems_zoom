@@ -8,6 +8,7 @@ import {observer} from "mobx-react";
 import StateContext from "../mobx/global-context";
 import {toast} from "react-toastify";
 import {useHistory} from 'react-router-dom';
+import Theory from "./theory";
 
 const Exam=()=>{
     const {type,StdRegistID, SchdDetailID} = useParams();
@@ -41,7 +42,7 @@ const Exam=()=>{
                 <Workshop scheduleInfo={scheduelInfo} serverTime={serverTime}/>
                 }
                 {type=='theory' &&
-                <Workshop scheduleInfo={scheduelInfo} serverTime={serverTime}/>
+                <Theory scheduleInfo={scheduelInfo} serverTime={serverTime}/>
                 }
             </>
         }}
