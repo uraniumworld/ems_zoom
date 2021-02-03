@@ -1,14 +1,13 @@
 import TimerClock from "../client-components/timer-clock";
 import React, {useEffect, useState} from "react";
-import {getTheoryQuestions, getWorkshopUser} from "../client-components/client-services";
+import {getTheoryQuestions, getTheoryUser, getWorkshopUser} from "../client-components/client-services";
 import ClientTopMenu from "../client-components/client-top-menu";
 import {Badge, Col, Container, Row} from "react-bootstrap";
 import TheoryQuestion from "../client-components/theory-question";
 import {css, StyleSheet} from "aphrodite";
 import classNames from "classnames";
 
-const Theory = ({scheduleInfo, serverTime}) => {
-
+const Theory = ({student,scheduleInfo, serverTime}) => {
     const [currentUserTheory, setCurrentUserTheory] = useState({});
     const [questions, setQuestions] = useState([]);
     const [doneQuestion, setDoneQuestion] = useState({});
@@ -21,7 +20,8 @@ const Theory = ({scheduleInfo, serverTime}) => {
     async function init() {
         let questions = await getTheoryQuestions(scheduleInfo.StdRegistID);
         setQuestions(questions);
-        console.log(questions);
+        let theoryUser = await getTheoryUser(scheduleInfo.StdRegistID,scheduleInfo.SchdDetailID);
+        console.log(theoryUser);
     }
 
     function onTimeout() {
@@ -73,8 +73,8 @@ const Theory = ({scheduleInfo, serverTime}) => {
                 </Row>
             </div>
             <Container className={css(styles.theoryContainer)}>
-                {/*<ClientTopMenu type="theory" scheduleInfo={scheduleInfo} student={currentUserTheory}*/}
-                {/*               confirmSubmit={confirmSubmit}/>*/}
+                <ClientTopMenu type="theory" scheduleInfo={scheduleInfo} student={student}
+                               confirmSubmit={confirmSubmit}/>
                 <div className="exam-content">
                     <TheoryQuestion
                         index={currentQuestionIndex}
@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
         }
     },
     theoryContainer: {
-        marginTop: '60px',
+        // marginTop: '60px',
     },
     stateBlock: {
         textAlign: 'center',

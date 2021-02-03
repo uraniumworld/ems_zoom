@@ -43,7 +43,7 @@ import Config from "../config";
 //http://localhost:3000/exam/workshop/125180/3474
 
 
-const Workshop = ({scheduleInfo, serverTime}) => {
+const Workshop = ({student,scheduleInfo, serverTime}) => {
     const [questions, setQuestions] = useState();
     const [filter, setFilter] = useState('1');
     const [currentUserWorkshop, setCurrentUserWorkshop] = useState(null);
@@ -54,6 +54,7 @@ const Workshop = ({scheduleInfo, serverTime}) => {
     });
     const {StdRegistID, SchdDetailID} = useParams();
     const history = useHistory();
+
 
     useEffect(() => {
         getWorkshopQuestion(StdRegistID, SchdDetailID).then(data => {
@@ -154,7 +155,7 @@ const Workshop = ({scheduleInfo, serverTime}) => {
                     </ul>
                 </div>
                 <Container className="exam-container">
-                    <ClientTopMenu type="workshop" scheduleInfo={scheduleInfo} student={currentUserWorkshop}
+                    <ClientTopMenu type="workshop" scheduleInfo={scheduleInfo} student={student}
                                    confirmSubmit={confirmSubmit}/>
                     <div className="exam-content">
                         <ClientWorkshopUploader

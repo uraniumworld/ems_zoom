@@ -17,6 +17,10 @@ export function getWorkshopUser(StdRegistID,SchdDetailID){
     return  request('workshop-user',{StdRegistID,SchdDetailID});
 }
 
+export function getTheoryUser(StdRegistID,SchdDetailID){
+    return  request('theory-user',{StdRegistID,SchdDetailID});
+}
+
 export function checkClient(StdRegistID){
     return  request('client',{StdRegistID});
 }

@@ -14,6 +14,7 @@ const Exam=()=>{
     const {type,StdRegistID, SchdDetailID} = useParams();
     const state = useContext(StateContext);
     const history = useHistory();
+    const [student,setStudent] = useState();
     const [examSchedule,setExamSchedule] = useState();
 
     useEffect(()=>{
@@ -39,10 +40,10 @@ const Exam=()=>{
         {(scheduelInfo,serverTime)=>{
             return <>
                 {type=='workshop' &&
-                <Workshop scheduleInfo={scheduelInfo} serverTime={serverTime}/>
+                <Workshop student={state.currentStudent} scheduleInfo={scheduelInfo} serverTime={serverTime}/>
                 }
                 {type=='theory' &&
-                <Theory scheduleInfo={scheduelInfo} serverTime={serverTime}/>
+                <Theory student={state.currentStudent} scheduleInfo={scheduelInfo} serverTime={serverTime}/>
                 }
             </>
         }}
