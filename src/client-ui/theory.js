@@ -36,7 +36,9 @@ const Theory = ({student,scheduleInfo, serverTime, onSubmitted}) => {
     async function init() {
         await loadAnsweredQuestions();
         let questions = await getTheoryQuestions(scheduleInfo.StdRegistID);
-        setQuestions(questions);
+        if(Array.isArray(questions)){
+            setQuestions(questions);
+        }
     }
 
     async function loadAnsweredQuestions(){
@@ -103,6 +105,7 @@ const Theory = ({student,scheduleInfo, serverTime, onSubmitted}) => {
         return question.choices.find(v=>v.TheoryChoiceID==TheoryChoiceID);
     }
 
+    if(!questions)return <Alert>Loading..</Alert>
     return <div>
         <div className={'container-wrapper ' + css(styles.containerWrapper)}>
             <div className={css(styles.theorySidebar)}>
