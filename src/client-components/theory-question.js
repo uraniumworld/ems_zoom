@@ -4,7 +4,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faArrowLeft, faArrowRight} from "@fortawesome/free-solid-svg-icons";
 import {StyleSheet, css} from "aphrodite";
 
-const TheoryQuestion = ({index, question, totalQuestion, doneQuestion, onSelected, onCancel, onNext, onPrev}) => {
+const TheoryQuestion = ({index, question, totalQuestion,disabled, doneQuestion, onSelected, onCancel, onNext, onPrev}) => {
 
     function getImage() {
         let img = question.question.replace(/\.\.\/\.\./ig, Config.baseUrl);
@@ -25,7 +25,7 @@ const TheoryQuestion = ({index, question, totalQuestion, doneQuestion, onSelecte
                                     <Row>
                                         <Col className="col-auto">
                                             <div className="text-center mt-2 ml-2">
-                                                <input type="radio"
+                                                <input disabled={disabled} type="radio"
                                                        className={css(styles.choiceRadio)}
                                                        id={`${question.TheoryID}_${c.TheoryChoiceID}`}
                                                        name={question.TheoryID}

@@ -17,8 +17,12 @@ export function getWorkshopUser(StdRegistID,SchdDetailID){
     return  request('workshop-user',{StdRegistID,SchdDetailID});
 }
 
-export function getTheoryUser(StdRegistID,SchdDetailID){
-    return  request('theory-user',{StdRegistID,SchdDetailID});
+export function getTheoryUser(StdRegistID){
+    return  request('theory-user',{StdRegistID});
+}
+
+export function theoryAnswer(StdRegistID,RowID,TheoryID,IsAnswer){
+    return request('theory-answer',{StdRegistID,RowID,TheoryID,IsAnswer});
 }
 
 export function checkClient(StdRegistID){

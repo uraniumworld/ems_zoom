@@ -1,6 +1,6 @@
 import TimerClock from "../client-components/timer-clock";
 import React, {useEffect, useState} from "react";
-import {getTheoryQuestions, getTheoryUser, getWorkshopUser} from "../client-components/client-services";
+import {getTheoryQuestions, getTheoryUser, getWorkshopUser, theoryAnswer} from "../client-components/client-services";
 import ClientTopMenu from "../client-components/client-top-menu";
 import {Badge, Col, Container, Row} from "react-bootstrap";
 import TheoryQuestion from "../client-components/theory-question";
@@ -12,6 +12,7 @@ const Theory = ({student,scheduleInfo, serverTime}) => {
     const [questions, setQuestions] = useState([]);
     const [doneQuestion, setDoneQuestion] = useState({});
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+    const [disabled,setDisabled] = useState({});
 
     useEffect(() => {
         init();
@@ -46,6 +47,13 @@ const Theory = ({student,scheduleInfo, serverTime}) => {
         })
     }
 
+    function _setDisabled(key,value){
+        setDisabled(prevState => ({
+            ...prevState,
+            [key]:value
+        }))
+    }
+
     return <div>
         <div className={'container-wrapper ' + css(styles.containerWrapper)}>
             <div className={css(styles.theorySidebar)}>
@@ -76,24 +84,30 @@ const Theory = ({student,scheduleInfo, serverTime}) => {
                 <ClientTopMenu type="theory" scheduleInfo={scheduleInfo} student={student}
                                confirmSubmit={confirmSubmit}/>
                 <div className="exam-content">
-                    <TheoryQuestion
-                        index={currentQuestionIndex}
-                        question={questions[currentQuestionIndex]}
-                        doneQuestion={doneQuestion}
-                        totalQuestion={questions.length}
-                        onPrev={() => {
-                            setCurrentQuestionIndex(prevState => prevState - 1)
-                        }}
-                        onNext={() => {
-                            setCurrentQuestionIndex(prevState => prevState + 1)
-                        }}
-                        onSelected={q => {
-                            _setDoneQuestion(q.TheoryID, q.TheoryChoiceID);
-                        }}
-                        onCancel={q => {
-                            _setDoneQuestion(q.TheoryID, false);
-                        }}
-                    />
+                    {questions[currentQuestionIndex] &&
+                        <TheoryQuestion
+                            index={currentQuestionIndex}
+                            question={questions[currentQuestionIndex]}
+                            doneQuestion={doneQuestion}
+                            totalQuestion={questions.length}
+                            disabled={!!disabled[currentQuestionIndex]}
+                            onPrev={() => {
+                                setCurrentQuestionIndex(prevState => prevState - 1)
+                            }}
+                            onNext={() => {
+                                setCurrentQuestionIndex(prevState => prevState + 1)
+                            }}
+                            onSelected={async q => {
+                                _setDisabled(currentQuestionIndex,true);
+                                await theoryAnswer(scheduleInfo.StdRegistID,0,q.TheoryID,q.TheoryChoiceID);
+                                _setDoneQuestion(q.TheoryID, q.TheoryChoiceID);
+                                _setDisabled(currentQuestionIndex,false);
+                            }}
+                            onCancel={q => {
+                                _setDoneQuestion(q.TheoryID, false);
+                            }}
+                        />
+                    }
                 </div>
             </Container>
         </div>
