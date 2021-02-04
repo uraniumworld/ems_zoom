@@ -29,7 +29,10 @@ const TheoryQuestion = ({index, question, totalQuestion,disabled, doneQuestion, 
                                                        className={css(styles.choiceRadio)}
                                                        id={`${question.TheoryID}_${c.TheoryChoiceID}`}
                                                        name={question.TheoryID}
-                                                       checked={doneQuestion[question.TheoryID] == c.TheoryChoiceID}
+                                                       checked={
+                                                           doneQuestion[question.TheoryID] &&
+                                                           doneQuestion[question.TheoryID].TheoryChoiceID == c.TheoryChoiceID?true:false
+                                                       }
                                                        onChange={e => {
                                                            onSelected({
                                                                TheoryID: question.TheoryID,

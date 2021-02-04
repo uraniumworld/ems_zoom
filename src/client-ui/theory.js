@@ -18,11 +18,29 @@ const Theory = ({student,scheduleInfo, serverTime}) => {
         init();
     }, []);
 
+    // useEffect(()=>{
+    //     loadAnsweredQuestions();
+    // },[doneQuestion]);
+
     async function init() {
+        await loadAnsweredQuestions();
         let questions = await getTheoryQuestions(scheduleInfo.StdRegistID);
         setQuestions(questions);
+    }
+
+    async function loadAnsweredQuestions(){
         let theoryUser = await getTheoryUser(scheduleInfo.StdRegistID,scheduleInfo.SchdDetailID);
-        console.log(theoryUser);
+        theoryUser.map(ans=>{
+            setDoneQuestion(prevState => {
+                return {
+                    ...prevState,
+                    [ans.TheoryID]:{
+                        RowID:ans.RowID,
+                        TheoryChoiceID:ans.IsAnswer,
+                    }
+                }
+            })
+        });
     }
 
     function onTimeout() {
@@ -38,11 +56,14 @@ const Theory = ({student,scheduleInfo, serverTime}) => {
 
     }
 
-    function _setDoneQuestion(TheoryID, TheoryChoiceID) {
+    function _setDoneQuestion(TheoryID, RowID, TheoryChoiceID) {
         setDoneQuestion(prevState => {
             return {
                 ...prevState,
-                [TheoryID]: TheoryChoiceID
+                [TheoryID]: {
+                    RowID,
+                    TheoryChoiceID
+                }
             }
         })
     }
@@ -99,12 +120,21 @@ const Theory = ({student,scheduleInfo, serverTime}) => {
                             }}
                             onSelected={async q => {
                                 _setDisabled(currentQuestionIndex,true);
-                                await theoryAnswer(scheduleInfo.StdRegistID,0,q.TheoryID,q.TheoryChoiceID);
-                                _setDoneQuestion(q.TheoryID, q.TheoryChoiceID);
+                                let result = await theoryAnswer(scheduleInfo.StdRegistID,(doneQuestion[q.TheoryID] && doneQuestion[q.TheoryID].RowID)||0,q.TheoryID,q.TheoryChoiceID);
+                                if(!result.error && result.RowID){
+                                    _setDoneQuestion(q.TheoryID, result.RowID, q.TheoryChoiceID);
+                                }
                                 _setDisabled(currentQuestionIndex,false);
                             }}
-                            onCancel={q => {
-                                _setDoneQuestion(q.TheoryID, false);
+                            onCancel={async q => {
+                                _setDisabled(currentQuestionIndex,true);
+                                let result = await theoryAnswer(scheduleInfo.StdRegistID,(doneQuestion[q.TheoryID] && doneQuestion[q.TheoryID].RowID)||0,q.TheoryID,0);
+                                if(!result.error && result.RowID===0){
+                                    setDoneQuestion(prevState => {
+                                        return {...prevState,[q.TheoryID]:null}
+                                    });
+                                }
+                                _setDisabled(currentQuestionIndex,false);
                             }}
                         />
                     }
