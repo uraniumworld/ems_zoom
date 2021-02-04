@@ -1,18 +1,29 @@
 import TimerClock from "../client-components/timer-clock";
 import React, {useEffect, useState} from "react";
-import {getTheoryQuestions, getTheoryUser, getWorkshopUser, theoryAnswer} from "../client-components/client-services";
+import {
+    getTheoryQuestions,
+    getTheoryUser,
+    getWorkshopUser,
+    submitAndExit,
+    theoryAnswer
+} from "../client-components/client-services";
 import ClientTopMenu from "../client-components/client-top-menu";
-import {Badge, Col, Container, Row} from "react-bootstrap";
+import {Alert, Badge, Button, Col, Container, Modal, Row, Table} from "react-bootstrap";
 import TheoryQuestion from "../client-components/theory-question";
 import {css, StyleSheet} from "aphrodite";
 import classNames from "classnames";
+import {toast} from "react-toastify";
+import {useHistory} from 'react-router-dom';
+import striptags from "striptags";
 
-const Theory = ({student,scheduleInfo, serverTime}) => {
+const Theory = ({student,scheduleInfo, serverTime, onSubmitted}) => {
     const [currentUserTheory, setCurrentUserTheory] = useState({});
     const [questions, setQuestions] = useState([]);
     const [doneQuestion, setDoneQuestion] = useState({});
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [disabled,setDisabled] = useState({});
+    const [showConfirmSubmit,setShowConfirmSubmit] = useState(false);
+    const history = useHistory();
 
     useEffect(() => {
         init();
@@ -30,17 +41,30 @@ const Theory = ({student,scheduleInfo, serverTime}) => {
 
     async function loadAnsweredQuestions(){
         let theoryUser = await getTheoryUser(scheduleInfo.StdRegistID,scheduleInfo.SchdDetailID);
-        theoryUser.map(ans=>{
-            setDoneQuestion(prevState => {
-                return {
-                    ...prevState,
-                    [ans.TheoryID]:{
-                        RowID:ans.RowID,
-                        TheoryChoiceID:ans.IsAnswer,
+        if(!theoryUser.error){
+            theoryUser.map(ans=>{
+                setDoneQuestion(prevState => {
+                    return {
+                        ...prevState,
+                        [ans.TheoryID]:{
+                            RowID:ans.RowID,
+                            TheoryChoiceID:ans.IsAnswer,
+                        }
                     }
-                }
-            })
-        });
+                })
+            });
+        }else{
+            if(onSubmitted)onSubmitted();
+        }
+    }
+
+    async function _submitAndExit() {
+        let result = await submitAndExit(scheduleInfo.StdRegistID);
+        if(result.success){
+            if(onSubmitted)onSubmitted();
+            toast.success('Your examination has been submitted.')
+            setShowConfirmSubmit(false);
+        }
     }
 
     function onTimeout() {
@@ -53,7 +77,7 @@ const Theory = ({student,scheduleInfo, serverTime}) => {
     }
 
     function confirmSubmit() {
-
+        setShowConfirmSubmit(true);
     }
 
     function _setDoneQuestion(TheoryID, RowID, TheoryChoiceID) {
@@ -73,6 +97,10 @@ const Theory = ({student,scheduleInfo, serverTime}) => {
             ...prevState,
             [key]:value
         }))
+    }
+
+    function getChoiceText(question,TheoryChoiceID){
+        return question.choices.find(v=>v.TheoryChoiceID==TheoryChoiceID);
     }
 
     return <div>
@@ -141,6 +169,48 @@ const Theory = ({student,scheduleInfo, serverTime}) => {
                 </div>
             </Container>
         </div>
+        <Modal className='exam-confirm-modal' size='lg' show={showConfirmSubmit}
+               onHide={e => setShowConfirmSubmit(false)}>
+            <Modal.Header closeButton>
+                <span>Confirm to submit</span>
+            </Modal.Header>
+            <Modal.Body>
+                <h3>Please review your answered.</h3>
+                <Row>
+                    <Col>
+                        <Table>
+                            <thead>
+                            <tr>
+                                <th>Question</th>
+                                <th>Your answered</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {questions.map((q,i)=>{
+                                let choiceText=<Badge variant="danger">- No answer -</Badge>;
+                                if(doneQuestion[q.TheoryID]){
+                                    let TheoryChoiceID=doneQuestion[q.TheoryID].TheoryChoiceID;
+                                    let choice=q.choices.find(v=>v.TheoryChoiceID==TheoryChoiceID)
+                                    if(choice){
+                                        choiceText=<Badge style={{fontSize:'90%'}} variant="success">({TheoryChoiceID}) {choice.text}</Badge>;
+                                    }
+                                }
+                                return <tr>
+                                    <td width="80%">Q{i+1}. {striptags(q.question)}</td>
+                                    <td>{choiceText}</td>
+                                </tr>
+                            })}
+                            </tbody>
+                        </Table>
+                    </Col>
+                </Row>
+            </Modal.Body>
+            <Modal.Footer>
+                <div>
+                    <Button onClick={e=>_submitAndExit()}>Confirm, Submit And Exit</Button>
+                </div>
+            </Modal.Footer>
+        </Modal>
     </div>
 }
 const styles = StyleSheet.create({

@@ -16,7 +16,7 @@ const ClientTopMenu = ({scheduleInfo,type,student,confirmSubmit})=>{
     }
     return <div className={'exam-top-menu '+css(type=='workshop'?styles.workshop:styles.theory)}>
         <Navbar bg="light" expand="md">
-            <Navbar.Brand>EMS - Workshop</Navbar.Brand>
+            <Navbar.Brand>EMS - {type=='theory'?'Theory':'Workshop'}</Navbar.Brand>
             <Navbar.Text>{scheduleInfo.ExamDate} {scheduleInfo.ExamTimeStart}-{scheduleInfo.ExamTimeEnd}</Navbar.Text>
             <Navbar.Toggle aria-controls="basic-navbar-nav"/>
             <Navbar.Collapse>

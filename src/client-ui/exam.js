@@ -18,9 +18,7 @@ const Exam=()=>{
     const [examSchedule,setExamSchedule] = useState();
 
     useEffect(()=>{
-        getExamSchedules().then(data=>{
-            setExamSchedule(data);
-        });
+      reload();
     },[]);
     function onApproved(){
 
@@ -31,6 +29,13 @@ const Exam=()=>{
     if(!type){
         return <ExamScheduleDay schedules={examSchedule}/>
     }
+
+    function reload(){
+        getExamSchedules().then(data=>{
+            setExamSchedule(data);
+        });
+    }
+
     return <CheckInProcess
         state={state}
         StdRegistID={StdRegistID}
@@ -40,10 +45,10 @@ const Exam=()=>{
         {(scheduelInfo,serverTime)=>{
             return <>
                 {type=='workshop' &&
-                <Workshop student={state.currentStudent} scheduleInfo={scheduelInfo} serverTime={serverTime}/>
+                <Workshop student={state.currentStudent} scheduleInfo={scheduelInfo} serverTime={serverTime} onSubmitted={e=>reload()}/>
                 }
                 {type=='theory' &&
-                <Theory student={state.currentStudent} scheduleInfo={scheduelInfo} serverTime={serverTime}/>
+                <Theory student={state.currentStudent} scheduleInfo={scheduelInfo} serverTime={serverTime} onSubmitted={e=>reload()}/>
                 }
             </>
         }}

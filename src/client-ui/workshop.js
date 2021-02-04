@@ -43,7 +43,7 @@ import Config from "../config";
 //http://localhost:3000/exam/workshop/125180/3474
 
 
-const Workshop = ({student,scheduleInfo, serverTime}) => {
+const Workshop = ({student,scheduleInfo, serverTime, onSubmitted}) => {
     const [questions, setQuestions] = useState();
     const [filter, setFilter] = useState('1');
     const [currentUserWorkshop, setCurrentUserWorkshop] = useState(null);
@@ -59,7 +59,7 @@ const Workshop = ({student,scheduleInfo, serverTime}) => {
     useEffect(() => {
         getWorkshopQuestion(StdRegistID, SchdDetailID).then(data => {
             if(data.submitted){
-                history.push('/');
+                if(onSubmitted)onSubmitted();
                 return;
             }else{
                 setQuestions(data);
@@ -95,7 +95,7 @@ const Workshop = ({student,scheduleInfo, serverTime}) => {
         setBtnState('submit', true);
         let result = await submitAndExit(StdRegistID);
         if(result.success){
-            history.push('/exam');
+            if(onSubmitted)onSubmitted();
             toast.success('Your examination has been submitted.')
             setShowConfirmSubmit(false);
         }
