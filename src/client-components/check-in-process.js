@@ -79,6 +79,12 @@ const CheckInProcess = ({state, StdRegistID, onApproved, onDenied, children}) =>
     function checker() {
         checkClient(StdRegistID).then(data => {
             // console.log(data);
+            if(data.IsEnd=='1'){
+                clearInterval(timer.current);
+                toast.error('Your examination was submitted.');
+                history.push('/exam');
+                return;
+            }
             if(!data){
                 data={};
                 data.serverTime=0;

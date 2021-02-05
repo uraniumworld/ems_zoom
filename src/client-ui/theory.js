@@ -38,6 +38,11 @@ const Theory = ({student,scheduleInfo, serverTime, onSubmitted}) => {
         let questions = await getTheoryQuestions(scheduleInfo.StdRegistID);
         if(Array.isArray(questions)){
             setQuestions(questions);
+        }else{
+            if(questions.submitted){
+                toast.error('Page not found.')
+                history.push('/exam');
+            }
         }
     }
 
@@ -66,6 +71,7 @@ const Theory = ({student,scheduleInfo, serverTime, onSubmitted}) => {
             if(onSubmitted)onSubmitted();
             toast.success('Your examination has been submitted.')
             setShowConfirmSubmit(false);
+            history.push('/exam');
         }
     }
 

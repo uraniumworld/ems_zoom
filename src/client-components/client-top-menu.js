@@ -20,11 +20,10 @@ const ClientTopMenu = ({scheduleInfo,type,student,confirmSubmit})=>{
             <Navbar.Text>{scheduleInfo.ExamDate} {scheduleInfo.ExamTimeStart}-{scheduleInfo.ExamTimeEnd}</Navbar.Text>
             <Navbar.Toggle aria-controls="basic-navbar-nav"/>
             <Navbar.Collapse>
-                <Nav className="mr-auto">
-                    <Nav.Link href="#home">
-                        <Button variant='primary' onClick={e => confirmSubmit()}>Submit and
-                            exit</Button>
-                    </Nav.Link>
+                <Nav className="mr-auto ml-2">
+                        <Button variant='primary' onClick={e =>{confirmSubmit()}}>
+                        Submit and exit
+                        </Button>
                 </Nav>
                 <Nav className="ml-auto">
 

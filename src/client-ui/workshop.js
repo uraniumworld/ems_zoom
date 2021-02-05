@@ -98,8 +98,10 @@ const Workshop = ({student,scheduleInfo, serverTime, onSubmitted}) => {
             if(onSubmitted)onSubmitted();
             toast.success('Your examination has been submitted.')
             setShowConfirmSubmit(false);
+            history.push('/exam');
+        }else{
+            setBtnState('submit', false);
         }
-        setBtnState('submit', false);
     }
 
     function onTimeout(){

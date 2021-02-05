@@ -25,11 +25,12 @@ const ExamScheduleDay = ({schedules})=>{
                                         </Card.Header>
                                         <Card.Body>
                                             {schd.ModuleType=='1'?
-                                                <Badge variant='danger' className="mr-2">Theory</Badge>
+                                                <Badge variant='danger' className="mr-2 mb-2" style={{fontSize:'100%'}}>Theory</Badge>
                                                 :
-                                                <Badge variant='info' className="mr-2">Workshop</Badge>
+                                                <Badge variant='info' className="mr-2 mb-2" style={{fontSize:'100%'}}>Workshop</Badge>
                                             }
-                                            <span>{schd.ExamDate} / {schd.ExamTimeStart}-{schd.ExamTimeEnd}</span>
+                                            <div><strong>Exam Code:</strong> #{schd.SchdCode}</div>
+                                            <span><strong>Date/Time:</strong> {schd.ExamDate} / {schd.ExamTimeStart}-{schd.ExamTimeEnd}</span>
                                         </Card.Body>
                                         <Card.Footer>
                                             <div className="text-right">
