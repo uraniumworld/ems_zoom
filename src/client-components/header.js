@@ -4,6 +4,7 @@ import {observer} from "mobx-react";
 import {useContext} from "react";
 import StateContext from "../mobx/global-context";
 import {studentLogout} from "./client-services";
+import {ssoExit} from "./client-tools";
 const Header = ()=>{
     const state = useContext(StateContext);
     return <div className={css(styles.main)}>
@@ -21,7 +22,11 @@ const Header = ()=>{
                     </small>
                     <Button variant="danger" onClick={e=>{
                          studentLogout().then(()=>{
-                             state.setStudent(null);
+                             if(state.auth && state.auth.authType=='sso'){
+                                ssoExit(state.forceSEB);
+                             }else{
+                                 state.setStudent(null);
+                             }
                          })
                     }}>Logout</Button>
                 </div>

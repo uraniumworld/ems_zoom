@@ -41,6 +41,14 @@ export function checkLogin(user,pass){
     return request('check-login');
 }
 
+export function checkSafeExamBrowser(){
+    return request('safe-exam-browser');
+}
+
+export function getAuthType(){
+    return request('auth-type');
+}
+
 export function studentLogin(user,pass){
     return request('login',{user,pass});
 }

@@ -5,13 +5,18 @@ import {studentLogout} from "./client-services";
 import StateContext from "../mobx/global-context";
 import {observer} from "mobx-react";
 import {StyleSheet,css} from "aphrodite";
+import {ssoExit} from "./client-tools";
 
 const ClientTopMenu = ({scheduleInfo,type,student,confirmSubmit})=>{
     const state = useContext(StateContext);
     function logout(){
         confirmBox('Logout','Do you want to logout?',async (e)=>{
             await studentLogout();
-            state.setStudent(null);
+            if(state.auth && state.auth.authType=='sso'){
+                ssoExit(state.forceSEB);
+            }else{
+                state.setStudent(null);
+            }
         })
     }
     return <div className={'exam-top-menu '+css(type=='workshop'?styles.workshop:styles.theory)}>

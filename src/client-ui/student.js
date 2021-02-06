@@ -4,7 +4,7 @@ import ClientHome from "./client-home";
 import LoginClient from "./login-client";
 import {useContext, useEffect, useState} from "react";
 import StateContext from "../mobx/global-context";
-import {checkLogin} from "../client-components/client-services";
+import {checkLogin, checkSafeExamBrowser, getAuthType} from "../client-components/client-services";
 import {Alert, Badge, Card, Col} from "react-bootstrap";
 import {observer} from "mobx-react";
 import RequiredSEB from "../client-ui/required-seb";
@@ -22,30 +22,37 @@ const Student = ()=>{
     }, []);
 
     async function init(){
-        checker();
+        let SEB = await checkSafeExamBrowser();
+        if(SEB && SEB.requiredSafeExamBrowser){
+            setBlockBySafeExamBrowser(true);
+            return;
+        }
+        setBlockBySafeExamBrowser(false);
+        state.setForceSEB(SEB);
+        let auth = await getAuthType();
+        state.setAuth(auth);
+        await checker(auth);
         timer=setInterval(() => {
-            checker()
+            checker(auth)
         }, 5 * 60000)
     }
 
-    function checker() {
-        checkLogin().then(user => {
-            if(user.requiredSafeExamBrowser){
-                setBlockBySafeExamBrowser(true);
+    async function checker(auth) {
+        let user = await checkLogin();
+        if (user) {
+            state.setStudent(user);
+        } else {
+            if(auth && auth.authType=='sso'){
+                document.location.href=auth.ssoURL;
                 return;
             }
-            setBlockBySafeExamBrowser(false);
-            if (user) {
-                state.setStudent(user);
-            } else {
-                state.setStudent(null);
-            }
-        })
+            state.setStudent(null);
+        }
     }
     if(blockBySafeExamBrowser){
         return <RequiredSEB/>
     }
-    if (typeof state.currentStudent == 'undefined') return <Alert variant='info'>Loading...</Alert>
+    if (typeof state.currentStudent == 'undefined' || !state.forceSEB || !state.auth) return <Alert variant='info'>Loading...</Alert>
     return <>
         {state.currentStudent
             ?

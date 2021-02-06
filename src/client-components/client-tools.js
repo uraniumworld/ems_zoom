@@ -68,3 +68,11 @@ export function getPracticeName(PracticeID, size) {
             };
     }
 }
+
+export function ssoExit(forceSEB){
+    if(forceSEB.forceSafeExamBrowser){
+        document.location.href="https://exit";
+    }else{
+        document.location.href="http://ems.kku.ac.th/ems_tools/sso-data-checkin.php?action=logout";
+    }
+}

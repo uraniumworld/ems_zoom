@@ -4,6 +4,9 @@ class MobxStore {
     currentUser = void 0;
     currentStudent = void 0;
 
+    auth = void 0;
+    forceSEB = void 0;
+
     scheduleMenu=[];
 
     studentPicture={};
@@ -17,6 +20,14 @@ class MobxStore {
             ...this.studentPicture,
             [Username]:student_image_data
         }
+    }
+
+    setForceSEB(seb){
+        this.forceSEB=seb;
+    }
+
+    setAuth(auth){
+        this.auth=auth;
     }
 
     setUser(user) {
