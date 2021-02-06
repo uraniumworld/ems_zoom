@@ -38,7 +38,8 @@ const LoginClient = ()=>{
                             <Form.Control type="password" value={formPassword} onChange={e=>setFormPassword(e.target.value)}/>
                         </Form.Group>
                         <Form.Group>
-                            <Button variant="primary" type="submit">Submit</Button>
+                            <Button className="mr-2" variant="primary" type="submit">Submit</Button>
+                            <a href="https://exit" className="btn btn-danger">Exit</a>
                         </Form.Group>
                     </Form>
                 </Card.Body>

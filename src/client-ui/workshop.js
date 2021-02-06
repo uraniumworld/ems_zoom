@@ -5,7 +5,7 @@ import {
     Card,
     Col,
     Container,
-    FormControl,
+    FormControl, Image,
     InputGroup,
     Modal,
     Nav,
@@ -39,6 +39,7 @@ import TimerClock from "../client-components/timer-clock";
 import ClientWorkshopUploader from "../client-components/client-workshop-uploader";
 import {getPracticeName, getWorkshopType, textLimit} from "../client-components/client-tools";
 import Config from "../config";
+import {StyleSheet,css} from "aphrodite";
 
 //http://localhost:3000/exam/workshop/125180/3474
 
@@ -160,6 +161,18 @@ const Workshop = ({student,scheduleInfo, serverTime, onSubmitted}) => {
                     <ClientTopMenu type="workshop" scheduleInfo={scheduleInfo} student={student}
                                    confirmSubmit={confirmSubmit}/>
                     <div className="exam-content">
+                        <Row className="mb-4">
+                            <Col>
+                                <div className="text-center">
+                                    <h2>Start KKU Office365 Click this icon.</h2>
+                                    <div className={css(styles.o365)}>
+                                        <a href="https://o365.kku.ac.th" target='_blank'>
+                                            <Image width="200" src={`${Config.basePath}/images/kku_o365.png`}/>
+                                        </a>
+                                    </div>
+                                </div>
+                            </Col>
+                        </Row>
                         <ClientWorkshopUploader
                             workshop={getQuestion()}
                             StdRegistID={StdRegistID}
@@ -258,4 +271,11 @@ const Workshop = ({student,scheduleInfo, serverTime, onSubmitted}) => {
         }
     </>
 }
+const styles=StyleSheet.create({
+    o365:{
+        textAlign:'center',
+        ':nth-child(1n) img':{
+        }
+    }
+});
 export default Workshop;

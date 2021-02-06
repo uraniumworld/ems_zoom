@@ -6,7 +6,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faArrowRight, faCheck, faCheckCircle} from "@fortawesome/free-solid-svg-icons";
 const striptags = require('striptags');
 
-const ExamScheduleDay = ({schedules})=>{
+const ExamScheduleDay = ({schedules,student})=>{
     console.log(schedules);
     const history = useHistory();
     if(!schedules)return <div>Loading...</div>
@@ -40,10 +40,14 @@ const ExamScheduleDay = ({schedules})=>{
                                                             <FontAwesomeIcon icon={faCheckCircle} className="mr-2"/>
                                                             <span>Submitted</span>
                                                         </Button>
-                                                        <a href="https://kku.world/exam" target='_blank' className="btn btn-info" >
+                                                        <a href="https://kku.world/exam" target='_blank' className="btn btn-info mr-2" >
                                                             <span className="mr-1">Go to profile page</span>
                                                             <FontAwesomeIcon icon={faArrowRight}/>
                                                         </a>
+                                                        {
+                                                            student.forceSafeExamBrowser &&
+                                                            <a className="btn btn-danger" href="https://exit">Exit</a>
+                                                        }
                                                     </>
                                                     :
                                                     <Button variant='primary' className="ml-auto" onClick={e=>{
@@ -60,7 +64,13 @@ const ExamScheduleDay = ({schedules})=>{
                     </>
                     :
                     <Col>
-                        <Alert variant='danger'>No schedule in this time.</Alert>
+                        <Alert variant='danger'>
+                            No schedule in this time .
+                        </Alert>
+                        {
+                            student.forceSafeExamBrowser &&
+                            <div className="text-center"><a className="btn btn-danger" href="https://exit">Exit</a></div>
+                        }
                     </Col>
                 }
 

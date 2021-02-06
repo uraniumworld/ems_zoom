@@ -14,7 +14,6 @@ const Exam=()=>{
     const {type,StdRegistID, SchdDetailID} = useParams();
     const state = useContext(StateContext);
     const history = useHistory();
-    const [student,setStudent] = useState();
     const [examSchedule,setExamSchedule] = useState();
 
     useEffect(()=>{
@@ -27,7 +26,7 @@ const Exam=()=>{
 
     }
     if(!type){
-        return <ExamScheduleDay schedules={examSchedule}/>
+        return <ExamScheduleDay student={state.currentStudent} schedules={examSchedule}/>
     }
 
     function reload(){
