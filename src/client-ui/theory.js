@@ -29,10 +29,6 @@ const Theory = ({student,scheduleInfo, serverTime, onSubmitted}) => {
         init();
     }, []);
 
-    // useEffect(()=>{
-    //     loadAnsweredQuestions();
-    // },[doneQuestion]);
-
     async function init() {
         await loadAnsweredQuestions();
         let questions = await getTheoryQuestions(scheduleInfo.StdRegistID);
@@ -76,13 +72,10 @@ const Theory = ({student,scheduleInfo, serverTime, onSubmitted}) => {
     }
 
     function onTimeout() {
-
+        toast.error('Time is up.')
+        _submitAndExit();
     }
 
-    async function reloadTheoryTaken() {
-        // let result = await getWorkshopUser(StdRegistID, SchdDetailID);
-        // setCurrentUserWorkshop(result);
-    }
 
     function confirmSubmit() {
         setShowConfirmSubmit(true);
