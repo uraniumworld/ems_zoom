@@ -8,8 +8,8 @@ import {toast} from "react-toastify";
 
 const LoginClient = ()=>{
     const state=useContext(globalState);
-    const [formUsername,setFormUsername]=useState('123456');
-    const [formPassword,setFormPassword]=useState('**123456');
+    const [formUsername,setFormUsername]=useState('');
+    const [formPassword,setFormPassword]=useState('');
     let history = useHistory();
     async function login(e){
         e.preventDefault();
