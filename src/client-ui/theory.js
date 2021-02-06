@@ -115,18 +115,20 @@ const Theory = ({student,scheduleInfo, serverTime, onSubmitted}) => {
                 <div className="text-center mt-4 mb-2">Questions Progress</div>
                 <Row>
                     {questions.map((q, i) => <Col key={'state_' + q.TheoryID} className="col-2 col-md-3">
-                        <div
-                            style={{cursor: 'pointer'}}
-                            className={css(
-                                styles.stateBlock,
-                                doneQuestion[q.TheoryID] ? styles.stateBlockY : styles.stateBlockN,
-                                i == currentQuestionIndex ? styles.blockSelected : null
-                            )}
-                            onClick={e => {
-                                setCurrentQuestionIndex(i)
-                            }}
-                        >
-                            {i + 1}
+                        <div style={{padding:'2px'}}>
+                            <div
+                                style={{cursor: 'pointer'}}
+                                className={css(
+                                    styles.stateBlock,
+                                    doneQuestion[q.TheoryID] ? styles.stateBlockY : styles.stateBlockN,
+                                    i == currentQuestionIndex ? styles.blockSelected : null
+                                )}
+                                onClick={e => {
+                                    setCurrentQuestionIndex(i)
+                                }}
+                            >
+                                {i + 1}
+                            </div>
                         </div>
                     </Col>)}
                 </Row>
@@ -249,7 +251,9 @@ const styles = StyleSheet.create({
         backgroundColor: 'green',
     },
     blockSelected: {
-        borderInline: '5px solid #ffc107'
+        border: '2px dashed #ffc107',
+        fontSize:'80%',
+        transition:'all 0.1s',
     }
 })
 export default Theory;
