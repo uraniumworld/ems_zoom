@@ -1,4 +1,4 @@
-import {Redirect, Route, Switch} from "react-router-dom";
+import {Redirect, Route, Switch,useLocation} from "react-router-dom";
 import Exam from "./exam";
 import ClientHome from "./client-home";
 import LoginClient from "./login-client";
@@ -13,6 +13,7 @@ let timer;
 const Student = ()=>{
     const state = useContext(StateContext);
     const [blockBySafeExamBrowser,setBlockBySafeExamBrowser] = useState();
+    let location = useLocation();
 
     useEffect(() => {
         init();
@@ -42,10 +43,6 @@ const Student = ()=>{
         if (user) {
             state.setStudent(user);
         } else {
-            if(auth && auth.authType=='sso'){
-                document.location.href=auth.ssoURL;
-                return;
-            }
             state.setStudent(null);
         }
     }

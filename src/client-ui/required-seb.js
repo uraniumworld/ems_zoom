@@ -12,7 +12,7 @@ const RequiredSEB = ()=>{
                     <div><strong>Install Safe Exam Browser</strong></div>
                     <Image src={`${Config.basePath}/images/seb_install.png`} fluid/>
                 </div>
-                <div className="mb-2">Step 3. <a className="btn btn-info btn-lg" target="_blank" href={`${Config.basePath}/startEMS.seb`}>Download "startEMS.seb"</a></div>
+                <div className="mb-2">Step 3. <a className="btn btn-info btn-lg" download target="_blank" href={`${Config.basePath}/startEMS.seb`}>Download "startEMS.seb"</a></div>
                 <div className="mb-2">
                     Step 4. <strong>Double click downloaded file named "startEMS.seb"</strong>
                 </div>

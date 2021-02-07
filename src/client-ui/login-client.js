@@ -1,5 +1,5 @@
-import React, {useContext, useState} from 'react';
-import {Button, Card, Col, Form, Row} from "react-bootstrap";
+import React, {useContext, useEffect, useState} from 'react';
+import {Alert, Button, Card, Col, Form, Row} from "react-bootstrap";
 import {observer} from "mobx-react";
 import globalState from "../mobx/global-context";
 import {useHistory} from 'react-router-dom';
@@ -11,6 +11,14 @@ const LoginClient = ()=>{
     const [formUsername,setFormUsername]=useState('');
     const [formPassword,setFormPassword]=useState('');
     let history = useHistory();
+
+    useEffect(()=>{
+        if(state.auth.authType=='sso'){
+            document.location.href=state.auth.ssoURL;
+            return;
+        }
+    },[]);
+
     async function login(e){
         e.preventDefault();
         let student =await studentLogin(formUsername,formPassword);
@@ -21,6 +29,7 @@ const LoginClient = ()=>{
             toast.error(student.error)
         }
     }
+    if(state.auth.authType=='sso')return <Alert variant="success">Redirecting... to KKU SSO login.</Alert>
     return <Row className="justify-content-md-center">
         <Col xs={12} md={6} className="">
             <Card className="login-panel mt-5">
