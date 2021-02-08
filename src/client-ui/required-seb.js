@@ -1,8 +1,8 @@
-import {Card, Image} from "react-bootstrap";
+import {Card, Container, Image} from "react-bootstrap";
 import Config from "../config";
 
 const RequiredSEB = ()=>{
-    return <div>
+    return <Container>
         <Card className="mt-4">
             <Card.Header>KKU EMS Examination is required "Safe Exam Browser" to start, and take a 4 step.</Card.Header>
             <Card.Body>
@@ -21,6 +21,6 @@ const RequiredSEB = ()=>{
                 <div className="text-right">@LTIC.KKU.AC.TH</div>
             </Card.Footer>
         </Card>
-    </div>
+    </Container>
 }
 export default RequiredSEB;

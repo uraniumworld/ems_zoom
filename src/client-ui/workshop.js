@@ -80,7 +80,7 @@ const Workshop = ({student,scheduleInfo, serverTime, onSubmitted}) => {
         setShowConfirmSubmit(true);
     }
 
-    function getQuestion() {
+    function getUserAnswer() {
         let workshop = currentUserWorkshop['practice_answer'].find(v => v.PracticeID == filter);
         return workshop
     }
@@ -174,16 +174,17 @@ const Workshop = ({student,scheduleInfo, serverTime, onSubmitted}) => {
                             </Col>
                         </Row>
                         <ClientWorkshopUploader
-                            workshop={getQuestion()}
+                            PracticeID={filter}
+                            userAnswer={getUserAnswer()}
                             StdRegistID={StdRegistID}
-                            onUploadSuccess={(uploaded, e) => {
-                                reloadWorkshopFile();
+                            onUploadSuccess={async (uploaded, e) => {
+                                await reloadWorkshopFile();
                             }}
-                            onLinkUpdated={result => {
-                                let question = getQuestion();
-                                let title = getWorkshopType(question.PracticeID, true);
+                            onLinkUpdated={async result => {
+                                // let userAnswer = getUserAnswer();
+                                let title = getWorkshopType(result.PracticeID, true);
                                 toast.success(`${title} o365 Link Updated.`)
-                                reloadWorkshopFile();
+                                 await reloadWorkshopFile();
                             }}
                         />
                         <div>
