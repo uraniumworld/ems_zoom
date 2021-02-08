@@ -22,6 +22,7 @@ import Exam from "./client-ui/exam";
 import LoginClient from "./client-ui/login-client";
 import Admin from "./ui/admin";
 import Student from "./client-ui/student";
+import Public from "./client-ui/public";
 
 export const mobxStore = new MobxStore();
 
@@ -35,7 +36,10 @@ function App() {
                     <Admin/>
                 </Route>
                 <Route path="/">
-                    <Student/>
+                    <Switch>
+                        <Route path="/" exact component={Public}/>
+                        <Student/>
+                    </Switch>
                 </Route>
             </Switch>
             <ToastContainer

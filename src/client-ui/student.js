@@ -8,6 +8,7 @@ import {checkLogin, checkSafeExamBrowser, getAuthType} from "../client-component
 import {Alert, Badge, Card, Col} from "react-bootstrap";
 import {observer} from "mobx-react";
 import RequiredSEB from "../client-ui/required-seb";
+import Public from "./public";
 
 let timer;
 const Student = ()=>{
@@ -54,14 +55,14 @@ const Student = ()=>{
         {state.currentStudent
             ?
             <Switch>
-                <Route path="/" exact component={ClientHome}/>
+                <Route path="/start" exact component={ClientHome}/>
                 <Route path="/exam" exact exact component={Exam}/>
                 <Route path="/exam/:type/:StdRegistID" component={Exam}/>
                 <Redirect to="/exam"/>
             </Switch>
             :
             <Switch>
-                <Route path="/" exact component={ClientHome}/>
+                <Route path="/start" exact component={ClientHome}/>
                 <Route path="*" component={LoginClient}/>
             </Switch>
         }

@@ -96,6 +96,10 @@ export function userLogin(username,password){
     return request('login',{username,password})
 }
 
+export function getContent(type){
+    return request('get-content',{type})
+}
+
 export function confirmBox(title,detail,fn){
     confirmAlert({
         title:title,

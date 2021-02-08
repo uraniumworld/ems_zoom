@@ -1,0 +1,21 @@
+.myFade {
+  &-enter {
+    opacity: 0;
+    transition: all;
+  }
+
+  &-enter-active {
+    opacity: 1;
+    transition: all 300ms;
+  }
+
+  &-exit {
+    opacity: 1;
+    transition: all;
+  }
+
+  &-exit-active {
+    opacity: 0;
+    transition: all 300ms;
+  }
+}
