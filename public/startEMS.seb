@@ -55,9 +55,9 @@
     <key>allowVideoCapture</key>
     <false />
     <key>allowVirtualMachine</key>
-    <true />
-    <key>allowWlan</key>
     <false />
+    <key>allowWlan</key>
+    <true />
     <key>audioControlEnabled</key>
     <true />
     <key>audioMute</key>
@@ -69,7 +69,7 @@
     <key>backgroundOpenSEBConfig</key>
     <false />
     <key>blacklistURLFilter</key>
-    <string>^.*?:\/\/((www\.kku\.ac\.th)|(.*?\.www\.kku\.ac\.th))\/((/.*?)|(/.*?))(()|(\?.*?))$;^.*?:\/\/((facebook\.com)|(.*?\.facebook\.com))\/((/.*?)|(/.*?))(()|(\?.*?))$;^.*?:\/\/((youtube\.com)|(.*?\.youtube\.com))\/((/.*?)|(/.*?))(()|(\?.*?))$;^.*?:\/\/((twitter\.com)|(.*?\.twitter\.com))\/((/.*?)|(/.*?))(()|(\?.*?))$;^.*?:\/\/((messenger\.com)|(.*?\.messenger\.com))\/((/.*?)|(/.*?))(()|(\?.*?))$</string>
+    <string>^.*?:\/\/((google\.com)|(.*?\.google\.com))\/((/.*?)|(/.*?))(()|(\?.*?))$;^.*?:\/\/((facebook\.com)|(.*?\.facebook\.com))\/((/.*?)|(/.*?))(()|(\?.*?))$;^.*?:\/\/((youtube\.com)|(.*?\.youtube\.com))\/((/.*?)|(/.*?))(()|(\?.*?))$;^.*?:\/\/((twitter\.com)|(.*?\.twitter\.com))\/((/.*?)|(/.*?))(()|(\?.*?))$;^.*?:\/\/((instagram\.com)|(.*?\.instagram\.com))\/((/.*?)|(/.*?))(()|(\?.*?))$;^.*?:\/\/((messenger\.com)|(.*?\.messenger\.com))\/((/.*?)|(/.*?))(()|(\?.*?))$;^.*?:\/\/((www\.kku\.ac\.th)|(.*?\.www\.kku\.ac\.th))\/((/.*?)|(/.*?))(()|(\?.*?))$;^.*?:\/\/((i\.kku\.ac\.th)|(.*?\.i\.kku\.ac\.th))\/((/.*?)|(/.*?))(()|(\?.*?))$</string>
     <key>blockPopUpWindows</key>
     <false />
     <key>browserExamKey</key>
@@ -197,7 +197,7 @@
     <key>enableZoomText</key>
     <true />
     <key>examKeySalt</key>
-    <data>xzDw4f6Pkd7/D/zkrET1zy2NhyWq0AOt1AQDdTbnn9I=</data>
+    <data>x7fktmYdcOYfy1h2xTzADcnI3LSCr/ODU705hfxIa5M=</data>
     <key>examSessionClearCookiesOnEnd</key>
     <true />
     <key>examSessionClearCookiesOnStart</key>
@@ -217,7 +217,7 @@
     <key>hashedAdminPassword</key>
     <string />
     <key>hashedQuitPassword</key>
-    <string>8D969EEF6ECAD3C29A3A629280E686CF0C3F5D5A86AFF3CA12020C923ADC6C92</string>
+    <string>03BB647AE8EA38D9277103818F5229D415D1FED1E88E61DCAC3540CA1106C448</string>
     <key>hideBrowserWindowToolbar</key>
     <false />
     <key>hookKeys</key>
@@ -1027,19 +1027,21 @@
         <true />
         <key>currentUser</key>
         <true />
-        <key>strongKill</key>
-        <false />
-        <key>os</key>
-        <integer>1</integer>
-        <key>executable</key>
-        <string>obs64.exe</string>
-        <key>originalName</key>
-        <string />
         <key>description</key>
         <string />
+        <key>executable</key>
+        <string>obs64.exe</string>
         <key>identifier</key>
         <string />
+        <key>originalName</key>
+        <string />
+        <key>os</key>
+        <integer>1</integer>
+        <key>strongKill</key>
+        <false />
         <key>user</key>
+        <string />
+        <key>windowHandlingProcess</key>
         <string />
       </dict>
       <dict>
@@ -1047,19 +1049,21 @@
         <true />
         <key>currentUser</key>
         <true />
-        <key>strongKill</key>
-        <false />
-        <key>os</key>
-        <integer>1</integer>
-        <key>executable</key>
-        <string>obs32.exe</string>
-        <key>originalName</key>
-        <string />
         <key>description</key>
         <string />
+        <key>executable</key>
+        <string>obs32.exe</string>
         <key>identifier</key>
         <string />
+        <key>originalName</key>
+        <string />
+        <key>os</key>
+        <integer>1</integer>
+        <key>strongKill</key>
+        <false />
         <key>user</key>
+        <string />
+        <key>windowHandlingProcess</key>
         <string />
       </dict>
     </array>
@@ -1193,7 +1197,7 @@
     <key>startResource</key>
     <string />
     <key>startURL</key>
-    <string>https://ems.kku.ac.th/v2</string>
+    <string>https://ems.kku.ac.th/ems_tools/examination_resful_api.php?method=seb</string>
     <key>startURLAppendQueryParameter</key>
     <false />
     <key>taskBarHeight</key>
@@ -1214,7 +1218,7 @@
         <key>regex</key>
         <false />
         <key>expression</key>
-        <string>www.kku.ac.th/*</string>
+        <string>google.com/*</string>
         <key>action</key>
         <integer>0</integer>
       </dict>
@@ -1254,7 +1258,37 @@
         <key>regex</key>
         <false />
         <key>expression</key>
+        <string>instagram.com/*</string>
+        <key>action</key>
+        <integer>0</integer>
+      </dict>
+      <dict>
+        <key>active</key>
+        <true />
+        <key>regex</key>
+        <false />
+        <key>expression</key>
         <string>messenger.com/*</string>
+        <key>action</key>
+        <integer>0</integer>
+      </dict>
+      <dict>
+        <key>active</key>
+        <true />
+        <key>regex</key>
+        <false />
+        <key>expression</key>
+        <string>www.kku.ac.th/*</string>
+        <key>action</key>
+        <integer>0</integer>
+      </dict>
+      <dict>
+        <key>active</key>
+        <true />
+        <key>regex</key>
+        <false />
+        <key>expression</key>
+        <string>i.kku.ac.th/*</string>
         <key>action</key>
         <integer>0</integer>
       </dict>
