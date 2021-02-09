@@ -25,15 +25,14 @@ const ClientTopMenu = ({scheduleInfo,type,student,confirmSubmit})=>{
             <Navbar.Text>{scheduleInfo.ExamDate} {scheduleInfo.ExamTimeStart}-{scheduleInfo.ExamTimeEnd}</Navbar.Text>
             <Navbar.Toggle aria-controls="basic-navbar-nav"/>
             <Navbar.Collapse>
-                <Nav className="mr-auto ml-2">
+                <Nav className="mr-auto ml-2 mt-2 mt-md-0">
                         <Button variant='primary' onClick={e =>{confirmSubmit()}}>
                         Submit and exit
                         </Button>
                 </Nav>
                 <Nav className="ml-auto">
-
                     <Nav.Link>
-                        <div>
+                        <div className="text-center">
                             <Badge className="mr-2">
                                 <span className="mr-2">{student.studentID}</span>
                                 <span className="mr-2">|</span>
@@ -49,8 +48,14 @@ const ClientTopMenu = ({scheduleInfo,type,student,confirmSubmit})=>{
 }
 const styles=StyleSheet.create({
     theory:{
-        left:'300px',
-        width: 'calc(100% - 300px) !important'
+        '@media (min-width:840px)':{
+            left:'300px',
+            width: 'calc(100% - 300px) !important'
+        },
+        '@media (max-width:800px)':{
+            left:'0px',
+            width: '100%'
+        }
     },
     workshop:{
         left:'100px',

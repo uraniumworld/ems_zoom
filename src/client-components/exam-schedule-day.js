@@ -7,7 +7,7 @@ import {faArrowRight, faCheck, faCheckCircle} from "@fortawesome/free-solid-svg-
 const striptags = require('striptags');
 
 const ExamScheduleDay = ({schedules,student})=>{
-    console.log(schedules);
+    // console.log(schedules);
     const history = useHistory();
     if(!schedules)return <div>Loading...</div>
     return <div>
@@ -18,7 +18,7 @@ const ExamScheduleDay = ({schedules,student})=>{
                     <>
                         {
                             schedules.map(schd=>{
-                                return <Col key={schd.SchdDetailID} md={6} className="mb-2">
+                                return <Col key={schd.SchdDetailID} lg={6} className="mb-4">
                                     <Card>
                                         <Card.Header>
                                             <div>{striptags(schd.DateRegist_Desc_Th)}</div>

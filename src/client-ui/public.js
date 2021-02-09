@@ -55,9 +55,6 @@ const Public = () => {
     }
 
     return <div className={css(styles.bg)}>
-        <MetaTags>
-            <meta name="viewport" content="width=device-width, initial-scale=1" />
-        </MetaTags>
         <Container style={{height: '100%'}}>
             <div className={css(styles.header)}>
                 <Image src={`${basePath}/images/HeaderENG.jpg`} fluid/>

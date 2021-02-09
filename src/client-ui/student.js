@@ -9,6 +9,7 @@ import {Alert, Badge, Card, Col} from "react-bootstrap";
 import {observer} from "mobx-react";
 import RequiredSEB from "../client-ui/required-seb";
 import Public from "./public";
+import MetaTags from "react-meta-tags";
 
 let timer;
 const Student = ()=>{
@@ -56,6 +57,9 @@ const Student = ()=>{
     }
     if (typeof state.currentStudent == 'undefined' || !state.forceSEB || !state.auth) return <Alert variant='info'>Loading...</Alert>
     return <>
+        <MetaTags>
+            <meta name="viewport" content="width=device-width, initial-scale=1" />
+        </MetaTags>
         {state.currentStudent
             ?
             <Switch>

@@ -132,6 +132,15 @@ const Theory = ({student,scheduleInfo, serverTime, onSubmitted}) => {
                         </div>
                     </Col>)}
                 </Row>
+                <div className="d-block d-md-none">
+                    <Row>
+                        <Col>
+                            <div className="text-center p-3">
+                                <Button onClick={e=>confirmSubmit()}>Submit And Exit</Button>
+                            </div>
+                        </Col>
+                    </Row>
+                </div>
             </div>
             <Container className={css(styles.theoryContainer)}>
                 <ClientTopMenu type="theory" scheduleInfo={scheduleInfo} student={student}
@@ -182,7 +191,7 @@ const Theory = ({student,scheduleInfo, serverTime, onSubmitted}) => {
                 <h3>Please review your answered.</h3>
                 <Row>
                     <Col>
-                        <Table>
+                        <Table borderless>
                             <thead>
                             <tr>
                                 <th>Question</th>
@@ -196,11 +205,11 @@ const Theory = ({student,scheduleInfo, serverTime, onSubmitted}) => {
                                     let TheoryChoiceID=doneQuestion[q.TheoryID].TheoryChoiceID;
                                     let choice=q.choices.find(v=>v.TheoryChoiceID==TheoryChoiceID)
                                     if(choice){
-                                        choiceText=<Badge style={{fontSize:'90%'}} variant="success">({TheoryChoiceID}) {choice.text}</Badge>;
+                                        choiceText=<p style={{fontSize:'90%'}} variant="success" className="text-success">({TheoryChoiceID}) {choice.text}</p>;
                                     }
                                 }
-                                return <tr>
-                                    <td width="80%">Q{i+1}. {striptags(q.question)}</td>
+                                return <tr key={q}>
+                                    <td width="70%">Q{i+1}. {striptags(q.question)}</td>
                                     <td>{choiceText}</td>
                                 </tr>
                             })}
