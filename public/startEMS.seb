@@ -1197,7 +1197,7 @@
     <key>startResource</key>
     <string />
     <key>startURL</key>
-    <string>https://ems.kku.ac.th/ems_tools/examination_resful_api.php?method=seb</string>
+    <string>https://ems.kku.ac.th/v2/start</string>
     <key>startURLAppendQueryParameter</key>
     <false />
     <key>taskBarHeight</key>

@@ -25,8 +25,12 @@ const Student = ()=>{
 
     async function init(){
         let SEB = await checkSafeExamBrowser();
-        if(SEB && SEB.requiredSafeExamBrowser){
+        if(SEB && SEB.sebError){
             setBlockBySafeExamBrowser(true);
+            if(SEB.InvalidExamKey){
+                alert('Invalid exam hash.');
+                document.location.href='https://exit'
+            }
             return;
         }
         setBlockBySafeExamBrowser(false);

@@ -5,6 +5,7 @@ import {useEffect, useState} from "react";
 import {getContent} from "../components/services";
 import {CSSTransition, TransitionGroup} from 'react-transition-group';
 import classNames from "classnames";
+import MetaTags from 'react-meta-tags';
 
 const {basePath} = Config;
 
@@ -54,6 +55,9 @@ const Public = () => {
     }
 
     return <div className={css(styles.bg)}>
+        <MetaTags>
+            <meta name="viewport" content="width=device-width, initial-scale=1" />
+        </MetaTags>
         <Container style={{height: '100%'}}>
             <div className={css(styles.header)}>
                 <Image src={`${basePath}/images/HeaderENG.jpg`} fluid/>
@@ -63,12 +67,12 @@ const Public = () => {
                     <Row>
                         <Col md={6} className="p-3 p-sm-2 text-center">
                             <a href='https://kku.world/exam'>
-                                <Image src={`${basePath}/images/button1.png`} fluid/>
+                                <Image className={css(styles.imgBtn)} src={`${basePath}/images/button1.png`} fluid/>
                             </a>
                         </Col>
                         <Col md={6} className="p-3 p-sm-2 text-center">
                             <a href='https://tawk.to/chat/5e7984ca69e9320caabc4f2d/default' target='_blank'>
-                                <Image src={`${basePath}/images/button2.png`} fluid/>
+                                <Image className={css(styles.imgBtn)} src={`${basePath}/images/button2.png`} fluid/>
                             </a>
                         </Col>
                     </Row>
@@ -78,7 +82,7 @@ const Public = () => {
                         <Col className="p-3 p-sm-2 text-center">
                             <Image className="d-none d-md-inline" src={`${basePath}/images/online-exam-01.jpg`} fluid/>
                             <a href={`${basePath}/start`} target='_blank'>
-                                <Image src={`${basePath}/images/button3.png`} fluid className={css(styles.startExam)}/>
+                                <Image src={`${basePath}/images/button3.png`} fluid className={css(styles.imgBtn,styles.startExam)}/>
                             </a>
                         </Col>
                     </Row>
@@ -87,19 +91,19 @@ const Public = () => {
                     <Row>
                         <Col md={4} className="p-3 p-sm-2 text-center">
                             <a href="#" onClick={changeContent.bind(this, 'announce')}>
-                                <Image src={`${basePath}/images/announcement.png`} fluid className={css(contentType=="announce" && styles.active)}/>
+                                <Image src={`${basePath}/images/announcement.png`} fluid className={css(styles.imgBtn2,contentType=="announce" && styles.active)}/>
                             </a>
                             {getWebContent('announce')}
                         </Col>
                         <Col md={4} className="p-3 p-sm-2 text-center">
                             <a href="#" onClick={changeContent.bind(this, 'calendar')}>
-                                <Image src={`${basePath}/images/calendar.png`} fluid className={css(contentType=="calendar" && styles.active)}/>
+                                <Image src={`${basePath}/images/calendar.png`} fluid className={css(styles.imgBtn2,contentType=="calendar" && styles.active)}/>
                             </a>
                             {getWebContent('calendar')}
                         </Col>
                         <Col md={4} className="p-3 p-sm-2 text-center">
                             <a href="#" onClick={changeContent.bind(this, 'manual')}>
-                                <Image src={`${basePath}/images/manual.png`} fluid className={css(contentType=="manual" && styles.active)}/>
+                                <Image src={`${basePath}/images/manual.png`} fluid className={css(styles.imgBtn2,contentType=="manual" && styles.active)}/>
                             </a>
                             {getWebContent('manual')}
                         </Col>
@@ -108,6 +112,11 @@ const Public = () => {
                 {getWebContent()}
             </div>
         </Container>
+        <div className={css(styles.footer)}>
+            <Container>
+                <div className="text-center mt-4">© ems.kku.ac.th 2021. All rights reserved.</div>
+            </Container>
+        </div>
     </div>
 }
 const styles = StyleSheet.create({
@@ -115,6 +124,22 @@ const styles = StyleSheet.create({
         background: '#4c4c4e',
         minHeight: '100vh',
         height: 'auto',
+    },
+    imgBtn:{
+        ':hover':{
+            filter:'brightness(1.2)',
+            transition:'all 200ms',
+        }
+    },
+    imgBtn2:{
+        ':hover':{
+            filter:'brightness(.8)',
+            transition:'all 200ms',
+        }
+    },
+    footer:{
+        height:'100px',
+        color:'white',
     },
     header: {
         // background: `url("${basePath}/images/HeaderENG.jpg")`,
