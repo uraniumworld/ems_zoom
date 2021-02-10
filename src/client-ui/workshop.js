@@ -58,6 +58,7 @@ const Workshop = ({student,scheduleInfo, serverTime, onSubmitted}) => {
 
 
     useEffect(() => {
+        window.document.title='EMS Workshop Examination';
         getWorkshopQuestion(StdRegistID, SchdDetailID).then(data => {
             if(data.submitted){
                 if(onSubmitted)onSubmitted();

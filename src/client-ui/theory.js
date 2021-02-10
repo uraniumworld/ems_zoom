@@ -26,6 +26,7 @@ const Theory = ({student,scheduleInfo, serverTime, onSubmitted}) => {
     const history = useHistory();
 
     useEffect(() => {
+        window.document.title='EMS Theory Examination';
         init();
     }, []);
 

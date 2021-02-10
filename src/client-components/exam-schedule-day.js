@@ -4,12 +4,16 @@ import classNames from 'classnames'
 import {useHistory} from 'react-router-dom';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faArrowRight, faCheck, faCheckCircle} from "@fortawesome/free-solid-svg-icons";
+import {useContext} from "react";
+import StateContext from "../mobx/global-context";
+import {observer} from "mobx-react";
 const striptags = require('striptags');
 
 const ExamScheduleDay = ({schedules,student})=>{
     // console.log(schedules);
+    const state = useContext(StateContext);
     const history = useHistory();
-    if(!schedules)return <div>Loading...</div>
+    if(typeof schedules == 'undefined')return <Alert variant='info'>Schedule Loading...</Alert>
     return <div>
         <Header/>
         <Container className="mt-4">
@@ -45,7 +49,7 @@ const ExamScheduleDay = ({schedules,student})=>{
                                                             <FontAwesomeIcon icon={faArrowRight}/>
                                                         </a>
                                                         {
-                                                            student.forceSafeExamBrowser &&
+                                                            state.forceSEB.forceSafeExamBrowser &&
                                                             <a className="btn btn-danger" href="https://exit">Exit</a>
                                                         }
                                                     </>
@@ -68,7 +72,7 @@ const ExamScheduleDay = ({schedules,student})=>{
                             No schedule in this time .
                         </Alert>
                         {
-                            student.forceSafeExamBrowser &&
+                            state.forceSEB.forceSafeExamBrowser &&
                             <div className="text-center"><a className="btn btn-danger" href="https://exit">Exit</a></div>
                         }
                     </Col>
@@ -78,4 +82,4 @@ const ExamScheduleDay = ({schedules,student})=>{
         </Container>
     </div>
 }
-export default ExamScheduleDay;
+export default observer(ExamScheduleDay);

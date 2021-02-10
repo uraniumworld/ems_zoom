@@ -1,4 +1,4 @@
-import {Alert, Col, Container, Image, Row} from "react-bootstrap";
+import {Alert, Card, Col, Container, Image, Row} from "react-bootstrap";
 import {StyleSheet, css} from "aphrodite";
 import Config from "../config";
 import {useEffect, useState} from "react";
@@ -11,14 +11,14 @@ const {basePath} = Config;
 
 const Public = () => {
     const [contentType, setContentType] = useState('announce');
-    const [content, setContent] = useState(null);
+    const [frontPage, setFrontPage] = useState(null);
 
     useEffect(()=>{
         new Promise(async resolve => {
-            setContent(null);
+            setFrontPage(null);
             setTimeout(async ()=>{
                 let content = await getContent(contentType);
-                setContent(content)
+                setFrontPage(content)
                 resolve();
             },300);
         })
@@ -37,15 +37,22 @@ const Public = () => {
         })} style={{minHeight:'300px'}}>
             <Row>
                 <Col>
-                    <div className="text-center">
+                    <div className="text-center mt-4">
                         <TransitionGroup>
-                            {content && content.text &&
-                            <CSSTransition timeout={300} classNames="myFade">
-                                <Alert variant="info">
-                                    <p dangerouslySetInnerHTML={{__html:content.text}}></p>
-                                </Alert>
-                            </CSSTransition>
-                            }
+                            {frontPage && frontPage.contents.map(c=>
+                                <CSSTransition timeout={300} classNames="myFade">
+                                    <Card className="mb-4">
+                                        <Card.Header className="text-white" style={{background:'#3399cc'}}>
+                                            <Card.Text className="text-left">
+                                                <h3>{c.title}</h3>
+                                            </Card.Text>
+                                        </Card.Header>
+                                        <Card.Body>
+                                            <div className="text-left" style={{fontSize:'1.2rem'}} dangerouslySetInnerHTML={{__html:c.html}}></div>
+                                        </Card.Body>
+                                    </Card>
+                                </CSSTransition>
+                            )}
                         </TransitionGroup>
 
                     </div>

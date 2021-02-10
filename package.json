@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "cors": true,
-  "homepage": "/dev",
+  "homepage": "/v2",
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.34",
     "@fortawesome/free-solid-svg-icons": "^5.15.2",
@@ -33,6 +33,7 @@
     "react-confirm-alert": "^2.6.2",
     "react-copy-to-clipboard": "^5.0.3",
     "react-data-table-component": "^6.11.6",
+    "react-document-title": "^2.0.3",
     "react-dom": "^17.0.1",
     "react-meta-tags": "^1.0.1",
     "react-router-dom": "^5.2.0",

@@ -14,7 +14,7 @@ import MetaTags from "react-meta-tags";
 let timer;
 const Student = ()=>{
     const state = useContext(StateContext);
-    const [blockBySafeExamBrowser,setBlockBySafeExamBrowser] = useState();
+    const [blockBySafeExamBrowser,setBlockBySafeExamBrowser] = useState(false);
     let location = useLocation();
 
     useEffect(() => {
@@ -26,25 +26,27 @@ const Student = ()=>{
 
     async function init(){
         let SEB = await checkSafeExamBrowser();
-        if(SEB && SEB.sebError){
+        if(!SEB)return;
+        if(SEB.sebError){
             setBlockBySafeExamBrowser(true);
             if(SEB.InvalidExamKey){
-                alert('Invalid exam hash.');
-                document.location.href='https://exit'
+                setTimeout(()=>{
+                    alert('Invalid SEB config hash.');
+                    document.location.href='https://exit'
+                },2000);
             }
             return;
         }
-        setBlockBySafeExamBrowser(false);
         state.setForceSEB(SEB);
         let auth = await getAuthType();
         state.setAuth(auth);
-        await checker(auth);
+        await checker();
         timer=setInterval(() => {
-            checker(auth)
+            checker()
         }, 5 * 60000)
     }
 
-    async function checker(auth) {
+    async function checker() {
         let user = await checkLogin();
         if (user) {
             state.setStudent(user);

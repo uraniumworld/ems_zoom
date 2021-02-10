@@ -15,7 +15,6 @@ const LoginClient = ()=>{
     useEffect(()=>{
         if(state.auth.authType=='sso'){
             document.location.href=state.auth.ssoURL;
-            return;
         }
     },[]);
 
