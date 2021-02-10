@@ -19,3 +19,32 @@
     transition: all 300ms;
   }
 }
+
+.animGlow {
+  border-radius: 100px;
+  background-color: #9ff1ff;
+  animation: glow 1s infinite alternate;
+}
+
+
+@media (min-width:768px) {
+  @keyframes glow {
+    from {
+      box-shadow: 0 0 10px -8px #ffffffcc;
+    }
+    to {
+      box-shadow: 0 0 15px 10px #aeecf4cc;
+    }
+  }
+}
+
+@media (max-width:767px) {
+  @keyframes glow {
+    from {
+      box-shadow: 0 0 10px -8px #ffffffcc;
+    }
+    to {
+      box-shadow: 0 0 15px 10px #57fb49cc;
+    }
+  }
+}

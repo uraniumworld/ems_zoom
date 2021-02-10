@@ -86,7 +86,7 @@ const Public = () => {
                         <Col className="p-3 p-sm-2 text-center">
                             <Image className="d-none d-md-inline" src={`${basePath}/images/online-exam-01.jpg`} fluid/>
                             <a href={`${basePath}/start`} target='_blank'>
-                                <Image src={`${basePath}/images/button3.png`} fluid className={css(styles.imgBtn,styles.startExam)}/>
+                                <Image src={`${basePath}/images/button3.png`} fluid className={'animGlow '+css(styles.imgBtn,styles.startExam)}/>
                             </a>
                         </Col>
                     </Row>
