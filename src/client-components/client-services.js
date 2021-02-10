@@ -4,8 +4,8 @@ import {tranformScheduleDate} from "../components/services";
 
 
 
-export async function getExamSchedules(Username){
-    let schedules=await request('exam-schedule',{Username});
+export async function getExamSchedules(condition){
+    let schedules=await request('exam-schedule',{condition});
     return schedules && schedules.map(schd=>tranformScheduleDate(schd));
 }
 

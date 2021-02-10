@@ -37,7 +37,8 @@ const Header = ()=>{
 const styles = StyleSheet.create({
     main:{
         minHeight:'100px',
-        background:'#ff9b4e',
+        background:'rgb(51, 153, 204)',
+        color:'white',
     },
     text1:{
       marginTop:'20px',

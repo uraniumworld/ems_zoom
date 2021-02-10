@@ -15,6 +15,7 @@ const Exam=()=>{
     const state = useContext(StateContext);
     const history = useHistory();
     const [examSchedule,setExamSchedule] = useState();
+    const [examScheduleWithDateTime,setExamScheduleWithDateTime] = useState();
 
     useEffect(()=>{
       reload();
@@ -26,13 +27,19 @@ const Exam=()=>{
 
     }
     if(!type){
-        return <ExamScheduleDay student={state.currentStudent} schedules={examSchedule}/>
+        return <ExamScheduleDay
+            reload={reload}
+            student={state.currentStudent}
+            schedulesDate={examSchedule}
+            schedulesDateTime={examScheduleWithDateTime}
+        />
     }
 
-    function reload(){
-        getExamSchedules().then(data=>{
-            setExamSchedule(data);
-        });
+    async function reload(){
+        let dataDateTime = await getExamSchedules();
+        setExamScheduleWithDateTime(dataDateTime);
+        let dataDateOnly = await getExamSchedules('date');
+        setExamSchedule(dataDateOnly);
     }
 
     return <CheckInProcess
