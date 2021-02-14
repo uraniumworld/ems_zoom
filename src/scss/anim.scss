@@ -21,8 +21,7 @@
 }
 
 .animGlow {
-  border-radius: 100px;
-  background-color: #9ff1ff;
+  border-radius: 50px;
   animation: glow 1s infinite alternate;
 }
 
@@ -30,9 +29,11 @@
 @media (min-width:768px) {
   @keyframes glow {
     from {
+      border: 1px solid #9ff1ff00;
       box-shadow: 0 0 10px -8px #ffffffcc;
     }
     to {
+      border: 1px solid #9ff1ff;
       box-shadow: 0 0 15px 10px #aeecf4cc;
     }
   }
