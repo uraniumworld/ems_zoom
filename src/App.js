@@ -23,6 +23,7 @@ import LoginClient from "./client-ui/login-client";
 import Admin from "./ui/admin";
 import Student from "./client-ui/student";
 import Public from "./client-ui/public";
+import PrepareDevice from "./client-ui/prepare-device";
 
 export const mobxStore = new MobxStore();
 
@@ -38,6 +39,7 @@ function App() {
                 <Route path="/">
                     <Switch>
                         <Route path="/" exact component={Public}/>
+                        <Route path="/prepare-device" component={PrepareDevice}/>
                         <Student/>
                     </Switch>
                 </Route>

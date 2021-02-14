@@ -55,7 +55,7 @@ const Student = ()=>{
         }
     }
     if(blockBySafeExamBrowser){
-        return <RequiredSEB/>
+        return <RequiredSEB configFile="startEMS.seb"/>
     }
     if (typeof state.currentStudent == 'undefined' || !state.forceSEB || !state.auth) return <Alert variant='info'>Loading...</Alert>
     return <>
