@@ -1,4 +1,4 @@
-import {Alert, Button, Card, Col, Container, Image, Row} from "react-bootstrap";
+import {Alert, Button, Card, Col, Container, Image, Modal, Row} from "react-bootstrap";
 import {StyleSheet, css} from "aphrodite";
 import Config from "../config";
 import {useEffect, useState} from "react";
@@ -6,13 +6,19 @@ import {getContent} from "../components/services";
 import {CSSTransition, TransitionGroup} from 'react-transition-group';
 import classNames from "classnames";
 import MetaTags from 'react-meta-tags';
-import {getPlatform} from "../client-components/client-tools";
+import {useHistory} from 'react-router-dom';
+import LangSwitcher from "../client-components/lang-switcher";
 
 const {basePath} = Config;
 
 const Public = () => {
     const [contentType, setContentType] = useState('announce');
     const [frontPage, setFrontPage] = useState(null);
+    const [showModal, setShowModal] = useState(false);
+    const handleClose = () => setShowModal(false);
+    const handleShow = () => setShowModal(true);
+    const [lang,setLang] = useState("TH");
+    const history = useHistory();
 
     useEffect(()=>{
         new Promise(async resolve => {
@@ -40,13 +46,13 @@ const Public = () => {
                 <Col>
                     <div className="text-center mt-4">
                         <TransitionGroup>
-                            {frontPage && frontPage.contents.map((c,i)=>
-                                <CSSTransition key={'css_'+i} timeout={300} classNames="myFade">
+                            {frontPage && frontPage.contents.map(c=>
+                                <CSSTransition timeout={300} classNames="myFade">
                                     <Card className="mb-4">
                                         <Card.Header className="text-white" style={{background:'#3399cc'}}>
-                                            <div className="text-left">
+                                            <Card.Text className="text-left">
                                                 <h3>{c.title}</h3>
-                                            </div>
+                                            </Card.Text>
                                         </Card.Header>
                                         <Card.Body>
                                             <div className="text-left" style={{fontSize:'1.2rem'}} dangerouslySetInnerHTML={{__html:c.html}}></div>
@@ -94,22 +100,14 @@ const Public = () => {
                     <Row>
                         <Col className="p-3 p-sm-2 text-center">
                             <Image className="d-none d-md-inline" src={`${basePath}/images/online-exam-01.jpg`} fluid/>
-                            <a href={`${basePath}/start`} target='_blank'>
+                            <a href="#" target='_blank' onClick={e=>{
+                                e.preventDefault();
+                                setShowModal(true);
+                            }}>
                                 <Image src={`${basePath}/images/button3.png`} fluid className={'animGlow '+css(styles.imgBtn,styles.startExam)}/>
                             </a>
                         </Col>
                     </Row>
-                    {getPlatform()=='mac' &&
-                    <Row className="mt-5 mt-md-0">
-                        <Col>
-                            <div className="text-center">
-                                <a className="btn btn-info mt-4 animGlow" target='_blank' href="https://docs.google.com/forms/d/e/1FAIpQLSfSqVGwNBudKp0KGd_dFdTLQH4FPZBXmcUt1zskyitT1f6aHw/viewform">
-                                    macOS Share Office 365 Link (Click)
-                                </a>
-                            </div>
-                        </Col>
-                    </Row>
-                    }
                 </div>
                 <div className="mt-5">
                     <Row>
@@ -136,6 +134,46 @@ const Public = () => {
                 {getWebContent()}
             </div>
         </Container>
+        <Modal show={showModal} onHide={handleClose}>
+            <Modal.Header closeButton>
+                <Modal.Title>
+                    {lang==='TH'?
+                        <span>กรุณายืนยันการติดตั้งโปรแกรมบนอุปกรณ์ของคุณ</span>
+                        :
+                        <span>Please confirm software in your device.</span>
+                    }
+                    <LangSwitcher lang={lang} className='small ml-2' onLangSwitch={lang=>setLang(lang)}/></Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                {lang==='TH'?
+                <span>ผู้สอบได้ติดตั้งโปรแกรม Safe exam browser แล้วหรือยัง?</span>
+                    :
+                <span>Have you installed Safe exam browser into this device?</span>
+                }
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant="secondary" onClick={e=>{
+                    handleClose(true);
+                    history.push(`${basePath}/start`);
+                }}>
+                    {lang==='TH'?
+                        <span>ไม่, ฉันยังไม่เคยติดตั้งโปรแกรมดังกล่าว ขอขั้นตอนการติดตั้ง</span>
+                        :
+                        <span>No, I never install Safe exam browser before.</span>
+                    }
+                </Button>
+                <Button variant="success" onClick={e=>{
+                    handleClose(true);
+                    document.location.href=`sebs://ems.kku.ac.th/dev/startEMS.seb?rnd=${Math.random()}`;
+                }}>
+                    {lang==='TH'?
+                        <span>ใช่ ฉันติดตั้งโปรแกรม Safe exam browser เรียบร้อยแล้ว</span>
+                        :
+                        <span>Yes, I had already installed Safe exam browser in my device.</span>
+                    }
+                </Button>
+            </Modal.Footer>
+        </Modal>
         <div className={css(styles.footer)}>
             <Container>
                 <div className="text-center mt-4">© ems.kku.ac.th 2021. All rights reserved.</div>
@@ -145,6 +183,7 @@ const Public = () => {
 }
 const styles = StyleSheet.create({
     btnPrepare:{
+        padding: '15px',
         position: 'absolute',
         left:'50%',
         bottom:'20%',

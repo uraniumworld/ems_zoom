@@ -72,7 +72,7 @@ const RequiredSEB = ({configFile})=>{
                         </div>
                         <div className="mb-2" style={{color:'red'}}>
                             Step 7. <strong>If you have tried all methods and still cannot access the Safe Exam Browser program, try finding a new device or requesting to use the computer at Learning and Teaching Innovation Center
-                            <a href="mailto:ltic.psli@kku.ac.th" className="ml-1" style={{color:"green"}}>Email: ltic.psli@kku.ac.th</a> Inform the first name and surname, student's code, and schedule time that you want to use the computer for the exam
+                            <a href="mailto:ltic.psli@kku.ac.th" className="ml-1" style={{color:"green"}}>Email: ltic.psli@kku.ac.th</a> Inform the first name and surname, student's code, and schedule time that you want to use the computer for the exam.
                         </strong>
                         </div>
                     </>
