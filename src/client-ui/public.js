@@ -64,9 +64,17 @@ const Public = () => {
     }
 
     return <div className={css(styles.bg)}>
+        <MetaTags>
+            <meta name="viewport" content="width=device-width, initial-scale=1" />
+        </MetaTags>
         <Container style={{height: '100%'}}>
             <div className={css(styles.header)}>
                 <Image src={`${basePath}/images/HeaderENG.jpg`} fluid/>
+                <a href={`${Config.basePath}/prepare-device`} className={'btn btn-info btn-md-lg animGlow '+css(styles.btnPrepare)}>
+                    <div className="d-none d-md-inline-block">ตรวจสอบอุปกรณ์ในการสอบ</div>
+                    <div>Prepare your device</div>
+                    <div className="d-none d-md-inline-block">[CLICK HERE]</div>
+                </a>
             </div>
             <div className={css(styles.content)}>
                 <div>
@@ -137,6 +145,12 @@ const Public = () => {
     </div>
 }
 const styles = StyleSheet.create({
+    btnPrepare:{
+        position: 'absolute',
+        left:'50%',
+        bottom:'20%',
+        transform: 'translate(-50%,50%)',
+    },
     bg: {
         background: '#4c4c4e',
         minHeight: '100vh',
@@ -159,6 +173,7 @@ const styles = StyleSheet.create({
         color:'white',
     },
     header: {
+        position:'relative',
         // background: `url("${basePath}/images/HeaderENG.jpg")`,
         // height: '400px',
         // backgroundRepeat: 'no-repeat',

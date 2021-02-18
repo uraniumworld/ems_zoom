@@ -1,3 +1,4 @@
+import packageJson from './../package.json';
 const Config={
     adminPath:(path)=>{
         if(path){
@@ -6,6 +7,6 @@ const Config={
         return '/admin';
     },
     baseUrl:'https://ems.kku.ac.th',
-    basePath:'/dev'
+    basePath:packageJson.homepage
 };
 export default Config
