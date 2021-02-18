@@ -15,7 +15,6 @@ const Public = () => {
     const [frontPage, setFrontPage] = useState(null);
 
     useEffect(()=>{
-        console.log('Platform==',getPlatform());
         new Promise(async resolve => {
             setFrontPage(null);
             setTimeout(async ()=>{
