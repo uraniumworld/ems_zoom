@@ -1,4 +1,4 @@
-import {Alert, Card, Col, Container, Image, Row} from "react-bootstrap";
+import {Alert, Button, Card, Col, Container, Image, Row} from "react-bootstrap";
 import {StyleSheet, css} from "aphrodite";
 import Config from "../config";
 import {useEffect, useState} from "react";
@@ -6,6 +6,7 @@ import {getContent} from "../components/services";
 import {CSSTransition, TransitionGroup} from 'react-transition-group';
 import classNames from "classnames";
 import MetaTags from 'react-meta-tags';
+import {getPlatform} from "../client-components/client-tools";
 
 const {basePath} = Config;
 
@@ -14,6 +15,7 @@ const Public = () => {
     const [frontPage, setFrontPage] = useState(null);
 
     useEffect(()=>{
+        console.log('Platform==',getPlatform());
         new Promise(async resolve => {
             setFrontPage(null);
             setTimeout(async ()=>{
@@ -39,13 +41,13 @@ const Public = () => {
                 <Col>
                     <div className="text-center mt-4">
                         <TransitionGroup>
-                            {frontPage && frontPage.contents.map(c=>
-                                <CSSTransition timeout={300} classNames="myFade">
+                            {frontPage && frontPage.contents.map((c,i)=>
+                                <CSSTransition key={'css_'+i} timeout={300} classNames="myFade">
                                     <Card className="mb-4">
                                         <Card.Header className="text-white" style={{background:'#3399cc'}}>
-                                            <Card.Text className="text-left">
+                                            <div className="text-left">
                                                 <h3>{c.title}</h3>
-                                            </Card.Text>
+                                            </div>
                                         </Card.Header>
                                         <Card.Body>
                                             <div className="text-left" style={{fontSize:'1.2rem'}} dangerouslySetInnerHTML={{__html:c.html}}></div>
@@ -90,6 +92,17 @@ const Public = () => {
                             </a>
                         </Col>
                     </Row>
+                    {getPlatform()=='mac' &&
+                    <Row className="mt-5 mt-md-0">
+                        <Col>
+                            <div className="text-center">
+                                <a className="btn btn-info mt-4 animGlow" target='_blank' href="https://docs.google.com/forms/d/e/1FAIpQLSfSqVGwNBudKp0KGd_dFdTLQH4FPZBXmcUt1zskyitT1f6aHw/viewform">
+                                    macOS Share Office 365 Link (Click)
+                                </a>
+                            </div>
+                        </Col>
+                    </Row>
+                    }
                 </div>
                 <div className="mt-5">
                     <Row>

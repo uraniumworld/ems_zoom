@@ -76,3 +76,11 @@ export function ssoExit(forceSEB){
         document.location.href="http://ems.kku.ac.th/ems_tools/sso-data-checkin.php?action=logout";
     }
 }
+
+export function getPlatform(){
+    let isApple = /(Mac|iPhone|iPod|iPad)/i.test(navigator.platform);
+    let isWindows = /(Win)/i.test(navigator.platform);
+    if(isApple)return 'mac';
+    if(isWindows)return 'win';
+    return 'android';
+}
