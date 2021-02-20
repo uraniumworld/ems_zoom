@@ -197,7 +197,7 @@
     <key>enableZoomText</key>
     <true />
     <key>examKeySalt</key>
-    <data>bsDnWOVqMAdABBAln4de5L+8tVA242hiMpMpfoR7BpE=</data>
+    <data>x7fktmYdcOYfy1h2xTzADcnI3LSCr/ODU705hfxIa5M=</data>
     <key>examSessionClearCookiesOnEnd</key>
     <true />
     <key>examSessionClearCookiesOnStart</key>
@@ -291,104 +291,7 @@
     <key>oskBehavior</key>
     <integer>2</integer>
     <key>permittedProcesses</key>
-    <array>
-      <dict>
-        <key>active</key>
-        <true />
-        <key>autostart</key>
-        <false />
-        <key>iconInTaskbar</key>
-        <true />
-        <key>runInBackground</key>
-        <false />
-        <key>allowUserToChooseApp</key>
-        <true />
-        <key>strongKill</key>
-        <false />
-        <key>os</key>
-        <integer>1</integer>
-        <key>title</key>
-        <string>WINWORD</string>
-        <key>description</key>
-        <string />
-        <key>executable</key>
-        <string>winword.exe</string>
-        <key>originalName</key>
-        <string>WinWord.exe</string>
-        <key>windowHandlingProcess</key>
-        <string />
-        <key>path</key>
-        <string />
-        <key>identifier</key>
-        <string />
-        <key>arguments</key>
-        <array></array>
-      </dict>
-      <dict>
-        <key>active</key>
-        <true />
-        <key>autostart</key>
-        <false />
-        <key>iconInTaskbar</key>
-        <true />
-        <key>runInBackground</key>
-        <false />
-        <key>allowUserToChooseApp</key>
-        <true />
-        <key>strongKill</key>
-        <false />
-        <key>os</key>
-        <integer>1</integer>
-        <key>title</key>
-        <string>EXCEL</string>
-        <key>description</key>
-        <string />
-        <key>executable</key>
-        <string>excel.exe</string>
-        <key>originalName</key>
-        <string>Excel.exe</string>
-        <key>windowHandlingProcess</key>
-        <string />
-        <key>path</key>
-        <string />
-        <key>identifier</key>
-        <string />
-        <key>arguments</key>
-        <array></array>
-      </dict>
-      <dict>
-        <key>active</key>
-        <true />
-        <key>autostart</key>
-        <false />
-        <key>iconInTaskbar</key>
-        <true />
-        <key>runInBackground</key>
-        <false />
-        <key>allowUserToChooseApp</key>
-        <true />
-        <key>strongKill</key>
-        <false />
-        <key>os</key>
-        <integer>1</integer>
-        <key>title</key>
-        <string>POWERPNT</string>
-        <key>description</key>
-        <string />
-        <key>executable</key>
-        <string>powerpnt.exe</string>
-        <key>originalName</key>
-        <string>POWERPNT.EXE</string>
-        <key>windowHandlingProcess</key>
-        <string />
-        <key>path</key>
-        <string />
-        <key>identifier</key>
-        <string />
-        <key>arguments</key>
-        <array></array>
-      </dict>
-    </array>
+    <array></array>
     <key>pinEmbeddedCertificates</key>
     <false />
     <key>prohibitedProcesses</key>
