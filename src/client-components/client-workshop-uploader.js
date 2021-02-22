@@ -141,17 +141,17 @@ const ClientWorkshopUploader = ({
             }
             {userAnswer &&
             <>
-                <div className="font-weight-bold">2. Share KKU Office 365 public link</div>
-                <InputGroup>
-                    <InputGroup.Prepend>
-                        <InputGroup.Text>{getWorkshopType(PracticeID)}<span className="ml-2">o365 link</span></InputGroup.Text>
-                    </InputGroup.Prepend>
-                    <FormControl disabled={!!!userAnswer} value={o365URL||''} type="text" onBlur={e=>onO365Blur(e)} onChange={e=>setO365URL(e.target.value)} onKeyUp={e=>{
-                        if(e.keyCode==13)_updateO365URL();
-                    }}
-                                 placeholder="Start with -> https://kkumail-my.sharepoint.com"
-                    ></FormControl>
-                </InputGroup>
+                {/*<div className="font-weight-bold">2. Share KKU Office 365 public link</div>*/}
+                {/*<InputGroup>*/}
+                {/*    <InputGroup.Prepend>*/}
+                {/*        <InputGroup.Text>{getWorkshopType(PracticeID)}<span className="ml-2">o365 link</span></InputGroup.Text>*/}
+                {/*    </InputGroup.Prepend>*/}
+                {/*    <FormControl disabled={!!!userAnswer} value={o365URL||''} type="text" onBlur={e=>onO365Blur(e)} onChange={e=>setO365URL(e.target.value)} onKeyUp={e=>{*/}
+                {/*        if(e.keyCode==13)_updateO365URL();*/}
+                {/*    }}*/}
+                {/*                 placeholder="Start with -> https://kkumail-my.sharepoint.com"*/}
+                {/*    ></FormControl>*/}
+                {/*</InputGroup>*/}
             </>
             }
         </Card.Body>

@@ -37,6 +37,10 @@ export function download(RowID){
     window.open('https://ems.kku.ac.th/ems_tools/examination_resful_api.php?method=download&id='+RowID)
 }
 
+export function downloadStarterFileLink(id){
+    return 'https://ems.kku.ac.th/ems_tools/examination_resful_api.php?method=download-starter&id='+id;
+}
+
 export function checkLogin(user,pass){
     return request('check-login');
 }

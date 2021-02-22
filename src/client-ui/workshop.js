@@ -16,7 +16,7 @@ import Footer from "../components/footer";
 import React, {useContext, useEffect, useState} from "react";
 import {Form} from "formik";
 import {
-    download, generateMSOffice,
+    download, downloadStarterFileLink, generateMSOffice,
     getWorkshopQuestion,
     getWorkshopUser, submitAndExit,
     updateO365URL,
@@ -49,7 +49,7 @@ const Workshop = ({student,scheduleInfo, serverTime, onSubmitted}) => {
     const [filter, setFilter] = useState('1');
     const [currentUserWorkshop, setCurrentUserWorkshop] = useState(null);
     const [showConfirmSubmit, setShowConfirmSubmit] = useState(false);
-    const [o365Link, setO365Link] = useState({});
+    const [office,setOffice] = useState([]);
     const [buttonDisabled, setButtonDisabled] = useState({
         submit: false,
     });
@@ -63,7 +63,8 @@ const Workshop = ({student,scheduleInfo, serverTime, onSubmitted}) => {
     }, []);
 
     async function init(){
-        await generateMSOffice(StdRegistID);
+        let office = await generateMSOffice(StdRegistID);
+        setOffice(office);
         getWorkshopQuestion(StdRegistID, SchdDetailID).then(data => {
             if(data.submitted){
                 if(onSubmitted)onSubmitted();
@@ -113,6 +114,28 @@ const Workshop = ({student,scheduleInfo, serverTime, onSubmitted}) => {
     function onTimeout(){
         toast.error('Time is up.')
         _submitAndExit();
+    }
+
+    function starterFile(){
+        let file = office.find(o=>o.PracticeID==filter);
+        if(file){
+            let icon;
+            if(file.PracticeID=="1"){
+                icon=<FontAwesomeIcon color="#007bff" size="5x" icon={faFileWord}/>;
+            }else if(file.PracticeID=="2"){
+                icon=<FontAwesomeIcon color="#28a745" size="5x" icon={faFileExcel}/>;
+            }else{
+                icon=<FontAwesomeIcon color="#ffc107" size="5x" icon={faFilePowerpoint}/>;
+            }
+            return <div>
+                <a download href={downloadStarterFileLink(file.id)}>
+                    <div>{icon}</div>
+                    <div><strong>[Click]</strong></div>
+                </a>
+            </div>
+        }else{
+            return <div>ERROR</div>
+        }
     }
 
     return <>
@@ -169,12 +192,8 @@ const Workshop = ({student,scheduleInfo, serverTime, onSubmitted}) => {
                         <Row className="mb-4">
                             <Col>
                                 <div className="text-center">
-                                    <h2>Start KKU Office365 Click this icon.</h2>
-                                    <div className={css(styles.o365)}>
-                                        <a href="https://o365.kku.ac.th" target='_blank'>
-                                            <Image width="200" src={`${Config.basePath}/images/kku_o365.png`}/>
-                                        </a>
-                                    </div>
+                                    <h2>Download starter file here.</h2>
+                                    {starterFile()}
                                 </div>
                             </Col>
                         </Row>
@@ -186,7 +205,6 @@ const Workshop = ({student,scheduleInfo, serverTime, onSubmitted}) => {
                                 await reloadWorkshopFile();
                             }}
                             onLinkUpdated={async result => {
-                                // let userAnswer = getUserAnswer();
                                 let title = getWorkshopType(result.PracticeID, true);
                                 toast.success(`${title} o365 Link Updated.`)
                                  await reloadWorkshopFile();
