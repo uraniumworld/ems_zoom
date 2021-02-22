@@ -16,7 +16,7 @@ import Footer from "../components/footer";
 import React, {useContext, useEffect, useState} from "react";
 import {Form} from "formik";
 import {
-    download,
+    download, generateMSOffice,
     getWorkshopQuestion,
     getWorkshopUser, submitAndExit,
     updateO365URL,
@@ -59,6 +59,11 @@ const Workshop = ({student,scheduleInfo, serverTime, onSubmitted}) => {
 
     useEffect(() => {
         window.document.title='EMS Workshop Examination';
+        init();
+    }, []);
+
+    async function init(){
+        await generateMSOffice(StdRegistID);
         getWorkshopQuestion(StdRegistID, SchdDetailID).then(data => {
             if(data.submitted){
                 if(onSubmitted)onSubmitted();
@@ -67,9 +72,8 @@ const Workshop = ({student,scheduleInfo, serverTime, onSubmitted}) => {
                 setQuestions(data);
             }
         })
-        reloadWorkshopFile();
-    }, []);
-
+        await reloadWorkshopFile();
+    }
 
     async function reloadWorkshopFile() {
         let result = await getWorkshopUser(StdRegistID, SchdDetailID);

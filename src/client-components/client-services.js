@@ -79,6 +79,10 @@ export function getTheoryQuestions(StdRegistID){
     return request('theory-question',{StdRegistID});
 }
 
+export function generateMSOffice(StdRegistID){
+    return request('generate-document',{StdRegistID});
+}
+
 function request(method,params={},scriptName='examination_resful_api.php'){
     return new Promise(resolve => {
         axios.post(`/ems_tools/${scriptName}?method=`+method,params)
