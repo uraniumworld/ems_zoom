@@ -127,12 +127,10 @@ const Workshop = ({student,scheduleInfo, serverTime, onSubmitted}) => {
             }else{
                 icon=<FontAwesomeIcon color="#ffc107" size="5x" icon={faFilePowerpoint}/>;
             }
-            return <div>
-                <a download href={downloadStarterFileLink(file.id)}>
-                    <div>{icon}</div>
-                    <div><strong>[Click]</strong></div>
-                </a>
-            </div>
+            return <a download href={downloadStarterFileLink(file.id)} className="text-black-50" style={{display:'inline-block',width:'200px'}}>
+                <div>{icon}</div>
+                <div><strong>[ Click To Download ]</strong></div>
+            </a>
         }else{
             return <div>ERROR</div>
         }
@@ -205,9 +203,9 @@ const Workshop = ({student,scheduleInfo, serverTime, onSubmitted}) => {
                                 await reloadWorkshopFile();
                             }}
                             onLinkUpdated={async result => {
-                                let title = getWorkshopType(result.PracticeID, true);
-                                toast.success(`${title} o365 Link Updated.`)
-                                 await reloadWorkshopFile();
+                                // let title = getWorkshopType(result.PracticeID, true);
+                                // toast.success(`${title} o365 Link Updated.`)
+                                //  await reloadWorkshopFile();
                             }}
                         />
                         <div>
@@ -252,26 +250,26 @@ const Workshop = ({student,scheduleInfo, serverTime, onSubmitted}) => {
                                         let practice = getPracticeName(answer.PracticeID);
                                         return (
                                             <div key={'practice_'+answer.PracticeID}>
-                                                {answer.url ?
-                                                    <div className="text-success"><FontAwesomeIcon icon={faCheckCircle}
-                                                                                                   className="mr-2"/> File
-                                                        ok</div>
-                                                    :
-                                                    <div className="text-danger"><FontAwesomeIcon icon={faTimes}
-                                                                                                  className="mr-2"/> No
-                                                        Office 365 link -> No score</div>
-                                                }
+                                                {/*{answer.url ?*/}
+                                                {/*    <div className="text-success"><FontAwesomeIcon icon={faCheckCircle}*/}
+                                                {/*                                                   className="mr-2"/> File*/}
+                                                {/*        ok</div>*/}
+                                                {/*    :*/}
+                                                {/*    <div className="text-danger"><FontAwesomeIcon icon={faTimes}*/}
+                                                {/*                                                  className="mr-2"/> No*/}
+                                                {/*        Office 365 link -> No score</div>*/}
+                                                {/*}*/}
                                                 <Alert key={'wk_' + answer.PracticeID} variant={practice.class}>
                                                     <strong className='mr-2'>{practice.icon} {practice.name}</strong>
                                                     <a href='#' className={'text-' + practice.class} onClick={e => {
                                                         e.preventDefault();
                                                         download(answer.RowID)
                                                     }}>{answer.FileName}</a>
-                                                    <div><span
-                                                        className="mr-2 font-weight-bold">o360 Link:</span><span>{answer.url ?
-                                                        <a href={answer.url}
-                                                           target='_blank'>{textLimit(answer.url)}</a> : '- No Link -'}</span>
-                                                    </div>
+                                                    {/*<div><span*/}
+                                                    {/*    className="mr-2 font-weight-bold">o360 Link:</span><span>{answer.url ?*/}
+                                                    {/*    <a href={answer.url}*/}
+                                                    {/*       target='_blank'>{textLimit(answer.url)}</a> : '- No Link -'}</span>*/}
+                                                    {/*</div>*/}
                                                 </Alert>
                                             </div>
                                         )

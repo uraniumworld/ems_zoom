@@ -7,6 +7,7 @@ const Config={
         return '/admin';
     },
     baseUrl:'https://ems.kku.ac.th',
-    basePath:packageJson.homepage
+    basePath:packageJson.homepage,
+    maxUploadSize:10//MB
 };
 export default Config

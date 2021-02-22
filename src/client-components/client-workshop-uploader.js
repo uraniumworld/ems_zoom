@@ -33,6 +33,10 @@ const ClientWorkshopUploader = ({
     async function uploadFile(e) {
         let file = e.target.files[0];
         if (!file) return;
+        if(file.size>10*1048576){
+            toast.error(`Max upload size is 10 MB`);
+            return;
+        }
         const formData = new FormData();
         formData.append('file', file, file.name);
         formData.append('StdRegistID', StdRegistID);
