@@ -150,7 +150,12 @@ const Workshop = ({student,scheduleInfo, serverTime, onSubmitted}) => {
                    onClick={async e=>{
                        let result = await updateStateMSOffice(StdRegistID,file.id);
                        if(!result.error){
-                           toast.success('Use downloaded file to start exam.',{autoClose:10000});
+                           let lang = getStudentLang(student);
+                           if(lang=='th'){
+                               toast.success('ใช้ไฟล์กระดาษคำตอบที่ดาวน์โหลดนี้ในการทำข้อสอบและส่งผ่านระบบ EMS เท่านั้น',{autoClose:15000});
+                           }else{
+                               toast.success('Use downloaded answer sheet file to start an exam.',{autoClose:15000});
+                           }
                            setOffice(prevState => {
                                let f= prevState.find(f=>f.id==file.id);
                                f.downloaded='1';
@@ -244,6 +249,7 @@ const Workshop = ({student,scheduleInfo, serverTime, onSubmitted}) => {
                             <CSSTransition timeout={300} classNames="myFade">
                                 <div>
                                     <ClientWorkshopUploader
+                                        student={student}
                                         PracticeID={filter}
                                         userAnswer={getUserAnswer()}
                                         StdRegistID={StdRegistID}

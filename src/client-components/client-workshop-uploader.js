@@ -5,9 +5,11 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCheckCircle, faTimes, faTimesCircle, faUndo} from "@fortawesome/free-solid-svg-icons";
 import React, {createRef, useEffect, useRef, useState} from "react";
 import {toast} from "react-toastify";
-import {getWorkshopType} from "./client-tools";
+import {getStudentLang, getWorkshopType} from "./client-tools";
+import student from "../client-ui/student";
 
 const ClientWorkshopUploader = ({
+                                    student,
                                     userAnswer,
                                     PracticeID,
                                     StdRegistID,
@@ -48,7 +50,16 @@ const ClientWorkshopUploader = ({
                 onUploadSuccess(uploaded);
                 setNewUpload(false);
             } else {
-                toast.error(uploaded.error);
+                if(uploaded.error=='Invalid document file'){
+                    let lang = getStudentLang(student);
+                    if(lang=='th'){
+                        toast.error('ไฟล์กระดาษคำตอบไม่ถูกต้อง ผู้สอบต้องใช้ไฟล์กระดาษคำตอบของตนเองเท่านั้น (ระบบได้ส่งข้อความไปยังผู้คุมสอบแล้ว)',{autoClose:15000});
+                    }else{
+                        toast.error('The answer sheet file is invalid. You must use your own answer sheet file only. (This notify has been sent to the examiner.)',{autoClose:15000});
+                    }
+                }else{
+                    toast.error(uploaded.error);
+                }
             }
             e.target.value = null;
         } else {
