@@ -47,13 +47,13 @@ const Public = () => {
                 <Col>
                     <div className="text-center mt-4">
                         <TransitionGroup>
-                            {frontPage && frontPage.contents.map(c=>
-                                <CSSTransition timeout={300} classNames="myFade">
+                            {frontPage && frontPage.contents.map((c,i)=>
+                                <CSSTransition key={'css_'+i} timeout={300} classNames="myFade">
                                     <Card className="mb-4">
                                         <Card.Header className="text-white" style={{background:'#3399cc'}}>
-                                            <Card.Text className="text-left">
+                                            <div className="text-left">
                                                 <h3>{c.title}</h3>
-                                            </Card.Text>
+                                            </div>
                                         </Card.Header>
                                         <Card.Body>
                                             <div className="text-left" style={{fontSize:'1.2rem'}} dangerouslySetInnerHTML={{__html:c.html}}></div>
