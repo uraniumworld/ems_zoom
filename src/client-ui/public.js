@@ -166,7 +166,7 @@ const Public = () => {
             <Modal.Footer>
                 <Button variant="secondary" onClick={e=>{
                     handleClose(true);
-                    history.push(`${basePath}/start`);
+                    history.push(`/start`);
                 }}>
                     {lang==='TH'?
                         <span>ไม่, ฉันยังไม่เคยติดตั้งโปรแกรมดังกล่าว ขอขั้นตอนการติดตั้ง</span>

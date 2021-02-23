@@ -87,6 +87,10 @@ export function generateMSOffice(StdRegistID){
     return request('generate-document',{StdRegistID});
 }
 
+export function updateStateMSOffice(StdRegistID,officeID){
+    return request('downloaded-state-document',{StdRegistID,officeID});
+}
+
 function request(method,params={},scriptName='examination_resful_api.php'){
     return new Promise(resolve => {
         axios.post(`/ems_tools/${scriptName}?method=`+method,params)

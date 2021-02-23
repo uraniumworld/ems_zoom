@@ -10,6 +10,13 @@ export function textLimit(text,num=50){
     return text;
 }
 
+export function getStudentLang(student){
+    if(student.reg_kku.STUDENTCODE.match(/\d{2}3290\d{3}\-\d{1}/)){
+        return 'en';
+    }
+    return 'th';
+}
+
 export function getWorkshopType(typeID,asText=false) {
     if(!asText){
         switch (typeID) {

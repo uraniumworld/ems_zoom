@@ -19,7 +19,7 @@ import {
     download, downloadStarterFileLink, generateMSOffice,
     getWorkshopQuestion,
     getWorkshopUser, submitAndExit,
-    updateO365URL,
+    updateO365URL, updateStateMSOffice,
     uploadWorkshopFile
 } from "../client-components/client-services";
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
@@ -37,9 +37,10 @@ import ClientTopMenu from "../client-components/client-top-menu";
 import {toast} from "react-toastify";
 import TimerClock from "../client-components/timer-clock";
 import ClientWorkshopUploader from "../client-components/client-workshop-uploader";
-import {getPracticeName, getWorkshopType, textLimit} from "../client-components/client-tools";
+import {getPracticeName, getStudentLang, getWorkshopType, textLimit} from "../client-components/client-tools";
 import Config from "../config";
 import {StyleSheet,css} from "aphrodite";
+import {CSSTransition, TransitionGroup} from "react-transition-group";
 
 //http://localhost:3000/exam/workshop/125180/3474
 
@@ -120,22 +121,66 @@ const Workshop = ({student,scheduleInfo, serverTime, onSubmitted}) => {
         let file = office.find(o=>o.PracticeID==filter);
         if(file){
             let icon;
+            let size='10x';
+            if(file.downloaded=='1')size='3x';
             if(file.PracticeID=="1"){
-                icon=<FontAwesomeIcon color="#007bff" size="5x" icon={faFileWord}/>;
+                icon=<FontAwesomeIcon color="#007bff" size={size} icon={faFileWord}/>;
             }else if(file.PracticeID=="2"){
-                icon=<FontAwesomeIcon color="#28a745" size="5x" icon={faFileExcel}/>;
+                icon=<FontAwesomeIcon color="#28a745" size={size} icon={faFileExcel}/>;
             }else{
-                icon=<FontAwesomeIcon color="#ffc107" size="5x" icon={faFilePowerpoint}/>;
+                icon=<FontAwesomeIcon color="#ffc107" size={size} icon={faFilePowerpoint}/>;
             }
-            return <a download href={downloadStarterFileLink(file.id)} className="text-black-50" style={{display:'inline-block',width:'200px'}}>
-                <div>{icon}</div>
-                <div><strong>[ Click To Download ]</strong></div>
-            </a>
+            let lang=getStudentLang(student);
+            return <div>
+                {file.downloaded=='1'?
+                    <h2>{lang=='th'?
+                        'ไฟล์กระดาษคำตอบ'
+                        :
+                        'Answer sheet file'
+                    }</h2>
+                    :
+                    <h2>{lang=='th'?
+                        'ขั้นตอนแรก ดาวน์โหลดไฟล์กระดาษคำตอบ ด้านล่างนี้'
+                        :
+                        'First, Download an answer sheet file'
+                    }</h2>
+                }
+                <a download href={downloadStarterFileLink(file.id)}
+                   className="text-black-50 mt-4" style={{display:'inline-block',width:'200px'}}
+                   onClick={async e=>{
+                       let result = await updateStateMSOffice(StdRegistID,file.id);
+                       if(!result.error){
+                           toast.success('Use downloaded file to start exam.',{autoClose:10000});
+                           setOffice(prevState => {
+                               let f= prevState.find(f=>f.id==file.id);
+                               f.downloaded='1';
+                               return [...prevState];
+                           });
+                       }else{
+                           toast.error(result.error);
+                       }
+                   }}
+                >
+                    <div>{icon}</div>
+                    {lang=='th'?
+                        <div className="mt-2"><span className="btn btn-dark"> คลิกเพื่อดาวน์โหลด </span></div>
+                        :
+                        <div className="mt-2"><span className="btn btn-dark"> Click To Download </span></div>
+                    }
+                </a>
+                <div className="mt-4">
+                    {lang=='th'?
+                        <Alert variant='warning'>ใช้ไฟล์กระดาษคำตอบนี้ในการทำข้อสอบตามโจทย์คำสั่ง และ ต้องส่งไฟล์โดยการอัปโหลดผ่านระบบ EMS เท่านั้น</Alert>
+                        :
+                        <Alert variant='warning'>Use this answer sheet file to complete the exam according to the instructions and the file must be uploaded via EMS only.</Alert>
+                    }
+                </div>
+            </div>
         }else{
             return <div>ERROR</div>
         }
     }
-
+    let currentOffice=office.find(o=>o.PracticeID==filter);
     return <>
         {(scheduleInfo && questions && currentUserWorkshop)
             ?
@@ -190,48 +235,55 @@ const Workshop = ({student,scheduleInfo, serverTime, onSubmitted}) => {
                         <Row className="mb-4">
                             <Col>
                                 <div className="text-center">
-                                    <h2>Download starter file here.</h2>
                                     {starterFile()}
                                 </div>
                             </Col>
                         </Row>
-                        <ClientWorkshopUploader
-                            PracticeID={filter}
-                            userAnswer={getUserAnswer()}
-                            StdRegistID={StdRegistID}
-                            onUploadSuccess={async (uploaded, e) => {
-                                await reloadWorkshopFile();
-                            }}
-                            onLinkUpdated={async result => {
-                                // let title = getWorkshopType(result.PracticeID, true);
-                                // toast.success(`${title} o365 Link Updated.`)
-                                //  await reloadWorkshopFile();
-                            }}
-                        />
-                        <div>
-                            {
-                                questions.filter(question => question.PracticeID == filter).map((question, i) => {
-                                    let practice = getPracticeName(question.PracticeID);
-                                    return <Row key={'question_' + i}>
-                                        <Col>
-                                            <div className="mb-4">
-                                                <Card>
-                                                    <Card.Header>
-                                                        <div
-                                                            style={{color: practice.color}}>{practice.icon} {practice.name} Questions
+                        <TransitionGroup>
+                            {currentOffice && currentOffice.downloaded == '1' &&
+                            <CSSTransition timeout={300} classNames="myFade">
+                                <div>
+                                    <ClientWorkshopUploader
+                                        PracticeID={filter}
+                                        userAnswer={getUserAnswer()}
+                                        StdRegistID={StdRegistID}
+                                        onUploadSuccess={async (uploaded, e) => {
+                                            await reloadWorkshopFile();
+                                        }}
+                                        onLinkUpdated={async result => {
+                                            // let title = getWorkshopType(result.PracticeID, true);
+                                            // toast.success(`${title} o365 Link Updated.`)
+                                            //  await reloadWorkshopFile();
+                                        }}
+                                    />
+                                    <div>
+                                        {
+                                            questions.filter(question => question.PracticeID == filter).map((question, i) => {
+                                                let practice = getPracticeName(question.PracticeID);
+                                                return <Row key={'question_' + i}>
+                                                    <Col>
+                                                        <div className="mb-4">
+                                                            <Card>
+                                                                <Card.Header>
+                                                                    <div
+                                                                        style={{color: practice.color}}>{practice.icon} {practice.name} Questions
+                                                                    </div>
+                                                                </Card.Header>
+                                                                <Card.Body style={{overflowX: 'auto'}}>
+                                                                    <div
+                                                                        dangerouslySetInnerHTML={{__html: question.question}}></div>
+                                                                </Card.Body>
+                                                            </Card>
                                                         </div>
-                                                    </Card.Header>
-                                                    <Card.Body style={{overflowX: 'auto'}}>
-                                                        <div
-                                                            dangerouslySetInnerHTML={{__html: question.question}}></div>
-                                                    </Card.Body>
-                                                </Card>
-                                            </div>
-                                        </Col>
-                                    </Row>
-                                })
+                                                    </Col>
+                                                </Row>
+                                            })
+                                        }
+                                    </div>
+                                </div>
+                            </CSSTransition>
                             }
-                        </div>
+                        </TransitionGroup>
                     </div>
                 </Container>
                 <Modal className='exam-confirm-modal' size='lg' show={showConfirmSubmit}
