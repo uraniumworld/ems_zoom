@@ -109,17 +109,17 @@ const Public = () => {
                             </a>
                         </Col>
                     </Row>
-                    {getPlatform()=='mac' &&
-                    <Row className="mt-5 mt-md-0">
-                        <Col>
-                            <div className="text-center">
-                                <a className="btn btn-info mt-4 animGlow" target='_blank' href="https://docs.google.com/forms/d/e/1FAIpQLSfSqVGwNBudKp0KGd_dFdTLQH4FPZBXmcUt1zskyitT1f6aHw/viewform">
-                                    macOS Share Office 365 Link (Click)
-                                </a>
-                            </div>
-                        </Col>
-                    </Row>
-                    }
+                    {/*{getPlatform()=='mac' &&*/}
+                    {/*<Row className="mt-5 mt-md-0">*/}
+                    {/*    <Col>*/}
+                    {/*        <div className="text-center">*/}
+                    {/*            <a className="btn btn-info mt-4 animGlow" target='_blank' href="https://docs.google.com/forms/d/e/1FAIpQLSfSqVGwNBudKp0KGd_dFdTLQH4FPZBXmcUt1zskyitT1f6aHw/viewform">*/}
+                    {/*                macOS Share Office 365 Link (Click)*/}
+                    {/*            </a>*/}
+                    {/*        </div>*/}
+                    {/*    </Col>*/}
+                    {/*</Row>*/}
+                    {/*}*/}
                 </div>
                 <div className="mt-5">
                     <Row>

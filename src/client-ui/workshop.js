@@ -51,6 +51,7 @@ const Workshop = ({student,scheduleInfo, serverTime, onSubmitted}) => {
     const [currentUserWorkshop, setCurrentUserWorkshop] = useState(null);
     const [showConfirmSubmit, setShowConfirmSubmit] = useState(false);
     const [office,setOffice] = useState([]);
+    const [showTip,setShowTip] = useState(false);
     const [buttonDisabled, setButtonDisabled] = useState({
         submit: false,
     });
@@ -148,6 +149,7 @@ const Workshop = ({student,scheduleInfo, serverTime, onSubmitted}) => {
                 <a download href={downloadStarterFileLink(file.id)}
                    className="text-black-50 mt-4" style={{display:'inline-block',width:'200px'}}
                    onClick={async e=>{
+                       setShowTip(true);
                        let result = await updateStateMSOffice(StdRegistID,file.id);
                        if(!result.error){
                            let lang = getStudentLang(student);
@@ -186,6 +188,7 @@ const Workshop = ({student,scheduleInfo, serverTime, onSubmitted}) => {
         }
     }
     let currentOffice=office.find(o=>o.PracticeID==filter);
+    let lang = getStudentLang(student);
     return <>
         {(scheduleInfo && questions && currentUserWorkshop)
             ?
@@ -292,6 +295,41 @@ const Workshop = ({student,scheduleInfo, serverTime, onSubmitted}) => {
                         </TransitionGroup>
                     </div>
                 </Container>
+                <Modal size='lg' show={showTip} onHide={e=>setShowTip(false)} backdrop='static'>
+                    <Modal.Header closeButton>
+                        <span>{
+                            lang=='th'?
+                                'กรุณาทำตามขั้นตอนต่อไปนี้'
+                                :
+                                'Please follow instruction.'
+                        }</span>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <div>
+                            {lang=='th'?
+                                <Alert variant="info">หลังจากดาวน์โหลดไฟล์มาแล้ว ให้ผู้สอบทำตามขั้นตอนตามภาพเพื่อ Unblock การเปิดเอกสาร</Alert>
+                                :
+                                <Alert variant="info">After downloading the file, You must follow the steps shown in the picture to unblock the document.</Alert>
+                            }
+                        </div>
+                        <div className="text-center mt-2">
+                            {filter=='1' &&
+                            <Image src={Config.basePath+'/images/unblock_tip_word.png'} fluid/>
+                            }
+                            {filter=='2' &&
+                            <Image src={Config.basePath+'/images/unblock_tip_excel.png'} fluid/>
+                            }
+                            {filter=='3' &&
+                            <Image src={Config.basePath+'/images/unblock_tip_powerpoint.png'} fluid/>
+                            }
+                        </div>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="primary" onClick={e => setShowTip(false)}>
+                            Start Exam
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
                 <Modal className='exam-confirm-modal' size='lg' show={showConfirmSubmit}
                        onHide={e => setShowConfirmSubmit(false)}>
                     <Modal.Header closeButton>

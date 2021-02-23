@@ -11,7 +11,7 @@ export function textLimit(text,num=50){
 }
 
 export function getStudentLang(student){
-    if(student.reg_kku.STUDENTCODE.match(/\d{2}3290\d{3}\-\d{1}/)){
+    if(student && student.reg_kku && student.reg_kku.STUDENTCODE.match(/\d{2}3290\d{3}\-\d{1}/)){
         return 'en';
     }
     return 'th';
