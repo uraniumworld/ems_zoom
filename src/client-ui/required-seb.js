@@ -44,7 +44,7 @@ const RequiredSEB = ({configFile})=>{
                         <div className="mb-2" style={{color:'red'}}>
                             ขั้นตอนที่ 7. <strong>หากลองทุกวิธีการแล้วยังไม่สามารถเข้าโปรแกรม Safe Exam Browser
                             ให้ลองหาอุปกรณ์ใหม่ หรือ แจ้งความจำนงขอใช้เครื่องคอมพิวเตอร์ที่ ศูนย์นวัตกรรมการเรียนการสอนในการสอบที่
-                            <a href="mailto:ltic.psli@kku.ac.th" className="ml-1" style={{color:"green"}}>Email: ltic.psli@kku.ac.th</a> แจ้งชื่อ-นามสกุล หัสนักศึกษา และ รอบที่ต้องการข้อใช้เครื่องในการสอบ
+                            <a href="https://kku.world/6p7ss" target='_blank' className="ml-1" style={{color:"green"}}>แบบฟอร์มขอใช้เครื่องของศูนย์ในการสอบ (คลิก)</a> แจ้งชื่อ-นามสกุล รหัสนักศึกษา และ รอบที่ต้องการข้อใช้เครื่องในการสอบ
                         </strong>
                         </div>
                     </>
@@ -72,7 +72,7 @@ const RequiredSEB = ({configFile})=>{
                         </div>
                         <div className="mb-2" style={{color:'red'}}>
                             Step 7. <strong>If you have tried all methods and still cannot access the Safe Exam Browser program, try finding a new device or requesting to use the computer at Learning and Teaching Innovation Center
-                            <a href="mailto:ltic.psli@kku.ac.th" className="ml-1" style={{color:"green"}}>Email: ltic.psli@kku.ac.th</a> Inform the first name and surname, student's code, and schedule time that you want to use the computer for the exam.
+                            <a href="https://kku.world/6p7ss" target='_blank' className="ml-1" style={{color:"green"}}>Request form (Click)</a> Inform the first name and surname, student's code, and schedule time that you want to use the computer for the exam.
                         </strong>
                         </div>
                     </>
