@@ -1,4 +1,4 @@
-import {Alert, Button, Card, Col, Container, Image, Modal, Row} from "react-bootstrap";
+import {Alert, Badge, Button, Card, Col, Container, Image, Modal, Row} from "react-bootstrap";
 import {StyleSheet, css} from "aphrodite";
 import Config from "../config";
 import {useEffect, useState} from "react";
@@ -98,6 +98,17 @@ const Public = () => {
                     </Row>
                 </div>
                 <div className="mt-5" style={{position: 'relative'}}>
+                    <Row>
+                        <Col>
+                            <div className="text-center">
+                                <Badge variant="danger">Theory</Badge> - <Image src={`${Config.basePath}/images/windows.png`} width="30"/>
+                                Support Windows 7 / 8.1 / 10 / <Image src={`${Config.basePath}/images/mac.png`} width="25"/> / <Image src={`${Config.basePath}/images/ios.png`} width="50"/>
+                            </div>
+                            <div className="text-center">
+                                <Badge variant="primary">Workshop</Badge> - <Image src={`${Config.basePath}/images/windows.png`} width="30"/>Support Windows 7 / 8.1 / 10 <Badge variant='warning'>Only</Badge>
+                            </div>
+                        </Col>
+                    </Row>
                     <Row>
                         <Col className="p-3 p-sm-2 text-center">
                             <Image className="d-none d-md-inline" src={`${basePath}/images/online-exam-01.jpg`} fluid/>
