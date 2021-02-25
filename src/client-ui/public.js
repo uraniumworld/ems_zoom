@@ -100,12 +100,13 @@ const Public = () => {
                 <div className="mt-5" style={{position: 'relative'}}>
                     <Row>
                         <Col>
+                            <h3 className="text-center">Online Exam Supported OS</h3>
                             <div className="text-center">
-                                <Badge variant="danger">Theory</Badge> - <Image src={`${Config.basePath}/images/windows.png`} width="30"/>
+                                <Badge variant="danger">Theory</Badge> - OS: <Image src={`${Config.basePath}/images/windows.png`} width="30"/>
                                 Support Windows 7 / 8.1 / 10 / <Image src={`${Config.basePath}/images/mac.png`} width="25"/> / <Image src={`${Config.basePath}/images/ios.png`} width="50"/>
                             </div>
                             <div className="text-center">
-                                <Badge variant="primary">Workshop</Badge> - <Image src={`${Config.basePath}/images/windows.png`} width="30"/>Support Windows 7 / 8.1 / 10 <Badge variant='warning'>Only</Badge>
+                                <Badge variant="primary">Workshop</Badge> - <Image width="60px" src={`${Config.basePath}/images/office.png`}/> MS Office 2010+ or 365 | OS: <Image src={`${Config.basePath}/images/windows.png`} width="30"/>Support Windows 7 / 8.1 / 10 <Badge variant='warning'>Only</Badge>
                             </div>
                         </Col>
                     </Row>
