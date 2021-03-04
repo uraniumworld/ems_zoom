@@ -107,6 +107,18 @@ const Public = () => {
                         <div className="text-center">
                             <Badge variant="primary">Workshop</Badge> - <Image width="60px" src={`${Config.basePath}/images/office.png`}/> MS Office 2010+ or 365 | OS: <Image src={`${Config.basePath}/images/windows.png`} width="30"/>Support Windows 7 / 8.1 / 10 <Badge variant='warning'>Only</Badge>
                         </div>
+                        {getPlatform()=='mac' &&
+                            <div className="text-center mt-4">
+                                <Alert variant="warning">
+                                    <div>เนื่องจากการสอบภาคปฏิบัติ ไม่รองรับ macOs และอุปกรณ์ Mobile ต่างๆ หากนักศึกษาไม่มีเครื่องในการใช้สอบ ให้กรอกคำร้องขอใช้เครื่องที่ศูนย์สอบได้ที่นี่</div>
+                                    <div>Because the practice exam does not support macOs and mobile devices, if you does not have a device to use the exam. You can complete a request to use the device at LTIC here.</div>
+                                    <div>
+                                        <a className="btn btn-primary mt-2" href="https://kku.world/6p7ss" target='_blank'>Request</a>
+                                    </div>
+                                </Alert>
+                            </div>
+                        }
+
                     </Col>
                 </Row>
                 <div className="mt-5" style={{position: 'relative'}}>

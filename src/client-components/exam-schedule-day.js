@@ -9,6 +9,7 @@ import StateContext from "../mobx/global-context";
 import {observer} from "mobx-react";
 import moment from 'moment';
 import ScheduleCountdownTimer from "./schedule-countdown-timer";
+import {getPlatform} from "./client-tools";
 
 const striptags = require('striptags');
 
@@ -93,12 +94,29 @@ const ExamScheduleDay = ({schedulesDate, schedulesDateTime, student,reload}) => 
                                                                                                          }}
                                                             /></Button>
                                                             :
-                                                            <Button variant='primary'
-                                                                    className="ml-auto"
-                                                                    onClick={e => {
-                                                                        let examType = schd.ModuleType == '2' ? 'workshop' : 'theory';
-                                                                        history.push(`/exam/${examType}/${schd.StdRegistID}`)
-                                                                    }}>Start Exam</Button>
+                                                            <>
+                                                                {getPlatform()=='win'?
+                                                                    <Button variant='primary'
+                                                                            className="ml-auto"
+                                                                            onClick={e => {
+                                                                                let examType = schd.ModuleType == '2' ? 'workshop' : 'theory';
+                                                                                history.push(`/exam/${examType}/${schd.StdRegistID}`)
+                                                                            }}>Start Exam</Button>
+                                                                    :
+                                                                    <>
+                                                                        {schd.ModuleType == '2'?
+                                                                            <Alert variant='danger'>Your device does not support the workshop exam.</Alert>
+                                                                            :
+                                                                            <Button variant='primary'
+                                                                                    className="ml-auto"
+                                                                                    onClick={e => {
+                                                                                        history.push(`/exam/workshop/${schd.StdRegistID}`)
+                                                                                    }}>Start Exam</Button>
+                                                                        }
+                                                                    </>
+                                                                }
+                                                            </>
+
 
                                                     }
                                                 </>
