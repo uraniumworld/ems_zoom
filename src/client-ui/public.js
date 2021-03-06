@@ -18,45 +18,47 @@ const Public = () => {
     const [showModal, setShowModal] = useState(false);
     const handleClose = () => setShowModal(false);
     const handleShow = () => setShowModal(true);
-    const [lang,setLang] = useState("TH");
+    const [lang, setLang] = useState("TH");
     const history = useHistory();
+    const [showMacModal, setShowMacModal] = useState(false);
 
-    useEffect(()=>{
+    useEffect(() => {
         new Promise(async resolve => {
             setFrontPage(null);
-            setTimeout(async ()=>{
+            setTimeout(async () => {
                 let content = await getContent(contentType);
                 setFrontPage(content)
                 resolve();
-            },300);
+            }, 300);
         })
-    },[contentType]);
+    }, [contentType]);
 
-    async function changeContent(type,e) {
+    async function changeContent(type, e) {
         e.preventDefault();
         setContentType(type);
     }
 
-    function getWebContent(type){
-        if(type && type!=contentType)return null;
+    function getWebContent(type) {
+        if (type && type != contentType) return null;
         return <div className={classNames({
-            'd-none d-md-block':!type,
-            'd-block d-md-none':type,
-        })} style={{minHeight:'300px'}}>
+            'd-none d-md-block': !type,
+            'd-block d-md-none': type,
+        })} style={{minHeight: '300px'}}>
             <Row>
                 <Col>
                     <div className="text-center mt-4">
                         <TransitionGroup>
-                            {frontPage && frontPage.contents.map((c,i)=>
-                                <CSSTransition key={'css_'+i} timeout={300} classNames="myFade">
+                            {frontPage && frontPage.contents.map((c, i) =>
+                                <CSSTransition key={'css_' + i} timeout={300} classNames="myFade">
                                     <Card className="mb-4">
-                                        <Card.Header className="text-white" style={{background:'#3399cc'}}>
+                                        <Card.Header className="text-white" style={{background: '#3399cc'}}>
                                             <div className="text-left">
                                                 <h3>{c.title}</h3>
                                             </div>
                                         </Card.Header>
                                         <Card.Body>
-                                            <div className="text-left" style={{fontSize:'1.2rem'}} dangerouslySetInnerHTML={{__html:c.html}}></div>
+                                            <div className="text-left" style={{fontSize: '1.2rem'}}
+                                                 dangerouslySetInnerHTML={{__html: c.html}}></div>
                                         </Card.Body>
                                     </Card>
                                 </CSSTransition>
@@ -71,12 +73,13 @@ const Public = () => {
 
     return <div className={css(styles.bg)}>
         <MetaTags>
-            <meta name="viewport" content="width=device-width, initial-scale=1" />
+            <meta name="viewport" content="width=device-width, initial-scale=1"/>
         </MetaTags>
         <Container style={{height: '100%'}}>
             <div className={css(styles.header)}>
                 <Image src={`${basePath}/images/HeaderENG.jpg`} fluid/>
-                <a href={`${Config.basePath}/prepare-device`} className={'btn btn-info btn-md-lg animGlow '+css(styles.btnPrepare)}>
+                <a href={`${Config.basePath}/prepare-device`}
+                   className={'btn btn-info btn-md-lg animGlow ' + css(styles.btnPrepare)}>
                     <div className="d-none d-md-inline-block">ตรวจสอบอุปกรณ์ในการสอบ</div>
                     <div>Prepare your device</div>
                     <div className="d-none d-md-inline-block">[CLICK HERE]</div>
@@ -101,35 +104,83 @@ const Public = () => {
                     <Col>
                         <h3 className="text-center">Online Exam Supported OS</h3>
                         <div className="text-center">
-                            <Badge variant="danger">Theory</Badge> - OS: <Image src={`${Config.basePath}/images/windows.png`} width="30"/>
-                            Support Windows 7 / 8.1 / 10 / <Image src={`${Config.basePath}/images/mac.png`} width="25"/> / <Image src={`${Config.basePath}/images/ios.png`} width="50"/>
+                            <Badge variant="danger">Theory</Badge> - OS: <Image
+                            src={`${Config.basePath}/images/windows.png`} width="30"/>
+                            Support Windows 7 / 8.1 / 10 / <Image src={`${Config.basePath}/images/mac.png`}
+                                                                  width="25"/> / <Image
+                            src={`${Config.basePath}/images/ios.png`} width="50"/>
                         </div>
                         <div className="text-center">
-                            <Badge variant="primary">Workshop</Badge> - <Image width="60px" src={`${Config.basePath}/images/office.png`}/> MS Office 2010+ or 365 | OS: <Image src={`${Config.basePath}/images/windows.png`} width="30"/>Support Windows 7 / 8.1 / 10 <Badge variant='warning'>Only</Badge>
+                            <Badge variant="primary">Workshop</Badge> - <Image width="60px"
+                                                                               src={`${Config.basePath}/images/office.png`}/> MS
+                            Office 2010+ or 365 | OS: <Image src={`${Config.basePath}/images/windows.png`} width="30"/>Support
+                            Windows 7 / 8.1 / 10 <Badge variant='warning'>Only</Badge>
                         </div>
-                        {getPlatform()=='mac' &&
-                            <div className="text-center mt-4">
-                                <Alert variant="warning">
-                                    <div>เนื่องจากการสอบภาคปฏิบัติ ไม่รองรับ macOs และอุปกรณ์ Mobile ต่างๆ หากนักศึกษาไม่มีเครื่องในการใช้สอบ ให้กรอกคำร้องขอใช้เครื่องที่ศูนย์สอบได้ที่นี่</div>
-                                    <div>Because the practice exam does not support macOs and mobile devices, if you does not have a device to use the exam. You can complete a request to use the device at LTIC here.</div>
-                                    <div>
-                                        <a className="btn btn-primary mt-2" href="https://kku.world/6p7ss" target='_blank'>Request</a>
-                                    </div>
-                                </Alert>
+                        {getPlatform() != 'mac' &&
+                        <>
+                            <div>
+                                <a href="#" onClick={e => {
+                                    e.preventDefault();
+                                    setShowMacModal(true);
+                                }}>
+                                    <Image className="mt-4" src={Config.basePath + '/images/please-read.png'} fluid/>
+                                </a>
                             </div>
+                            <Modal centered show={showMacModal} onHide={e => setShowMacModal(false)}>
+                                <Modal.Header>
+                                    <Modal.Title>
+                                        <Row>
+                                            <Col>
+                                                {lang === 'TH' ?
+                                                    <span>การสอบภาคฏิบัติ</span>
+                                                    :
+                                                    <span>Workshop Exam</span>
+                                                }
+                                            </Col>
+                                            <Col xs='auto'>
+                                                <LangSwitcher lang={lang} className='small ml-2'
+                                                              onLangSwitch={lang => setLang(lang)}/>
+                                            </Col>
+                                        </Row>
+                                    </Modal.Title>
+                                </Modal.Header>
+                                <Modal.Body>
+                                    {lang === 'TH' ?
+                                        <div>
+                                            <div>เนื่องจากการสอบภาคปฏบัติรองรับคอมพิวเตอร์ที่ใช้<span style={{color:'red'}}>ระบบปฏิบัติการ Windows</span> เท่านั้น</div>
+                                            <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ดังนั้นหากนักศึกษาไม่มีอุปกรณ์ในการสอบออนไลน์สามารถยื่นคำร้องขอใช้เครื่องคอมพิวเตอร์ของศูนย์นวัตกรรมการเรียนการสอน ณ ชั้น 6 อาคารสารสนเทศในการสอบได้ โดยการกรอกแบบฟอร์มต่อไปนี้</div>
+                                            <a target='_blank' href="https://kku.world/6p7ss">แบบฟอร์มยื่นคำร้องขอใช้เครื่องในการสอบ</a>
+                                        </div>
+                                        :
+                                        <div>
+                                            <div>Because the practice exam is only supported by <span style={{color:'red'}}>OS Windows</span> computers.</div>
+                                            <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Therefore, if student do not have any device to exam, you can submit a request to use the computer of the Learning and Teaching Innovation Center at floor 6 ICT building for the exam. By filling out the following form.</div>
+                                            <a target='_blank' href="https://kku.world/6p7ss">Request Form</a>
+                                        </div>
+                                    }
+                                </Modal.Body>
+                                <Modal.Footer>
+                                    {lang === 'TH' ?
+                                        <Button onClick={e=>setShowMacModal(false)}>ปิด</Button>
+                                        :
+                                        <Button onClick={e=>setShowMacModal(false)}>Close</Button>
+                                    }
+                                </Modal.Footer>
+                            </Modal>
+                        </>
                         }
-
                     </Col>
                 </Row>
                 <div className="mt-5" style={{position: 'relative'}}>
                     <Row>
                         <Col className="p-3 p-sm-2 text-center">
                             <Image className="d-none d-md-inline" src={`${basePath}/images/online-exam-01.jpg`} fluid/>
-                            <a href="#" target='_blank' onClick={e=>{
+                            <a href="#" target='_blank' onClick={e => {
                                 e.preventDefault();
                                 setShowModal(true);
                             }}>
-                                <Image src={`${basePath}/images/button3.png`} fluid className={'animGlow '+css(styles.imgBtn,styles.startExam)}/>
+                                <Image src={`${basePath}/images/button3.png`} fluid
+                                       className={'animGlow ' + css(styles.imgBtn, styles.startExam)}/>
                             </a>
                         </Col>
                     </Row>
@@ -149,19 +200,22 @@ const Public = () => {
                     <Row>
                         <Col md={4} className="p-3 p-sm-2 text-center">
                             <a href="#" onClick={changeContent.bind(this, 'announce')}>
-                                <Image src={`${basePath}/images/announcement.png`} fluid className={css(styles.imgBtn2,contentType=="announce" && styles.active)}/>
+                                <Image src={`${basePath}/images/announcement.png`} fluid
+                                       className={css(styles.imgBtn2, contentType == "announce" && styles.active)}/>
                             </a>
                             {getWebContent('announce')}
                         </Col>
                         <Col md={4} className="p-3 p-sm-2 text-center">
                             <a href="#" onClick={changeContent.bind(this, 'calendar')}>
-                                <Image src={`${basePath}/images/calendar.png`} fluid className={css(styles.imgBtn2,contentType=="calendar" && styles.active)}/>
+                                <Image src={`${basePath}/images/calendar.png`} fluid
+                                       className={css(styles.imgBtn2, contentType == "calendar" && styles.active)}/>
                             </a>
                             {getWebContent('calendar')}
                         </Col>
                         <Col md={4} className="p-3 p-sm-2 text-center">
                             <a href="#" onClick={changeContent.bind(this, 'manual')}>
-                                <Image src={`${basePath}/images/manual.png`} fluid className={css(styles.imgBtn2,contentType=="manual" && styles.active)}/>
+                                <Image src={`${basePath}/images/manual.png`} fluid
+                                       className={css(styles.imgBtn2, contentType == "manual" && styles.active)}/>
                             </a>
                             {getWebContent('manual')}
                         </Col>
@@ -173,36 +227,37 @@ const Public = () => {
         <Modal show={showModal} onHide={handleClose}>
             <Modal.Header closeButton>
                 <Modal.Title>
-                    {lang==='TH'?
+                    {lang === 'TH' ?
                         <span>กรุณายืนยันการติดตั้งโปรแกรมบนอุปกรณ์ของคุณ</span>
                         :
                         <span>Please confirm software in your device.</span>
                     }
-                    <LangSwitcher lang={lang} className='small ml-2' onLangSwitch={lang=>setLang(lang)}/></Modal.Title>
+                    <LangSwitcher lang={lang} className='small ml-2'
+                                  onLangSwitch={lang => setLang(lang)}/></Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                {lang==='TH'?
-                <span>ผู้สอบได้ติดตั้งโปรแกรม Safe exam browser แล้วหรือยัง?</span>
+                {lang === 'TH' ?
+                    <span>ผู้สอบได้ติดตั้งโปรแกรม Safe exam browser แล้วหรือยัง?</span>
                     :
-                <span>Have you installed Safe exam browser into this device?</span>
+                    <span>Have you installed Safe exam browser into this device?</span>
                 }
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={e=>{
+                <Button variant="secondary" onClick={e => {
                     handleClose(true);
                     history.push(`/start`);
                 }}>
-                    {lang==='TH'?
+                    {lang === 'TH' ?
                         <span>ไม่, ฉันยังไม่เคยติดตั้งโปรแกรมดังกล่าว ขอขั้นตอนการติดตั้ง</span>
                         :
                         <span>No, I never install Safe exam browser before.</span>
                     }
                 </Button>
-                <Button variant="success" onClick={e=>{
+                <Button variant="success" onClick={e => {
                     handleClose(true);
-                    document.location.href=`sebs://ems.kku.ac.th/dev/startEMS.seb?rnd=${Math.random()}`;
+                    document.location.href = `sebs://ems.kku.ac.th/dev/startEMS.seb?rnd=${Math.random()}`;
                 }}>
-                    {lang==='TH'?
+                    {lang === 'TH' ?
                         <span>ใช่ ฉันติดตั้งโปรแกรม Safe exam browser เรียบร้อยแล้ว</span>
                         :
                         <span>Yes, I had already installed Safe exam browser in my device.</span>
@@ -218,11 +273,11 @@ const Public = () => {
     </div>
 }
 const styles = StyleSheet.create({
-    btnPrepare:{
+    btnPrepare: {
         padding: '15px',
         position: 'absolute',
-        left:'50%',
-        bottom:'20%',
+        left: '50%',
+        bottom: '20%',
         transform: 'translate(-50%,50%)',
     },
     bg: {
@@ -230,24 +285,24 @@ const styles = StyleSheet.create({
         minHeight: '100vh',
         height: 'auto',
     },
-    imgBtn:{
-        ':hover':{
-            filter:'brightness(1.2)',
-            transition:'all 200ms',
+    imgBtn: {
+        ':hover': {
+            filter: 'brightness(1.2)',
+            transition: 'all 200ms',
         }
     },
-    imgBtn2:{
-        ':hover':{
-            filter:'brightness(.8)',
-            transition:'all 200ms',
+    imgBtn2: {
+        ':hover': {
+            filter: 'brightness(.8)',
+            transition: 'all 200ms',
         }
     },
-    footer:{
-        height:'100px',
-        color:'white',
+    footer: {
+        height: '100px',
+        color: 'white',
     },
     header: {
-        position:'relative',
+        position: 'relative',
         // background: `url("${basePath}/images/HeaderENG.jpg")`,
         // height: '400px',
         // backgroundRepeat: 'no-repeat',
@@ -266,10 +321,10 @@ const styles = StyleSheet.create({
         left: '50%',
         transform: 'translate(-50%,-50%)'
     },
-    active:{
-        border:'10px solid #8cffa5',
-        borderRadius:'10px',
-        transition:'all 200ms'
+    active: {
+        border: '10px solid #8cffa5',
+        borderRadius: '10px',
+        transition: 'all 200ms'
     }
 });
 export default Public;
