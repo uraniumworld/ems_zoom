@@ -1,4 +1,4 @@
-import {Badge, Button, Nav, Navbar} from "react-bootstrap";
+import {Badge, Button, Col, Image, Nav, Navbar, Row} from "react-bootstrap";
 import React, {useContext} from "react";
 import {confirmBox} from "../components/services";
 import {studentLogout} from "./client-services";

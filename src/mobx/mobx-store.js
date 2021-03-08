@@ -4,6 +4,9 @@ class MobxStore {
     currentUser = void 0;
     currentStudent = void 0;
 
+    currentMeetURL = void 0;
+    currentMeetQRCODE = void 0;
+
     auth = void 0;
     forceSEB = void 0;
 
@@ -13,6 +16,14 @@ class MobxStore {
 
     constructor() {
         makeAutoObservable(this);
+    }
+
+    setCurrentMeetURL(url){
+        this.currentMeetURL=url;
+    }
+
+    setCurrentMeetQRCODE(img){
+        this.currentMeetQRCODE=img;
     }
 
     setStudentPicture(Username,student_image_data){

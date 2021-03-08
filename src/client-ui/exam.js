@@ -3,12 +3,13 @@ import CheckInProcess from "../client-components/check-in-process";
 import React, {useContext, useEffect, useState} from "react";
 import Workshop from "./workshop";
 import ExamScheduleDay from "../client-components/exam-schedule-day";
-import {checkLogin, getExamSchedules} from "../client-components/client-services";
+import {checkClient, checkLogin, getExamSchedules} from "../client-components/client-services";
 import {observer} from "mobx-react";
 import StateContext from "../mobx/global-context";
 import {toast} from "react-toastify";
 import {useHistory} from 'react-router-dom';
 import Theory from "./theory";
+import QRCode from "qrcode";
 
 const Exam=()=>{
     const {type,StdRegistID, SchdDetailID} = useParams();
@@ -20,6 +21,13 @@ const Exam=()=>{
     useEffect(()=>{
       reload();
     },[]);
+
+    useEffect(()=>{
+        if(StdRegistID){
+            QRGenerate();
+        }
+    },[StdRegistID]);
+
     function onApproved(){
 
     }
@@ -40,6 +48,22 @@ const Exam=()=>{
         setExamScheduleWithDateTime(dataDateTime);
         let dataDateOnly = await getExamSchedules('date');
         setExamSchedule(dataDateOnly);
+        await QRGenerate();
+    }
+
+    async function QRGenerate(){
+        const examData = await checkClient(StdRegistID);
+        console.log('============',examData,StdRegistID);
+        if(examData){
+            state.setCurrentMeetURL(examData.meet_url);
+            QRCode.toDataURL(examData.meet_url)
+                .then(b64image => {
+                    state.setCurrentMeetQRCODE(b64image);
+                })
+                .catch(err => {
+                    state.setCurrentMeetQRCODE(null);
+                })
+        }
     }
 
     return <CheckInProcess
@@ -48,13 +72,13 @@ const Exam=()=>{
         onApproved={onApproved}
         onDenied={onDenied}
     >
-        {(scheduelInfo,serverTime)=>{
+        {(scheduelInfo,serverTime,meetUrl,meetQRCode)=>{
             return <>
                 {type=='workshop' &&
-                <Workshop student={state.currentStudent} scheduleInfo={scheduelInfo} serverTime={serverTime} onSubmitted={e=>reload()}/>
+                <Workshop student={state.currentStudent} meetUrl={meetUrl} meetQRCode={meetQRCode} scheduleInfo={scheduelInfo} serverTime={serverTime} onSubmitted={e=>reload()}/>
                 }
                 {type=='theory' &&
-                <Theory student={state.currentStudent} scheduleInfo={scheduelInfo} serverTime={serverTime} onSubmitted={e=>reload()}/>
+                <Theory student={state.currentStudent} meetUrl={meetUrl} meetQRCode={meetQRCode} scheduleInfo={scheduelInfo} serverTime={serverTime} onSubmitted={e=>reload()}/>
                 }
             </>
         }}

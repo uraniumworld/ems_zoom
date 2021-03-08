@@ -15,6 +15,8 @@ import classNames from "classnames";
 import {toast} from "react-toastify";
 import {useHistory} from 'react-router-dom';
 import striptags from "striptags";
+import DisplayMeetURL from "../client-components/display-meet-url";
+import {observer} from "mobx-react";
 
 const Theory = ({student,scheduleInfo, serverTime, onSubmitted}) => {
     const [currentUserTheory, setCurrentUserTheory] = useState({});
@@ -147,6 +149,11 @@ const Theory = ({student,scheduleInfo, serverTime, onSubmitted}) => {
                 <ClientTopMenu type="theory" scheduleInfo={scheduleInfo} student={student}
                                confirmSubmit={confirmSubmit}/>
                 <div className="exam-content">
+                    <div className="mt-2">
+                        <Row>
+                            <DisplayMeetURL/>
+                        </Row>
+                    </div>
                     {questions[currentQuestionIndex] &&
                         <TheoryQuestion
                             index={currentQuestionIndex}
@@ -266,4 +273,4 @@ const styles = StyleSheet.create({
         transition:'all 0.1s',
     }
 })
-export default Theory;
+export default observer(Theory);

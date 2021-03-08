@@ -16,6 +16,7 @@ import Footer from "../components/footer";
 import React, {useContext, useEffect, useState} from "react";
 import {Form} from "formik";
 import {
+    checkClient,
     download, downloadStarterFileLink, generateMSOffice,
     getWorkshopQuestion,
     getWorkshopUser, submitAndExit,
@@ -41,11 +42,15 @@ import {getPracticeName, getStudentLang, getWorkshopType, textLimit} from "../cl
 import Config from "../config";
 import {StyleSheet,css} from "aphrodite";
 import {CSSTransition, TransitionGroup} from "react-transition-group";
+import StateContext from "../mobx/global-context";
+import QRCode from "qrcode";
+import DisplayMeetURL from "../client-components/display-meet-url";
+import {observer} from "mobx-react";
 
 //http://localhost:3000/exam/workshop/125180/3474
 
 
-const Workshop = ({student,scheduleInfo, serverTime, onSubmitted}) => {
+const Workshop = ({student,scheduleInfo, serverTime, onSubmitted,meetUrl,meetQRCode}) => {
     const [questions, setQuestions] = useState();
     const [filter, setFilter] = useState('1');
     const [currentUserWorkshop, setCurrentUserWorkshop] = useState(null);
@@ -57,6 +62,7 @@ const Workshop = ({student,scheduleInfo, serverTime, onSubmitted}) => {
     });
     const {StdRegistID, SchdDetailID} = useParams();
     const history = useHistory();
+    const state = useContext(StateContext);
 
 
     useEffect(() => {
@@ -239,6 +245,11 @@ const Workshop = ({student,scheduleInfo, serverTime, onSubmitted}) => {
                 <Container className="exam-container">
                     <ClientTopMenu type="workshop" scheduleInfo={scheduleInfo} student={student}
                                    confirmSubmit={confirmSubmit}/>
+                   <div className="mt-2">
+                       <Row>
+                           <DisplayMeetURL/>
+                       </Row>
+                   </div>
                     <div className="exam-content">
                         <Row className="mb-4">
                             <Col>
@@ -396,4 +407,4 @@ const styles=StyleSheet.create({
         }
     }
 });
-export default Workshop;
+export default observer(Workshop);

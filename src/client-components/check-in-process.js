@@ -65,14 +65,17 @@ const CheckInProcess = ({state, StdRegistID, onApproved, onDenied, children}) =>
     function getQRCodeToState(url) {
         if (!url) {
             setMeetQRCode(null);
+            state.currentMeetQRCODE=null;
             return;
         }
         QRCode.toDataURL(url)
             .then(b64image => {
                 setMeetQRCode(b64image);
+                state.currentMeetQRCODE=b64image;
             })
             .catch(err => {
                 setMeetQRCode(null);
+                state.currentMeetQRCODE=null;
             })
     }
 
@@ -99,9 +102,11 @@ const CheckInProcess = ({state, StdRegistID, onApproved, onDenied, children}) =>
                     if (data.meet_url) {
                         let url = data.meet_url.match(/^http/) ? data.meet_url : `https://${data.meet_url}`;
                         setMeetUrl(url);
+                        state.currentMeetURL=url;
                         getQRCodeToState(url);
                     } else {
                         setMeetUrl(null);
+                        state.currentMeetURL=null;
                         getQRCodeToState(null);
                     }
                     setApprove(false);
@@ -204,6 +209,6 @@ const CheckInProcess = ({state, StdRegistID, onApproved, onDenied, children}) =>
             </Row>
         </Container>
     }
-    return children(scheduleInfo,serverTime);
+    return children(scheduleInfo,serverTime,meetUrl,meetQRCode);
 }
 export default observer(CheckInProcess);
