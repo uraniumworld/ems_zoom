@@ -2,17 +2,17 @@ import {useEffect, useRef, useState} from "react";
 import moment from "moment";
 import {StyleSheet,css} from 'aphrodite';
 import {Alert, Badge, Card} from "react-bootstrap";
-let timer;
 const TimerClock = ({serverTime=0,expire,onTimeout})=>{
     const [duration,setDuration] = useState();
     const timeDiff = useRef(0);
+    const timer = useRef();
     useEffect(()=>{
         updateUI();
-        timer=setInterval(()=>{
+        timer.current=setInterval(()=>{
             updateUI();
         },1000);
         return ()=>{
-            clearInterval(timer);
+            clearInterval(timer.current);
         }
     },[]);
 
@@ -20,6 +20,13 @@ const TimerClock = ({serverTime=0,expire,onTimeout})=>{
         let clientTime=moment().unix();
         timeDiff.current=serverTime-clientTime;
     },[serverTime])
+
+    useEffect(()=>{
+        clearInterval(timer.current)
+        timer.current=setInterval(()=>{
+            updateUI();
+        },1000);
+    },[expire]);
 
     function updateUI(){
         let expireTime = moment(expire);
@@ -31,7 +38,7 @@ const TimerClock = ({serverTime=0,expire,onTimeout})=>{
             setDuration(<Alert variant='danger'>Time is up!</Alert>);
             if(typeof onTimeout == 'function') {
                 onTimeout();
-                clearInterval(timer);
+                clearInterval(timer.current);
             }
         }
     }

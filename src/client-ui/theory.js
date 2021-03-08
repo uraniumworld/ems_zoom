@@ -36,7 +36,11 @@ const Theory = ({student,scheduleInfo, serverTime, onSubmitted}) => {
         await loadAnsweredQuestions();
         let questions = await getTheoryQuestions(scheduleInfo.StdRegistID);
         if(Array.isArray(questions)){
-            setQuestions(questions);
+            if(questions.length>0){
+                setQuestions(questions);
+            }else{
+                toast.error('Cannot load theory questions, Please contact admin.',{autoClose:30000})
+            }
         }else{
             if(questions.submitted){
                 toast.error('Page not found.')
@@ -113,7 +117,7 @@ const Theory = ({student,scheduleInfo, serverTime, onSubmitted}) => {
             <div className={css(styles.theorySidebar)}>
                 <TimerClock serverTime={serverTime}
                             expire={`${scheduleInfo.ExamDate} ${scheduleInfo.ExamTimeEnd}`}
-                            onTimeout={onTimeout}
+                            onTimeout={e=>onTimeout()}
                 />
                 <div className="text-center mt-4 mb-2">Questions Progress</div>
                 <Row>
@@ -216,7 +220,7 @@ const Theory = ({student,scheduleInfo, serverTime, onSubmitted}) => {
                                         choiceText=<p style={{fontSize:'90%'}} variant="success" className="text-success">({TheoryChoiceID}) {choice.text}</p>;
                                     }
                                 }
-                                return <tr key={q}>
+                                return <tr key={'q_'+i}>
                                     <td width="70%">Q{i+1}. {striptags(q.question)}</td>
                                     <td>{choiceText}</td>
                                 </tr>

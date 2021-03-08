@@ -35,6 +35,12 @@ const ExamScheduleDay = ({schedulesDate, schedulesDateTime, student,reload}) => 
         return !!!schd;
     }
 
+    function getExamEndJSTime(schd){
+        let {ExamDate,ExamTimeEnd}=schd;
+        let buffer=`${ExamDate} ${ExamTimeEnd}`;
+        return moment(buffer);
+    }
+
     if (typeof schedulesDate == 'undefined') return <Alert variant='info'>Schedule Loading...</Alert>
     return <div>
         <Header/>
@@ -44,6 +50,8 @@ const ExamScheduleDay = ({schedulesDate, schedulesDateTime, student,reload}) => 
                     <>
                     {
                         schedulesDate.map(schd => {
+                            let expiredScheduleTime=moment(`${schd.ExamDate} ${schd.ExamTimeEnd}`,'YYYY-MM-DD HH:mm').toDate();
+                            let currentClockTime=new Date();
                             return <Col key={schd.SchdDetailID} lg={6} className="mb-4">
                                 <Card>
                                     <Card.Header>
@@ -80,45 +88,82 @@ const ExamScheduleDay = ({schedulesDate, schedulesDateTime, student,reload}) => 
                                                 </>
                                                 :
                                                 <>
-                                                    {
-                                                        isNotInScheduleTime(schd.StdRegistID) ?
-                                                            <Button variant='primary'
-                                                                    className="ml-auto"
-                                                                    disabled={true}
-                                                            >Exam starting in... <ScheduleCountdownTimer schd={schd}
-                                                                                                         currentTime={currentTime}
-                                                                                                         onTimeEnd={()=>{
-                                                                                                             timer2.current=!setTimeout(()=>{
-                                                                                                                 reload();
-                                                                                                             },3000)
-                                                                                                         }}
-                                                            /></Button>
-                                                            :
-                                                            <>
-                                                                {getPlatform()=='win'?
-                                                                    <Button variant='primary'
-                                                                            className="ml-auto"
-                                                                            onClick={e => {
-                                                                                let examType = schd.ModuleType == '2' ? 'workshop' : 'theory';
-                                                                                history.push(`/exam/${examType}/${schd.StdRegistID}`)
-                                                                            }}>Start Exam</Button>
-                                                                    :
-                                                                    <>
-                                                                        {schd.ModuleType == '2'?
-                                                                            <Alert variant='danger'>Your device does not support the workshop exam.</Alert>
-                                                                            :
-                                                                            <Button variant='primary'
-                                                                                    className="ml-auto"
-                                                                                    onClick={e => {
-                                                                                        history.push(`/exam/workshop/${schd.StdRegistID}`)
-                                                                                    }}>Start Exam</Button>
-                                                                        }
-                                                                    </>
-                                                                }
-                                                            </>
-
-
+                                                    {getPlatform()=='win'?
+                                                        <>
+                                                            {moment() < getExamEndJSTime(schd)?
+                                                                <Button variant='primary'
+                                                                        className="ml-auto"
+                                                                        onClick={e => {
+                                                                            let examType = schd.ModuleType == '2' ? 'workshop' : 'theory';
+                                                                            history.push(`/exam/${examType}/${schd.StdRegistID}`)
+                                                                        }}>Check-In</Button>
+                                                                :
+                                                                <Button disabled variant='dark'>Time Is Up <Badge>(Score saved)</Badge></Button>
+                                                            }
+                                                        </>
+                                                        :
+                                                        <>
+                                                            {schd.ModuleType == '2'?
+                                                                <Alert variant='danger'>Your device does not support the workshop exam.</Alert>
+                                                                :
+                                                                <>
+                                                                    {moment() < getExamEndJSTime(schd)?
+                                                                        <Button variant='primary'
+                                                                                className="ml-auto"
+                                                                                onClick={e => {
+                                                                                    let examType = schd.ModuleType == '2' ? 'workshop' : 'theory';
+                                                                                    history.push(`/exam/${examType}/${schd.StdRegistID}`)
+                                                                                }}>Check-In</Button>
+                                                                        :
+                                                                        <Button disabled variant='dark'>Time Is Up <Badge>(Score saved)</Badge></Button>
+                                                                    }
+                                                                </>
+                                                            }
+                                                        </>
                                                     }
+                                                    {/*{*/}
+                                                    {/*    isNotInScheduleTime(schd.StdRegistID) ?*/}
+                                                    {/*        <>*/}
+                                                    {/*            {expiredScheduleTime<=currentClockTime?*/}
+                                                    {/*                <Button disabled>Time is up!</Button>*/}
+                                                    {/*                :*/}
+                                                    {/*                <Button variant='primary'*/}
+                                                    {/*                        className="ml-auto"*/}
+                                                    {/*                        disabled={true}*/}
+                                                    {/*                >Exam starting in... <ScheduleCountdownTimer schd={schd}*/}
+                                                    {/*                                                             currentTime={currentTime}*/}
+                                                    {/*                                                             onTimeEnd={()=>{*/}
+                                                    {/*                                                                 timer2.current=!setTimeout(()=>{*/}
+                                                    {/*                                                                     reload();*/}
+                                                    {/*                                                                 },3000)*/}
+                                                    {/*                                                             }}*/}
+                                                    {/*                /></Button>*/}
+                                                    {/*            }*/}
+                                                    {/*        </>*/}
+                                                    {/*        :*/}
+                                                    {/*        <>*/}
+                                                    {/*            {getPlatform()=='win'?*/}
+                                                    {/*                <Button variant='primary'*/}
+                                                    {/*                        className="ml-auto"*/}
+                                                    {/*                        onClick={e => {*/}
+                                                    {/*                            let examType = schd.ModuleType == '2' ? 'workshop' : 'theory';*/}
+                                                    {/*                            history.push(`/exam/${examType}/${schd.StdRegistID}`)*/}
+                                                    {/*                        }}>Enter Exam</Button>*/}
+                                                    {/*                :*/}
+                                                    {/*                <>*/}
+                                                    {/*                    {schd.ModuleType == '2'?*/}
+                                                    {/*                        <Alert variant='danger'>Your device does not support the workshop exam.</Alert>*/}
+                                                    {/*                        :*/}
+                                                    {/*                        <Button variant='primary'*/}
+                                                    {/*                                className="ml-auto"*/}
+                                                    {/*                                onClick={e => {*/}
+                                                    {/*                                    history.push(`/exam/workshop/${schd.StdRegistID}`)*/}
+                                                    {/*                                }}>Enter Exam</Button>*/}
+                                                    {/*                    }*/}
+                                                    {/*                </>*/}
+                                                    {/*            }*/}
+                                                    {/*        </>*/}
+                                                    {/*}*/}
                                                 </>
 
                                             }

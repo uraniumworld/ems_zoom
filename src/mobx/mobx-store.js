@@ -6,6 +6,7 @@ class MobxStore {
 
     currentMeetURL = void 0;
     currentMeetQRCODE = void 0;
+    currentGroupName = void 0;
 
     auth = void 0;
     forceSEB = void 0;
@@ -24,6 +25,10 @@ class MobxStore {
 
     setCurrentMeetQRCODE(img){
         this.currentMeetQRCODE=img;
+    }
+
+    setGroupName(groupName){
+        this.currentGroupName=groupName;
     }
 
     setStudentPicture(Username,student_image_data){

@@ -11,7 +11,7 @@ const ScheduleCountdownTimer=({currentTime,schd,onTimeEnd})=>{
     }
 
     function displayTimeDiff(){
-        let diffUnit=getJSTime(schd).diff(currentTime);
+        let diffUnit=getJSTime().diff(currentTime);
         if(diffUnit<1){
             if(onTimeEnd && !isEventTicked.current){
                 isEventTicked.current=true;

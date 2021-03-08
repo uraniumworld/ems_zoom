@@ -64,8 +64,8 @@ export function getCheckInStudents(SchdID,SchdDetailID,group){
     return request('get-check-in-students',{SchdID,SchdDetailID,group})
 }
 
-export function changeCheckInState(StdRegistID,state){
-    return request('change-state',{StdRegistID,state})
+export function changeCheckInState(StdRegistID,state,msg){
+    return request('change-state',{StdRegistID,state,msg})
 }
 
 export function getMeetURL(SchdID, SchdDetailID,group){
@@ -98,6 +98,10 @@ export function userLogin(username,password){
 
 export function getContent(type){
     return request('get-content',{type})
+}
+
+export function unSend(StdRegistID){
+    return request('un-send',{StdRegistID})
 }
 
 export function confirmBox(title,detail,fn){

@@ -1,5 +1,12 @@
 import {useContext, useEffect, useRef, useState} from "react";
-import {checkClient, getMyPicture, getScheduleInfo, studentLogout} from "./client-services";
+import {
+    checkClient,
+    getExamSchedules,
+    getMyPicture,
+    getScheduleInfo,
+    isUserStartedExam,
+    studentLogout
+} from "./client-services";
 import {Alert, Badge, Button, Card, Col, Container, Image, Row, Table} from "react-bootstrap";
 import {useHistory} from 'react-router-dom';
 import QRCode from 'qrcode';
@@ -7,24 +14,43 @@ import StateContext from "../mobx/global-context";
 import {observer} from "mobx-react";
 import {toast} from "react-toastify";
 import Config from "../config";
+import ScheduleCountdownTimer from "./schedule-countdown-timer";
+import moment from "moment";
 
 const CheckInProcess = ({state, StdRegistID, onApproved, onDenied, children}) => {
 
     const [approve, setApprove] = useState(void 0);
+    const [examStart, setExamStart] = useState(false);
     const [meetUrl, setMeetUrl] = useState(null);
     const [meetQRCode, setMeetQRCode] = useState(null);
+    const [groupName, setGroupName] = useState(null);
     const [myPicture, setMyPicture] = useState(void 0);
     const [scheduleInfo, setScheduleInfo] = useState(void 0);
     const [serverTime, setServerTime] = useState(0);
+    const [currentTime, setCurrentTime] = useState(0);
+    const [isContinue, setIsContinue] = useState(false);
+    const [lastRejectMsg, setLastRejectMsg] = useState('');
+    const [examScheduleWithDateTime, setExamScheduleWithDateTime] = useState([]);
     const timer = useRef(null);
     const last_update = useRef(null);
     const last_update_url = useRef(null);
     const last_approve_state = useRef(null);
     const history = useHistory();
+    const countdownTimer= useRef();
+    const reloadSchdInfoTimer = useRef();
 
     useEffect(() => {
+        countdownTimer.current=setInterval(()=>{
+            setCurrentTime(moment());
+        },1000);
+        new Promise(async resolve=>{
+            await reloadSchedule();
+            let continueExam = await isUserStartedExam(StdRegistID);
+            setIsContinue(!!continueExam);
+            resolve();
+        })
         new Promise(async resolve => {
-            let schdInfo = await getScheduleInfo(StdRegistID);
+            let schdInfo = await getScheduleInfo(StdRegistID,'date');
             if(typeof schdInfo == 'object' && schdInfo){
                 setScheduleInfo(schdInfo);
                 await checker();
@@ -34,11 +60,27 @@ const CheckInProcess = ({state, StdRegistID, onApproved, onDenied, children}) =>
                 clearInterval(timer.current);
                 history.push(Config.basePath);
             }
+            resolve();
         })
+        reloadSchdInfoTimer.current=setInterval(async ()=>{
+            let schdInfo = await getScheduleInfo(StdRegistID,'date');
+            if(typeof schdInfo == 'object' && schdInfo) {
+                setScheduleInfo(schdInfo);
+            }
+        },10000);
         return () => {
             clearInterval(timer.current);
+            clearInterval(countdownTimer.current);
+            clearInterval(reloadSchdInfoTimer.current);
         }
     }, []);
+
+    useEffect(()=>{
+        if(!scheduleInfo)return;
+        if(moment()>getExamEndJSTime(scheduleInfo)){
+            history.push('/exam');
+        }
+    },[scheduleInfo]);
 
     useEffect(() => {
         if (state.currentStudent) {
@@ -54,12 +96,28 @@ const CheckInProcess = ({state, StdRegistID, onApproved, onDenied, children}) =>
 
     useEffect(()=>{
         if(!last_approve_state.current && approve){
+            toast.dismiss();
             toast.success('Admin has been approved your profile.');
         }else if(typeof approve !='undefined' && last_approve_state.current){
-            toast.error('Admin has been rejected your profile.');
+            if(lastRejectMsg!=''){
+                toast.error('Admin has been rejected your profile, Cause: '+lastRejectMsg,{autoClose:30000});
+            }else{
+                toast.error('Admin has been rejected your profile');
+            }
         }
         last_approve_state.current=approve;
     },[approve])
+
+
+    async function reloadSchedule(){
+        let dataDateTime = await getExamSchedules();
+        setExamScheduleWithDateTime(dataDateTime);
+    }
+
+    function isNotInScheduleTime(StdRegistID) {
+        let schd = examScheduleWithDateTime.find(v => v.StdRegistID == StdRegistID);
+        return !!!schd;
+    }
 
 
     function getQRCodeToState(url) {
@@ -82,6 +140,7 @@ const CheckInProcess = ({state, StdRegistID, onApproved, onDenied, children}) =>
     function checker() {
         checkClient(StdRegistID).then(data => {
             // console.log(data);
+            setLastRejectMsg(data.reject_msg);
             if(data.IsEnd=='1'){
                 clearInterval(timer.current);
                 toast.error('Your examination was submitted.');
@@ -95,22 +154,27 @@ const CheckInProcess = ({state, StdRegistID, onApproved, onDenied, children}) =>
             }
             setServerTime(data.serverTime);
             if (last_update.current != data.last_update || last_update_url.current != data.last_update_url) {
+                if(data.group_name){
+                    setGroupName(data.group_name);
+                    state.setGroupName(data.group_name);
+                }
                 if (data.check_in_status == "1") {
                     setApprove(true);
                     onApproved();
                 } else {
-                    if (data.meet_url) {
-                        let url = data.meet_url.match(/^http/) ? data.meet_url : `https://${data.meet_url}`;
-                        setMeetUrl(url);
-                        state.currentMeetURL=url;
-                        getQRCodeToState(url);
-                    } else {
-                        setMeetUrl(null);
-                        state.currentMeetURL=null;
-                        getQRCodeToState(null);
-                    }
                     setApprove(false);
+                    setExamStart(false);
                     onDenied();
+                }
+                if (data.meet_url) {
+                    let url = data.meet_url.match(/^http/) ? data.meet_url : `https://${data.meet_url}`;
+                    setMeetUrl(url);
+                    state.setCurrentMeetURL(url);
+                    getQRCodeToState(url);
+                } else {
+                    setMeetUrl(null);
+                    state.setCurrentMeetURL(null);
+                    getQRCodeToState(null);
                 }
                 last_update.current = data.last_update;
                 last_update_url.current = data.last_update_url;
@@ -124,8 +188,18 @@ const CheckInProcess = ({state, StdRegistID, onApproved, onDenied, children}) =>
         history.push('/login');
     }
 
+    function startExam(){
+        setExamStart(true);
+    }
+
+    function getExamEndJSTime(schd){
+        let {ExamDate,ExamTimeEnd}=schd;
+        let buffer=`${ExamDate} ${ExamTimeEnd}`;
+        return moment(buffer);
+    }
+
     if (typeof approve == 'undefined' || !scheduleInfo) return <Alert variant='info'>Loading...</Alert>;
-    if (!approve) {
+    if (!examStart) {
         return <Container>
             <Row>
                 <Col>
@@ -164,6 +238,17 @@ const CheckInProcess = ({state, StdRegistID, onApproved, onDenied, children}) =>
                                                     <th>Fullname:</th>
                                                     <td>{state.currentStudent.fname} {state.currentStudent.lname}</td>
                                                 </tr>
+                                                <tr>
+                                                    <th>Group:</th>
+                                                    <td><span style={{textTransform:'uppercase'}}>{groupName}</span></td>
+                                                </tr>
+                                                {approve &&
+                                                <tr>
+                                                    <td colSpan="2">
+                                                        <h1 className="mt-4" style={{color:'greenyellow'}}>APPROVED !</h1>
+                                                    </td>
+                                                </tr>
+                                                }
                                                 </tbody>
                                             </Table>
                                         </div>
@@ -201,8 +286,47 @@ const CheckInProcess = ({state, StdRegistID, onApproved, onDenied, children}) =>
                             </div>
                         </Card.Body>
                         <Card.Footer>
-                            <div className="text-right"><Button onClick={e => logout()} variant='danger'>Logout</Button>
-                            </div>
+                            <Row>
+                                <Col>&nbsp;</Col>
+                                <Col xs='auto'>
+                                    <Button onClick={e => logout()} variant='danger'>Logout</Button>
+                                </Col>
+                                <Col xs='auto'>
+                                    {currentTime?
+                                        <>
+                                            {isNotInScheduleTime(StdRegistID)?
+                                                <>
+                                                    {currentTime<getExamEndJSTime(scheduleInfo)?
+                                                        <Button disabled variant='primary'>Exam Starting In...
+                                                            <ScheduleCountdownTimer schd={scheduleInfo} currentTime={currentTime} onTimeEnd={e=>{
+                                                                reloadSchedule();
+                                                            }}/>
+                                                        </Button>
+                                                        :
+                                                        <Button disabled>Time is up!</Button>
+                                                    }
+                                                </>
+                                                :
+                                                <>{
+                                                    approve?
+                                                    <Button onClick={e => startExam()} variant='primary'>
+                                                        {isContinue?
+                                                        "Continue Your Exam"
+                                                            :
+                                                        "Start Exam"
+                                                        }
+                                                    </Button>
+                                                    :
+                                                    <Button disabled={!approve} variant='primary'>Waiting... Approve by Admin</Button>
+                                                }
+                                                </>
+                                            }
+                                        </>
+                                        :
+                                        <Button disabled>Loading...</Button>
+                                    }
+                                </Col>
+                            </Row>
                         </Card.Footer>
                     </Card>
                 </Col>

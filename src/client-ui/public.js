@@ -6,7 +6,7 @@ import {getContent} from "../components/services";
 import {CSSTransition, TransitionGroup} from 'react-transition-group';
 import classNames from "classnames";
 import MetaTags from 'react-meta-tags';
-import {useHistory} from 'react-router-dom';
+import {useHistory, useLocation, useParams} from 'react-router-dom';
 import LangSwitcher from "../client-components/lang-switcher";
 import {getPlatform} from "../client-components/client-tools";
 
@@ -21,6 +21,7 @@ const Public = () => {
     const [lang, setLang] = useState("TH");
     const history = useHistory();
     const [showMacModal, setShowMacModal] = useState(false);
+    let query = new URLSearchParams(useLocation().search);
 
     useEffect(() => {
         new Promise(async resolve => {
@@ -31,7 +32,12 @@ const Public = () => {
                 resolve();
             }, 300);
         })
+        let start=query.get('start');
+        if(start=='1'){
+            handleShow();
+        }
     }, [contentType]);
+
 
     async function changeContent(type, e) {
         e.preventDefault();

@@ -1,6 +1,6 @@
 import {useParams} from "react-router-dom";
 import {observer} from "mobx-react";
-import {useContext, useEffect, useRef, useState} from "react";
+import {createRef, useContext, useEffect, useRef, useState} from "react";
 import StateContext from "../mobx/global-context";
 import {Alert, Badge, Button, Col, Form, FormControl, Image, InputGroup, Modal, Row, Table} from "react-bootstrap";
 import {render} from "@testing-library/react";
@@ -11,7 +11,7 @@ import {
     changeCheckInState,
     getCheckInStudents,
     getEmailByScheduleDetail, getMeetURL,
-    getScheduleInfo, removeMeetURL, setMeetURL, pairUserData, confirmBox, loadStudentPicture
+    getScheduleInfo, removeMeetURL, setMeetURL, pairUserData, confirmBox, loadStudentPicture, unSend
 } from "../components/services";
 import {toast} from "react-toastify";
 import { confirmAlert } from 'react-confirm-alert'; // Import
@@ -35,7 +35,11 @@ const ViewStudent = () => {
     const [userPairingText,setUserPairingText] = useState('');
     const [userPairing,setUserPairing] = useState(null);
     const [showEmail,setShowEmail] = useState(false);
+    const [showRejectMsg,setShowRejectMsg] = useState(false);
+    const [rejectMsg,setRejectMsg] = useState('');
+    const [selectedStd,setSelectedStd] = useState(null);
     const q = useRef(null);
+    const textAreaRejectMsg=createRef();
 
     useEffect(() => {
         state.scheduleMenu = [
@@ -132,13 +136,24 @@ const ViewStudent = () => {
         return code;
     }
 
-    async function reject(std) {
-        chState(std,0);
+     function sendRejectMsg(){
+        chState(selectedStd,0,rejectMsg);
+        setShowRejectMsg(false);
+        setRejectMsg('');
     }
 
-    async function chState(std,state){
+    async function reject(std) {
+        setSelectedStd(std);
+        setShowRejectMsg(true);
+    }
+
+    useEffect(()=>{
+        if(textAreaRejectMsg.current)textAreaRejectMsg.current.focus();
+    },[textAreaRejectMsg])
+
+    async function chState(std,state,msg){
         setLoadingBtn(prevState => ({...prevState,[std.StdRegistID]:true}))
-        await changeCheckInState(std.StdRegistID,state);
+        await changeCheckInState(std.StdRegistID,state,msg);
         if(state==1){
             toast.success(std.StudentID+' Approved.');
         }else{
@@ -421,7 +436,18 @@ const ViewStudent = () => {
                                                             std.IsStart && <Badge variant="secondary" className="ml-1">Logged In</Badge>
                                                         }
                                                         {
-                                                            std.IsEnd && <Badge variant="danger" className="ml-1">Exited</Badge>
+                                                            (std.IsEnd && std.IsEnd!='0') && <Badge variant="danger" className="ml-1"><span style={{cursor:'pointer'}} href='#' onClick={e=>{
+                                                                confirmBox('Un-Send',`Remove finish state for this ${std.StudentID} ?`,async ()=>{
+                                                                    let result = await unSend(std.StdRegistID);
+                                                                    if(!result.error){
+                                                                        setStudents(prevState => {
+                                                                            let existed = prevState.find(v=>v.StudentID==std.StudentID)
+                                                                            existed.IsEnd=null;
+                                                                            return [...prevState];
+                                                                        })
+                                                                    }
+                                                                })
+                                                            }}>Exited</span></Badge>
                                                         }
                                                     </div>
                                                 </td>
@@ -439,6 +465,26 @@ const ViewStudent = () => {
                             {/*</div>*/}
                         </Col>
                     </Row>
+                <Modal show={showRejectMsg} onHide={e=> {
+                    setShowRejectMsg(false)
+                    setSelectedStd(null);
+                    setRejectMsg('');
+                }}>
+                    <Modal.Header>Reject Message</Modal.Header>
+                    <Modal.Body>
+                        <Form.Group>
+                            <Form.Label>Cause</Form.Label>
+                            <Form.Control as="textarea" ref={textAreaRejectMsg} onChange={e=>{
+                                let v = e.target.value;
+                                setRejectMsg(v);
+                            }} value={rejectMsg} />
+                        </Form.Group>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant='light' onClick={e=>setShowRejectMsg(false)}>Close</Button>
+                        <Button variant='dark' onClick={e=>sendRejectMsg()}>Send and Reject</Button>
+                    </Modal.Footer>
+                </Modal>
                     <Modal show={showEmail} onHide={e=>setShowEmail(false)}>
                         <Modal.Header closeButton>
                             <span className="text-uppercase">Email {group}:</span>

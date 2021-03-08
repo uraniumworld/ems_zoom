@@ -10,6 +10,7 @@ import {toast} from "react-toastify";
 import {useHistory} from 'react-router-dom';
 import Theory from "./theory";
 import QRCode from "qrcode";
+import moment from "moment";
 
 const Exam=()=>{
     const {type,StdRegistID, SchdDetailID} = useParams();
@@ -34,14 +35,6 @@ const Exam=()=>{
     function onDenied(){
 
     }
-    if(!type){
-        return <ExamScheduleDay
-            reload={reload}
-            student={state.currentStudent}
-            schedulesDate={examSchedule}
-            schedulesDateTime={examScheduleWithDateTime}
-        />
-    }
 
     async function reload(){
         let dataDateTime = await getExamSchedules();
@@ -52,8 +45,8 @@ const Exam=()=>{
     }
 
     async function QRGenerate(){
+        if(!StdRegistID)return;
         const examData = await checkClient(StdRegistID);
-        console.log('============',examData,StdRegistID);
         if(examData){
             state.setCurrentMeetURL(examData.meet_url);
             QRCode.toDataURL(examData.meet_url)
@@ -64,6 +57,15 @@ const Exam=()=>{
                     state.setCurrentMeetQRCODE(null);
                 })
         }
+    }
+
+    if(!type){
+        return <ExamScheduleDay
+            reload={reload}
+            student={state.currentStudent}
+            schedulesDate={examSchedule}
+            schedulesDateTime={examScheduleWithDateTime}
+        />
     }
 
     return <CheckInProcess

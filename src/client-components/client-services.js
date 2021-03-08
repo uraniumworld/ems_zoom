@@ -29,6 +29,10 @@ export function checkClient(StdRegistID){
     return  request('client',{StdRegistID});
 }
 
+export function isUserStartedExam(StdRegistID){
+    return  request('is-user-started-exam',{StdRegistID});
+}
+
 export function uploadWorkshopFile(formData){
     return  request('workshop-upload',formData);
 }
@@ -65,8 +69,8 @@ export function getMyPicture(){
     return  request('get-my-picture');
 }
 
-export async function getScheduleInfo(StdRegistID){
-    let result = await request('get-schedule-info',{StdRegistID});
+export async function getScheduleInfo(StdRegistID,condition='date-time'){
+    let result = await request('get-schedule-info',{StdRegistID,condition});
     if(result)tranformScheduleDate(result);
     return result;
 }
