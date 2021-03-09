@@ -1,5 +1,6 @@
 import axios from "axios";
 import {tranformScheduleDate} from "../components/services";
+import moment from "moment";
 
 
 
@@ -93,6 +94,25 @@ export function generateMSOffice(StdRegistID){
 
 export function updateStateMSOffice(StdRegistID,officeID){
     return request('downloaded-state-document',{StdRegistID,officeID});
+}
+
+/**
+ *
+ * @param {string} [type=moment|diff]
+ * @return {Promise<unknown>}
+ */
+export function getServerTime(type){
+    return new Promise(async resolve => {
+        let serverTime = await request('server-time');
+            if(serverTime && typeof serverTime.timestamp == 'number'){
+                if(type=='diff'){
+                    let diffSec = moment().unix()-serverTime.timestamp
+                    resolve(diffSec);
+                }else{
+                    resolve(moment.unix(serverTime.timestamp));
+                }
+            }
+    });
 }
 
 function request(method,params={},scriptName='examination_resful_api.php'){

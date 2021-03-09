@@ -10,20 +10,18 @@ import {observer} from "mobx-react";
 import moment from 'moment';
 import ScheduleCountdownTimer from "./schedule-countdown-timer";
 import {getPlatform} from "./client-tools";
+import {getServerTime} from "./client-services";
 
 const striptags = require('striptags');
 
 const ExamScheduleDay = ({schedulesDate, schedulesDateTime, student,reload}) => {
-    // console.log(schedules);
     const state = useContext(StateContext);
     const history = useHistory();
-    const [currentTime,setCurrentTime] = useState();
+    const [serverTime,setServerTime] = useState(null);
     const timer = useRef();
     const timer2 = useRef();
     useEffect(()=>{
-        timer.current=setInterval(()=>{
-            setCurrentTime(moment());
-        },1000);
+        getServerTime('moment').then(t=>setServerTime(t));
         return ()=>{
             clearInterval(timer.current);
             clearInterval(timer2.current);
@@ -41,7 +39,7 @@ const ExamScheduleDay = ({schedulesDate, schedulesDateTime, student,reload}) => 
         return moment(buffer);
     }
 
-    if (typeof schedulesDate == 'undefined') return <Alert variant='info'>Schedule Loading...</Alert>
+    if (typeof schedulesDate == 'undefined' || !serverTime) return <Alert variant='info'>Schedule Loading...</Alert>
     return <div>
         <Header/>
         <Container className="mt-4">
@@ -50,8 +48,6 @@ const ExamScheduleDay = ({schedulesDate, schedulesDateTime, student,reload}) => 
                     <>
                     {
                         schedulesDate.map(schd => {
-                            let expiredScheduleTime=moment(`${schd.ExamDate} ${schd.ExamTimeEnd}`,'YYYY-MM-DD HH:mm').toDate();
-                            let currentClockTime=new Date();
                             return <Col key={schd.SchdDetailID} lg={6} className="mb-4">
                                 <Card>
                                     <Card.Header>
@@ -90,7 +86,7 @@ const ExamScheduleDay = ({schedulesDate, schedulesDateTime, student,reload}) => 
                                                 <>
                                                     {getPlatform()=='win'?
                                                         <>
-                                                            {moment() < getExamEndJSTime(schd)?
+                                                            {serverTime < getExamEndJSTime(schd)?
                                                                 <Button variant='primary'
                                                                         className="ml-auto"
                                                                         onClick={e => {
@@ -107,7 +103,7 @@ const ExamScheduleDay = ({schedulesDate, schedulesDateTime, student,reload}) => 
                                                                 <Alert variant='danger'>Your device does not support the workshop exam.</Alert>
                                                                 :
                                                                 <>
-                                                                    {moment() < getExamEndJSTime(schd)?
+                                                                    {serverTime < getExamEndJSTime(schd)?
                                                                         <Button variant='primary'
                                                                                 className="ml-auto"
                                                                                 onClick={e => {
@@ -121,51 +117,7 @@ const ExamScheduleDay = ({schedulesDate, schedulesDateTime, student,reload}) => 
                                                             }
                                                         </>
                                                     }
-                                                    {/*{*/}
-                                                    {/*    isNotInScheduleTime(schd.StdRegistID) ?*/}
-                                                    {/*        <>*/}
-                                                    {/*            {expiredScheduleTime<=currentClockTime?*/}
-                                                    {/*                <Button disabled>Time is up!</Button>*/}
-                                                    {/*                :*/}
-                                                    {/*                <Button variant='primary'*/}
-                                                    {/*                        className="ml-auto"*/}
-                                                    {/*                        disabled={true}*/}
-                                                    {/*                >Exam starting in... <ScheduleCountdownTimer schd={schd}*/}
-                                                    {/*                                                             currentTime={currentTime}*/}
-                                                    {/*                                                             onTimeEnd={()=>{*/}
-                                                    {/*                                                                 timer2.current=!setTimeout(()=>{*/}
-                                                    {/*                                                                     reload();*/}
-                                                    {/*                                                                 },3000)*/}
-                                                    {/*                                                             }}*/}
-                                                    {/*                /></Button>*/}
-                                                    {/*            }*/}
-                                                    {/*        </>*/}
-                                                    {/*        :*/}
-                                                    {/*        <>*/}
-                                                    {/*            {getPlatform()=='win'?*/}
-                                                    {/*                <Button variant='primary'*/}
-                                                    {/*                        className="ml-auto"*/}
-                                                    {/*                        onClick={e => {*/}
-                                                    {/*                            let examType = schd.ModuleType == '2' ? 'workshop' : 'theory';*/}
-                                                    {/*                            history.push(`/exam/${examType}/${schd.StdRegistID}`)*/}
-                                                    {/*                        }}>Enter Exam</Button>*/}
-                                                    {/*                :*/}
-                                                    {/*                <>*/}
-                                                    {/*                    {schd.ModuleType == '2'?*/}
-                                                    {/*                        <Alert variant='danger'>Your device does not support the workshop exam.</Alert>*/}
-                                                    {/*                        :*/}
-                                                    {/*                        <Button variant='primary'*/}
-                                                    {/*                                className="ml-auto"*/}
-                                                    {/*                                onClick={e => {*/}
-                                                    {/*                                    history.push(`/exam/workshop/${schd.StdRegistID}`)*/}
-                                                    {/*                                }}>Enter Exam</Button>*/}
-                                                    {/*                    }*/}
-                                                    {/*                </>*/}
-                                                    {/*            }*/}
-                                                    {/*        </>*/}
-                                                    {/*}*/}
                                                 </>
-
                                             }
                                         </div>
                                     </Card.Footer>
