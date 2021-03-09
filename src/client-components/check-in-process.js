@@ -16,6 +16,7 @@ import {toast} from "react-toastify";
 import Config from "../config";
 import ScheduleCountdownTimer from "./schedule-countdown-timer";
 import moment from "moment";
+import {ssoExit} from "./client-tools";
 
 const CheckInProcess = ({state, StdRegistID, onApproved, onDenied, children}) => {
 
@@ -184,6 +185,11 @@ const CheckInProcess = ({state, StdRegistID, onApproved, onDenied, children}) =>
 
     async function logout() {
         await studentLogout();
+        if(state.auth && state.auth.authType=='sso'){
+            ssoExit(state.forceSEB);
+        }else{
+            state.setStudent(null);
+        }
         state.setStudent(null);
         history.push('/login');
     }
