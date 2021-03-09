@@ -8,11 +8,6 @@ class MobxStore {
     currentMeetQRCODE = void 0;
     currentGroupName = void 0;
 
-    /**
-     * @type moment
-     */
-    currentServerTime=void 0;
-
     auth = void 0;
     forceSEB = void 0;
 
