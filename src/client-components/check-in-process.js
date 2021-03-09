@@ -28,7 +28,8 @@ const CheckInProcess = ({state, StdRegistID, onApproved, onDenied, children}) =>
     const [myPicture, setMyPicture] = useState(void 0);
     const [scheduleInfo, setScheduleInfo] = useState(void 0);
     const [serverTime, setServerTime] = useState(0);
-    const [currentTime, setCurrentTime] = useState(0);
+    const [currentTime, setCurrentTime] = useState(null);
+    const [timeDiff, setTimeDiff] = useState(0);
     const [isContinue, setIsContinue] = useState(false);
     const [lastRejectMsg, setLastRejectMsg] = useState('');
     const [examScheduleWithDateTime, setExamScheduleWithDateTime] = useState([]);
@@ -41,8 +42,8 @@ const CheckInProcess = ({state, StdRegistID, onApproved, onDenied, children}) =>
     const reloadSchdInfoTimer = useRef();
 
     useEffect(() => {
-        countdownTimer.current=setInterval(()=>{
-            setCurrentTime(moment());
+        countdownTimer.current=setTimeout(()=>{
+            updateTIME();
         },1000);
         new Promise(async resolve=>{
             await reloadSchedule();
@@ -109,6 +110,13 @@ const CheckInProcess = ({state, StdRegistID, onApproved, onDenied, children}) =>
         last_approve_state.current=approve;
     },[approve])
 
+    function updateTIME(){
+        let time=moment().subtract(timeDiff,'seconds');
+        setCurrentTime(time);
+        clearInterval(countdownTimer.current);
+        countdownTimer.current=setTimeout(()=>updateTIME(),1000);
+    }
+
 
     async function reloadSchedule(){
         let dataDateTime = await getExamSchedules();
@@ -153,6 +161,7 @@ const CheckInProcess = ({state, StdRegistID, onApproved, onDenied, children}) =>
                 data.serverTime=0;
                 data.last_update=0;
             }
+            setTimeDiff(moment().unix()-data.serverTime);
             setServerTime(data.serverTime);
             if (last_update.current != data.last_update || last_update_url.current != data.last_update_url) {
                 if(data.group_name){
@@ -305,7 +314,9 @@ const CheckInProcess = ({state, StdRegistID, onApproved, onDenied, children}) =>
                                                     {currentTime<getExamEndJSTime(scheduleInfo)?
                                                         <Button disabled variant='primary'>Exam Starting In...
                                                             <ScheduleCountdownTimer schd={scheduleInfo} currentTime={currentTime} onTimeEnd={e=>{
-                                                                reloadSchedule();
+                                                                setTimeout(()=>{
+                                                                    reloadSchedule();
+                                                                },2000);
                                                             }}/>
                                                         </Button>
                                                         :
