@@ -2,7 +2,20 @@ import {useParams} from "react-router-dom";
 import {observer} from "mobx-react";
 import {createRef, useContext, useEffect, useRef, useState} from "react";
 import StateContext from "../mobx/global-context";
-import {Alert, Badge, Button, Col, Form, FormControl, Image, InputGroup, Modal, Row, Table} from "react-bootstrap";
+import {
+    Alert,
+    Badge,
+    Button,
+    Card,
+    Col,
+    Form,
+    FormControl, FormLabel,
+    Image,
+    InputGroup, ListGroup,
+    Modal,
+    Row,
+    Table
+} from "react-bootstrap";
 import {render} from "@testing-library/react";
 import { uid } from 'uid';
 import {CopyToClipboard} from 'react-copy-to-clipboard';
@@ -10,13 +23,23 @@ import ScrollToTop from 'react-scroll-up';
 import {
     changeCheckInState,
     getCheckInStudents,
-    getEmailByScheduleDetail, getMeetURL,
-    getScheduleInfo, removeMeetURL, setMeetURL, pairUserData, confirmBox, loadStudentPicture, unSend
+    getEmailByScheduleDetail,
+    getMeetURL,
+    getScheduleInfo,
+    removeMeetURL,
+    setMeetURL,
+    pairUserData,
+    confirmBox,
+    loadStudentPicture,
+    unSend,
+    getRejectLogs,
+    getMeetToken
 } from "../components/services";
 import {toast} from "react-toastify";
 import { confirmAlert } from 'react-confirm-alert'; // Import
 import queue from 'async/queue';
 import Config from "../config";
+import moment from "moment";
 
 
 
@@ -38,14 +61,20 @@ const ViewStudent = () => {
     const [showRejectMsg,setShowRejectMsg] = useState(false);
     const [rejectMsg,setRejectMsg] = useState('');
     const [selectedStd,setSelectedStd] = useState(null);
+    const [rejectLogs,setRejectLogs] = useState(null);
+    const [token,setToken] = useState(null);
     const q = useRef(null);
     const textAreaRejectMsg=createRef();
+    const divLeaveLog=createRef();
 
     useEffect(() => {
         state.scheduleMenu = [
             {to: `/schedule/${SchdID}/${SchdDetailID}`, title: 'Group'},
             {to: `/schedule/${SchdID}/${SchdDetailID}/${group}`, title: 'Students'}
         ];
+        getMeetToken().then(data=>{
+            setToken(data.token);
+        });
         getMeetURL(SchdID,SchdDetailID,group).then(data=>{
             if(data){
                 setMeetRoom(data.meet_url);
@@ -62,6 +91,12 @@ const ViewStudent = () => {
             if(q.current)q.current.kill();
         }
     }, []);
+
+    useEffect(()=>{
+        if(divLeaveLog.current){
+            divLeaveLog.current.scrollTop=0;
+        }
+    },[rejectLogs,divLeaveLog]);
 
     useEffect(()=>{
         let textArr=userPairingText.split(/\n/);
@@ -98,6 +133,9 @@ const ViewStudent = () => {
     },[userPairingText]);
 
     function reloadStudents(){
+        getRejectLogs(SchdID,SchdDetailID,group).then(data=>{
+            setRejectLogs(data);
+        })
         getCheckInStudents(SchdID,SchdDetailID,group).then(async res=>{
             q.current = queue((std, callback)=>{
                 loadStudentPicture(std.Username).then(()=>{
@@ -274,7 +312,15 @@ const ViewStudent = () => {
                                                 <FormControl
                                                     placeholder="meet.google.com/xxx-yyy-zzz"
                                                     value={meetRoom}
-                                                    onChange={e=>setMeetRoom(e.target.value)}
+                                                    onChange={e=>{
+                                                        let url = e.target.value.match(/(https:\/\/meet\.google\.com\/.+)/);
+                                                        if(url){
+                                                            let meetUrl=url[1].split('?');
+                                                            setMeetRoom(meetUrl[0]);
+                                                        }else{
+                                                            toast.error('No Google meet url found.')
+                                                        }
+                                                    }}
                                                 />
                                                 <InputGroup.Append>
                                                     <Button variant="danger" onClick={e=>{broadcast()}}>Broadcast</Button>
@@ -346,11 +392,52 @@ const ViewStudent = () => {
                                     </div>
                                     }
                                     </Form.Group>
+                                {meetRoom && token && copiedState==4 &&
+                                    <div className="mb-2">
+                                        {/*<FormLabel style={{color:'green'}}>Google meet token:</FormLabel> <FormControl type="text" value={`${meetRoom}?token=${token}`} onClick={e=>e.target.select()}/>*/}
+                                        <InputGroup className="mb-3">
+                                            <FormControl readOnly type="text" defaultValue={`${meetRoom}?token=${token}`} onClick={e=>e.target.select()}/>
+                                            <InputGroup.Append>
+                                                <a className="btn btn-dark" target='_blank' href={`${meetRoom}?token=${token}`}>Start Google Meet Admin</a>
+                                            </InputGroup.Append>
+                                        </InputGroup>
+                                    </div>
+                                }
                             </div>
                         </Col>
                     </Row>
                     <Row>
                         <Col>
+                            {meetRoom && token && copiedState==4 &&
+                            <Row>
+                                <Col>
+                                    <Card className="mb-4">
+                                        <Card.Header>Leave logs</Card.Header>
+                                        <Card.Body>
+                                            <div ref={divLeaveLog} style={{maxHeight:'200px',overflowY:'auto'}}>
+                                                {rejectLogs?
+                                                    <ListGroup>
+                                                        {
+                                                            rejectLogs.map(logData=>{
+                                                                return <ListGroup.Item variant='danger' key={logData.created}>
+                                                                    <Row>
+                                                                        <Col>{logData.log}</Col>
+                                                                        <Col xs='auto'>{moment.unix(logData.created).format('DD/MM/YYYY HH:mm:ss')}</Col>
+                                                                    </Row>
+                                                                </ListGroup.Item>
+                                                            })
+                                                        }
+                                                    </ListGroup>
+                                                    :
+                                                    <div>None logs</div>
+                                                }
+
+                                            </div>
+                                        </Card.Body>
+                                    </Card>
+                                </Col>
+                            </Row>
+                            }
                             <Row>
                                 <Col xs={'auto'}>
                                     <h3>นักศึกในกลุ่ม <span className="text-uppercase">{group}</span></h3>

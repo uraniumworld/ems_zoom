@@ -68,6 +68,14 @@ export function changeCheckInState(StdRegistID,state,msg){
     return request('change-state',{StdRegistID,state,msg})
 }
 
+export function getRejectLogs(SchdID,SchdDetailID,group_name){
+    return request('get-reject-log',{SchdID,SchdDetailID,group_name})
+}
+
+export function getMeetToken(){
+    return request('get-meet-token');
+}
+
 export function getMeetURL(SchdID, SchdDetailID,group){
     return request('get-meet-url',{SchdID,SchdDetailID,group})
 }

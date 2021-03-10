@@ -102,7 +102,7 @@ const CheckInProcess = ({state, StdRegistID, onApproved, onDenied, children}) =>
             toast.success('Admin has been approved your profile.');
         }else if(typeof approve !='undefined' && last_approve_state.current){
             if(lastRejectMsg!=''){
-                toast.error('Admin has been rejected your profile, Cause: '+lastRejectMsg,{autoClose:30000});
+                toast.error('Admin has been rejected your profile, Cause: '+lastRejectMsg,{autoClose:false});
             }else{
                 toast.error('Admin has been rejected your profile');
             }
@@ -127,7 +127,6 @@ const CheckInProcess = ({state, StdRegistID, onApproved, onDenied, children}) =>
         let schd = examScheduleWithDateTime.find(v => v.StdRegistID == StdRegistID);
         return !!!schd;
     }
-
 
     function getQRCodeToState(url) {
         if (!url) {
