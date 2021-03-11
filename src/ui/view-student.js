@@ -63,9 +63,12 @@ const ViewStudent = () => {
     const [selectedStd,setSelectedStd] = useState(null);
     const [rejectLogs,setRejectLogs] = useState(null);
     const [token,setToken] = useState(null);
+    const [showMsg,setShowMsg] = useState(null);
+    const [msg,setMsg] = useState(null);
     const q = useRef(null);
     const textAreaRejectMsg=createRef();
     const divLeaveLog=createRef();
+    const textAreaMsg=createRef();
 
     useEffect(() => {
         state.scheduleMenu = [
@@ -180,6 +183,10 @@ const ViewStudent = () => {
         setRejectMsg('');
     }
 
+    function sendMsg(){
+
+    }
+
     async function reject(std) {
         setSelectedStd(std);
         setShowRejectMsg(true);
@@ -188,6 +195,10 @@ const ViewStudent = () => {
     useEffect(()=>{
         if(textAreaRejectMsg.current)textAreaRejectMsg.current.focus();
     },[textAreaRejectMsg])
+
+    useEffect(()=>{
+        if(textAreaMsg.current)textAreaMsg.current.focus();
+    },[textAreaMsg])
 
     async function chState(std,state,msg){
         setLoadingBtn(prevState => ({...prevState,[std.StdRegistID]:true}))
@@ -471,7 +482,7 @@ const ViewStudent = () => {
                                     <th>Avatar name</th>
                                     <th>Name</th>
                                     <th>Email</th>
-                                    <th>Status</th>
+                                    <th className="d-none d-md-block">Status</th>
                                     <th>Check In</th>
                                 </tr>
                                 </thead>
@@ -505,11 +516,18 @@ const ViewStudent = () => {
                                                         </>
                                                     }
                                                 </td>
-                                                <td style={{whiteSpace:'nowrap'}}>{std.StudentID}</td>
+                                                <td style={{whiteSpace:'nowrap'}}>
+                                                    {std.StudentID}
+                                                    <div>
+                                                        <Button className="mt-2" variant="warning" onClick={e=>{
+                                                            setShowMsg(true);
+                                                        }}>MSG</Button>
+                                                    </div>
+                                                </td>
                                                 <td>{std.avatar_name?<strong variant='info' style={{fontSize:'110%'}}>{std.avatar_name}</strong>:'Not pair'}</td>
                                                 <td>{std.FirstName_Th} {std.LastName_Th}</td>
-                                                <td>{std.email}</td>
-                                                <td>
+                                                <td><p style={{wordBreak:'break-word'}}>{std.email}</p></td>
+                                                <td className="d-none d-md-block">
                                                     {
                                                         std.check_in_status=='1'
                                                             ? <Badge variant="success" className="ml-1">Approved</Badge>
@@ -552,6 +570,27 @@ const ViewStudent = () => {
                             {/*</div>*/}
                         </Col>
                     </Row>
+                    <Modal show={showMsg} onHide={e=> {
+                        setShowMsg(false)
+                        setSelectedStd(null);
+                        setMsg('');
+                    }}>
+                        <Modal.Header>Send Message</Modal.Header>
+                        <Modal.Body>
+                            <Form.Group>
+                                <Form.Label>Message text</Form.Label>
+                                <Form.Control as="textarea" ref={textAreaMsg} onChange={e=>{
+                                    let v = e.target.value;
+                                    setMsg(v);
+                                }} value={msg} />
+                            </Form.Group>
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <Button variant='light' onClick={e=>setShowMsg(false)}>Close</Button>
+                            <Button variant='dark' onClick={e=>sendMsg()}>Send Message</Button>
+                        </Modal.Footer>
+                    </Modal>
+
                 <Modal show={showRejectMsg} onHide={e=> {
                     setShowRejectMsg(false)
                     setSelectedStd(null);

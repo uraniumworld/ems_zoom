@@ -95,6 +95,14 @@ export function generateMSOffice(StdRegistID){
 export function updateStateMSOffice(StdRegistID,officeID){
     return request('downloaded-state-document',{StdRegistID,officeID});
 }
+/////////////////
+export function noSEBGetAuthType(){
+    let returnURL=document.location.href;
+    return request('auth-type',{returnURL},'no_seb_resful_api.php');
+}
+export function noSEBCheckLogin(){
+    return request('check-login',null,'no_seb_resful_api.php');
+}
 
 /**
  *

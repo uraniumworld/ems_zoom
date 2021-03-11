@@ -24,6 +24,7 @@ import Admin from "./ui/admin";
 import Student from "./client-ui/student";
 import Public from "./client-ui/public";
 import PrepareDevice from "./client-ui/prepare-device";
+import ExternalSubmit from "./client-ui/external-submit";
 
 export const mobxStore = new MobxStore();
 
@@ -40,6 +41,7 @@ function App() {
                     <Switch>
                         <Route path="/" exact component={Public}/>
                         <Route path="/prepare-device" component={PrepareDevice}/>
+                        <Route path="/external-submit" component={ExternalSubmit}/>
                         <Student/>
                     </Switch>
                 </Route>
