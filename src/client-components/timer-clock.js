@@ -26,11 +26,11 @@ const TimerClock = ({serverTime=0,expire,onTimeout})=>{
         timer.current=setInterval(()=>{
             updateUI();
         },1000);
-    },[expire]);
+    },[expire,timeDiff.current]);
 
     function updateUI(){
         let expireTime = moment(expire);
-        let diff = expireTime.diff()+timeDiff.current
+        let diff = expireTime.diff()+timeDiff.current;
         if(diff>0){
             let d = moment.utc(diff).format("HH:mm:ss")
             setDuration(d);

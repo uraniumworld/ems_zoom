@@ -1,4 +1,4 @@
-import {useContext, useEffect, useRef, useState} from "react";
+import React, {useContext, useEffect, useRef, useState} from "react";
 import {
     checkClient,
     getExamSchedules,
@@ -17,6 +17,7 @@ import Config from "../config";
 import ScheduleCountdownTimer from "./schedule-countdown-timer";
 import moment from "moment";
 import {ssoExit} from "./client-tools";
+import ChatDisplay from "./chat-display";
 
 const CheckInProcess = ({state, StdRegistID, onApproved, onDenied, children}) => {
 
@@ -29,7 +30,6 @@ const CheckInProcess = ({state, StdRegistID, onApproved, onDenied, children}) =>
     const [scheduleInfo, setScheduleInfo] = useState(void 0);
     const [serverTime, setServerTime] = useState(0);
     const [currentTime, setCurrentTime] = useState(null);
-    const [timeDiff, setTimeDiff] = useState(0);
     const [isContinue, setIsContinue] = useState(false);
     const [lastRejectMsg, setLastRejectMsg] = useState('');
     const [examScheduleWithDateTime, setExamScheduleWithDateTime] = useState([]);
@@ -40,6 +40,8 @@ const CheckInProcess = ({state, StdRegistID, onApproved, onDenied, children}) =>
     const history = useHistory();
     const countdownTimer= useRef();
     const reloadSchdInfoTimer = useRef();
+    const reloadReadyExamTime = useRef();
+    const timeDiff = useRef(0);
 
     useEffect(() => {
         countdownTimer.current=setTimeout(()=>{
@@ -74,6 +76,7 @@ const CheckInProcess = ({state, StdRegistID, onApproved, onDenied, children}) =>
             clearInterval(timer.current);
             clearInterval(countdownTimer.current);
             clearInterval(reloadSchdInfoTimer.current);
+            clearInterval(reloadReadyExamTime.current);
         }
     }, []);
 
@@ -111,7 +114,7 @@ const CheckInProcess = ({state, StdRegistID, onApproved, onDenied, children}) =>
     },[approve])
 
     function updateTIME(){
-        let time=moment().subtract(timeDiff,'seconds');
+        let time=moment().add(timeDiff.current,'seconds');
         setCurrentTime(time);
         clearInterval(countdownTimer.current);
         countdownTimer.current=setTimeout(()=>updateTIME(),1000);
@@ -160,7 +163,7 @@ const CheckInProcess = ({state, StdRegistID, onApproved, onDenied, children}) =>
                 data.serverTime=0;
                 data.last_update=0;
             }
-            setTimeDiff(moment().unix()-data.serverTime);
+            timeDiff.current=data.serverTime-moment().unix()
             setServerTime(data.serverTime);
             if (last_update.current != data.last_update || last_update_url.current != data.last_update_url) {
                 if(data.group_name){
@@ -218,7 +221,7 @@ const CheckInProcess = ({state, StdRegistID, onApproved, onDenied, children}) =>
             <Row>
                 <Col>
                     <Card className="mt-4 bg-dark text-white">
-                        <Card.Header>EMS Check-In: #{scheduleInfo.SchdCode} / {scheduleInfo.ExamDate} {scheduleInfo.ExamTimeStart} - {scheduleInfo.ExamTimeEnd}</Card.Header>
+                        <Card.Header>EMS Check-In: <Badge style={{fontSize:'100%'}} variant={scheduleInfo.ModuleType=='1'?'danger':'primary'}>{scheduleInfo.ModuleType=='1'?'Theory':'Workshop'}</Badge> / {scheduleInfo.ExamDate} {scheduleInfo.ExamTimeStart} - {scheduleInfo.ExamTimeEnd}</Card.Header>
                         <Card.Body>
                             <div className="text-center">
                                 <Row>
@@ -238,7 +241,7 @@ const CheckInProcess = ({state, StdRegistID, onApproved, onDenied, children}) =>
                                         }
                                     </Col>
                                     <Col className="col-12 col-md-6">
-                                        <div style={{width:'400px'}}>
+                                        <div>
                                             <Table className="text-white">
                                                 <tbody>
                                                 <tr>
@@ -263,6 +266,14 @@ const CheckInProcess = ({state, StdRegistID, onApproved, onDenied, children}) =>
                                                     </td>
                                                 </tr>
                                                 }
+                                                <tr className="d-none d-lg-table-row">
+                                                    <td colSpan="2">
+                                                        <ChatDisplay SchdID={scheduleInfo.SchdID}
+                                                                     SchdDetailID={scheduleInfo.SchdDetailID}
+                                                                     group_name={groupName}
+                                                        />
+                                                    </td>
+                                                </tr>
                                                 </tbody>
                                             </Table>
                                         </div>
@@ -312,10 +323,12 @@ const CheckInProcess = ({state, StdRegistID, onApproved, onDenied, children}) =>
                                                 <>
                                                     {currentTime<getExamEndJSTime(scheduleInfo)?
                                                         <Button disabled variant='primary'>Exam Starting In...
-                                                            <ScheduleCountdownTimer schd={scheduleInfo} currentTime={currentTime} onTimeEnd={e=>{
-                                                                setTimeout(()=>{
-                                                                    reloadSchedule();
-                                                                },2000);
+                                                            <ScheduleCountdownTimer schd={scheduleInfo} currentTime={currentTime} onTimeEnd={async e=>{
+                                                                await reloadSchedule();
+                                                                clearInterval(reloadReadyExamTime.current);
+                                                                reloadReadyExamTime.current=setInterval(async ()=>{
+                                                                    await reloadSchedule();
+                                                                },5000);
                                                             }}/>
                                                         </Button>
                                                         :

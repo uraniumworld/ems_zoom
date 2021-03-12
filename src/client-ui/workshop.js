@@ -246,9 +246,7 @@ const Workshop = ({student,scheduleInfo, serverTime, onSubmitted,meetUrl,meetQRC
                     <ClientTopMenu type="workshop" scheduleInfo={scheduleInfo} student={student}
                                    confirmSubmit={confirmSubmit}/>
                    <div className="mt-2">
-                       <Row>
-                           <DisplayMeetURL/>
-                       </Row>
+                       <DisplayMeetURL SchdID={scheduleInfo.SchdID} SchdDetailID={scheduleInfo.SchdDetailID}/>
                    </div>
                     <div className="exam-content">
                         <Row className="mb-4">

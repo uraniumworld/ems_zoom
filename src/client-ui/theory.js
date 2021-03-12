@@ -154,9 +154,7 @@ const Theory = ({student,scheduleInfo, serverTime, onSubmitted}) => {
                                confirmSubmit={confirmSubmit}/>
                 <div className="exam-content">
                     <div className="mt-2">
-                        <Row>
-                            <DisplayMeetURL/>
-                        </Row>
+                        <DisplayMeetURL SchdID={scheduleInfo.SchdID} SchdDetailID={scheduleInfo.SchdDetailID}/>
                     </div>
                     {questions[currentQuestionIndex] &&
                         <TheoryQuestion

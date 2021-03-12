@@ -11,6 +11,8 @@ import {useHistory} from 'react-router-dom';
 import Theory from "./theory";
 import QRCode from "qrcode";
 import moment from "moment";
+import ChatDisplay from "../client-components/chat-display";
+import {Alert} from "react-bootstrap";
 
 const Exam=()=>{
     const {type,StdRegistID, SchdDetailID} = useParams();
@@ -75,13 +77,17 @@ const Exam=()=>{
         onDenied={onDenied}
     >
         {(scheduelInfo,serverTime,meetUrl,meetQRCode)=>{
+            function getExam(){
+                if(type=='workshop' && scheduelInfo.ModuleType=='2'){
+                    return <Workshop student={state.currentStudent} meetUrl={meetUrl} meetQRCode={meetQRCode} scheduleInfo={scheduelInfo} serverTime={serverTime} onSubmitted={e=>reload()}/>
+                }else if(type=='theory' && scheduelInfo.ModuleType=='1'){
+                    return <Theory student={state.currentStudent} meetUrl={meetUrl} meetQRCode={meetQRCode} scheduleInfo={scheduelInfo} serverTime={serverTime} onSubmitted={e=>reload()}/>
+                }else{
+                    return <Alert variant='danger'>Page not found.</Alert>
+                }
+            }
             return <>
-                {type=='workshop' &&
-                <Workshop student={state.currentStudent} meetUrl={meetUrl} meetQRCode={meetQRCode} scheduleInfo={scheduelInfo} serverTime={serverTime} onSubmitted={e=>reload()}/>
-                }
-                {type=='theory' &&
-                <Theory student={state.currentStudent} meetUrl={meetUrl} meetQRCode={meetQRCode} scheduleInfo={scheduelInfo} serverTime={serverTime} onSubmitted={e=>reload()}/>
-                }
+                {getExam()}
             </>
         }}
 
