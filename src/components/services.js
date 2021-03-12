@@ -112,6 +112,14 @@ export function unSend(StdRegistID){
     return request('un-send',{StdRegistID})
 }
 
+export function sendChatMessage(SchdID,SchdDetailID,group_name,toUser,message){
+    return request('send-message',{SchdID,SchdDetailID,group_name,toUser,message},'no_seb_resful_api.php');
+}
+
+export function getChatMessage(SchdID,SchdDetailID,group_name,Username){
+    return request('get-message',{SchdID,SchdDetailID,group_name,Username},'no_seb_resful_api.php');
+}
+
 export function confirmBox(title,detail,fn){
     confirmAlert({
         title:title,
@@ -153,9 +161,9 @@ export async function loadStudentPicture(Username){
     }
 }
 
-function request(method,params={}){
+function request(method,params={},scriptName='check_in_resful_api.php'){
     return new Promise(resolve => {
-        axios.post('/ems_tools/check_in_resful_api.php?method='+method,params)
+        axios.post(`/ems_tools/${scriptName}?method=`+method,params)
             .then(res=>{
                 resolve(res.data);
             }).catch(e=>{

@@ -33,7 +33,7 @@ import {
     loadStudentPicture,
     unSend,
     getRejectLogs,
-    getMeetToken
+    getMeetToken, sendChatMessage
 } from "../components/services";
 import {toast} from "react-toastify";
 import { confirmAlert } from 'react-confirm-alert'; // Import
@@ -64,7 +64,7 @@ const ViewStudent = () => {
     const [rejectLogs,setRejectLogs] = useState(null);
     const [token,setToken] = useState(null);
     const [showMsg,setShowMsg] = useState(null);
-    const [msg,setMsg] = useState(null);
+    const [msg,setMsg] = useState('');
     const q = useRef(null);
     const textAreaRejectMsg=createRef();
     const divLeaveLog=createRef();
@@ -183,8 +183,15 @@ const ViewStudent = () => {
         setRejectMsg('');
     }
 
-    function sendMsg(){
-
+    async function sendMsg(){
+        let result = await sendChatMessage(SchdID,SchdDetailID,group,selectedStd.Username,msg);
+        if(!result.error){
+            console.log(selectedStd);
+            toast.success('Message has been send.')
+            setShowMsg(false);
+            setSelectedStd(null);
+            setMsg('');
+        }
     }
 
     async function reject(std) {
@@ -426,13 +433,13 @@ const ViewStudent = () => {
                                         <Card.Header>Leave logs</Card.Header>
                                         <Card.Body>
                                             <div ref={divLeaveLog} style={{maxHeight:'200px',overflowY:'auto'}}>
-                                                {rejectLogs?
+                                                {rejectLogs.length>0?
                                                     <ListGroup>
                                                         {
-                                                            rejectLogs.map(logData=>{
+                                                            rejectLogs.map((logData,i)=>{
                                                                 return <ListGroup.Item variant='danger' key={logData.created}>
                                                                     <Row>
-                                                                        <Col>{logData.log}</Col>
+                                                                        <Col>{rejectLogs.length-i}) {logData.log}</Col>
                                                                         <Col xs='auto'>{moment.unix(logData.created).format('DD/MM/YYYY HH:mm:ss')}</Col>
                                                                     </Row>
                                                                 </ListGroup.Item>
@@ -440,7 +447,7 @@ const ViewStudent = () => {
                                                         }
                                                     </ListGroup>
                                                     :
-                                                    <div>None logs</div>
+                                                    <div>- No logs -</div>
                                                 }
 
                                             </div>
@@ -481,8 +488,8 @@ const ViewStudent = () => {
                                     <th>Code</th>
                                     <th>Avatar name</th>
                                     <th>Name</th>
-                                    <th>Email</th>
-                                    <th className="d-none d-md-block">Status</th>
+                                    <th className="d-none d-md-table-cell">Email</th>
+                                    <th className="d-none d-md-table-cell">Status</th>
                                     <th>Check In</th>
                                 </tr>
                                 </thead>
@@ -520,14 +527,15 @@ const ViewStudent = () => {
                                                     {std.StudentID}
                                                     <div>
                                                         <Button className="mt-2" variant="warning" onClick={e=>{
+                                                            setSelectedStd(std);
                                                             setShowMsg(true);
                                                         }}>MSG</Button>
                                                     </div>
                                                 </td>
                                                 <td>{std.avatar_name?<strong variant='info' style={{fontSize:'110%'}}>{std.avatar_name}</strong>:'Not pair'}</td>
                                                 <td>{std.FirstName_Th} {std.LastName_Th}</td>
-                                                <td><p style={{wordBreak:'break-word'}}>{std.email}</p></td>
-                                                <td className="d-none d-md-block">
+                                                <td className="d-none d-md-table-cell"><p style={{wordBreak:'break-word'}}>{std.email}</p></td>
+                                                <td className="d-none d-md-table-cell">
                                                     {
                                                         std.check_in_status=='1'
                                                             ? <Badge variant="success" className="ml-1">Approved</Badge>
@@ -575,7 +583,11 @@ const ViewStudent = () => {
                         setSelectedStd(null);
                         setMsg('');
                     }}>
-                        <Modal.Header>Send Message</Modal.Header>
+                        <Modal.Header>Send Message to {selectedStd?
+                            `${selectedStd.StudentID} / ${selectedStd.FirstName_Th} ${selectedStd.LastName_Th}`
+                            :
+                            'Loading...'
+                        }</Modal.Header>
                         <Modal.Body>
                             <Form.Group>
                                 <Form.Label>Message text</Form.Label>
