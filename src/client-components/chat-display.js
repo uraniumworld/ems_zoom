@@ -4,6 +4,7 @@ import {Alert, Col, ListGroup, Nav, Row} from "react-bootstrap";
 import {css,StyleSheet} from 'aphrodite';
 import {toast} from "react-toastify";
 import moment from "moment";
+import {getServerTime} from "./client-services";
 const ChatDisplay = ({SchdID,SchdDetailID,group_name,visible=true})=>{
     const [message,setMessage] = useState();
     const timer = useRef();
@@ -22,16 +23,19 @@ const ChatDisplay = ({SchdID,SchdDetailID,group_name,visible=true})=>{
     useEffect(()=>{
         let lastID = localStorage.getItem('lastMessage');
         if(lastUpdated.current!=0 && Array.isArray(message) && message.length>0){
-            if(message[0] && message[0].id!=lastID){
-                let msg=message[0].message;
-                let timeText=moment.unix(message[0].created).format('HH:mm:ss')
-                toast.warn(<div>{timeText} - {msg}</div>,{
-                    autoClose:false,
-                    onClose:()=>{
-                        localStorage.setItem('lastMessage',message[0].id);
-                    }
-                });
-            }
+            getServerTime('moment').then(serverTime=>{
+                let pastSec=serverTime.unix()-message[0].created;
+                if(message[0] && message[0].id!=lastID && pastSec<600){
+                    let msg=message[0].message;
+                    let timeText=moment.unix(message[0].created).format('HH:mm:ss')
+                    toast.warn(<div>{timeText} - {msg}</div>,{
+                        autoClose:false,
+                        onClose:()=>{
+                            localStorage.setItem('lastMessage',message[0].id);
+                        }
+                    });
+                }
+            });
         }
     },[lastUpdated.current])
 

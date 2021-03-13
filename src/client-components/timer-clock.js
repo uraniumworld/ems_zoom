@@ -22,7 +22,7 @@ const TimerClock = ({serverTime=0,expire,onTimeout})=>{
     },[serverTime])
 
     useEffect(()=>{
-        clearInterval(timer.current)
+        clearInterval(timer.current);
         timer.current=setInterval(()=>{
             updateUI();
         },1000);

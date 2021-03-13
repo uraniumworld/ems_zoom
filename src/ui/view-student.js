@@ -33,7 +33,7 @@ import {
     loadStudentPicture,
     unSend,
     getRejectLogs,
-    getMeetToken, sendChatMessage
+    getMeetToken, sendChatMessage, getChatMessage
 } from "../components/services";
 import {toast} from "react-toastify";
 import { confirmAlert } from 'react-confirm-alert'; // Import
@@ -64,6 +64,7 @@ const ViewStudent = () => {
     const [rejectLogs,setRejectLogs] = useState(null);
     const [token,setToken] = useState(null);
     const [showMsg,setShowMsg] = useState(null);
+    const [recentChat,setRecentChat] = useState(null);
     const [msg,setMsg] = useState('');
     const q = useRef(null);
     const textAreaRejectMsg=createRef();
@@ -187,7 +188,8 @@ const ViewStudent = () => {
         let result = await sendChatMessage(SchdID,SchdDetailID,group,selectedStd.Username,msg);
         if(!result.error){
             console.log(selectedStd);
-            toast.success('Message has been send.')
+            toast.success('Message has been send.');
+            await getRecentMessage(selectedStd);
             setShowMsg(false);
             setSelectedStd(null);
             setMsg('');
@@ -291,6 +293,11 @@ const ViewStudent = () => {
         confirmBox('Pair user and Approve',null,()=>{
             pairUser(true);
         })
+    }
+
+    async function getRecentMessage(std){
+        let rc = await getChatMessage(SchdID,SchdDetailID,group,std.Username);
+        setRecentChat(rc);
     }
 
     return <div>
@@ -526,9 +533,10 @@ const ViewStudent = () => {
                                                 <td style={{whiteSpace:'nowrap'}}>
                                                     {std.StudentID}
                                                     <div>
-                                                        <Button className="mt-2" variant="warning" onClick={e=>{
+                                                        <Button className="mt-2" variant="warning" onClick={async e=>{
                                                             setSelectedStd(std);
                                                             setShowMsg(true);
+                                                            await getRecentMessage(std);
                                                         }}>MSG</Button>
                                                     </div>
                                                 </td>
@@ -596,6 +604,15 @@ const ViewStudent = () => {
                                     setMsg(v);
                                 }} value={msg} />
                             </Form.Group>
+                            {Array.isArray(recentChat) && recentChat.length>0 &&
+                            <ListGroup>
+                                {
+                                    recentChat.map(chat=>
+                                        <ListGroup.Item>{moment.unix(chat.created).format('HH:mm:ss')} - {chat.message}</ListGroup.Item>
+                                    )
+                                }
+                            </ListGroup>
+                            }
                         </Modal.Body>
                         <Modal.Footer>
                             <Button variant='light' onClick={e=>setShowMsg(false)}>Close</Button>
