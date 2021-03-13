@@ -30,9 +30,10 @@ const TimerClock = ({serverTime=0,expire,onTimeout})=>{
 
     function updateUI(){
         let expireTime = moment(expire);
-        let diff = expireTime.diff()+timeDiff.current;
-        if(diff>0){
-            let d = moment.utc(diff).format("HH:mm:ss")
+        let timeUpDuration = (moment().unix()+timeDiff.current)-expireTime.unix();
+        // let diff = expireTime.diff()+timeDiff.current;
+        if(timeUpDuration>0){
+            let d = moment.utc(timeUpDuration).format("HH:mm:ss")
             setDuration(d);
         }else{
             setDuration(<Alert variant='danger'>Time is up!</Alert>);
