@@ -19,7 +19,7 @@ const ChatDisplay = ({SchdID,SchdDetailID,group_name,visible=true})=>{
             clearInterval(timer.current);
         }
     },[])
-    
+
     useEffect(()=>{
         let lastID = localStorage.getItem('lastMessage');
         if(lastUpdated.current!=0 && Array.isArray(message) && message.length>0){
