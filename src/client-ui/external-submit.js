@@ -1,8 +1,9 @@
-import {Alert, Button, Card, Col, Container, Form, Row} from "react-bootstrap";
+import {Alert, Button, Card, Col, Container, Form, Navbar, Row} from "react-bootstrap";
 import {useContext, useEffect} from "react";
 import {checkLogin, getAuthType, noSEBCheckLogin, noSEBGetAuthType} from "../client-components/client-services";
 import StateContext from "../mobx/global-context";
 import student from "./student";
+import ClientTopMenu from "../client-components/client-top-menu";
 
 const ExternalSubmit = ()=>{
 
@@ -40,6 +41,11 @@ const ExternalSubmit = ()=>{
     return <div>
         {student?
             <>
+                <Navbar bg="dark" variant="dark">
+                    <Navbar.Brand href="#home">
+                        KKU EMS Workshop External Submit
+                    </Navbar.Brand>
+                </Navbar>
                 <Container>
                     <Row>
                         <Col>
