@@ -70,7 +70,6 @@ const Public = () => {
                                 </CSSTransition>
                             )}
                         </TransitionGroup>
-
                     </div>
                 </Col>
             </Row>
@@ -84,12 +83,12 @@ const Public = () => {
         <Container style={{height: '100%'}}>
             <div className={css(styles.header)}>
                 <Image src={`${basePath}/images/HeaderENG.jpg`} fluid/>
-                <a href={`${Config.basePath}/prepare-device`}
-                   className={'btn btn-info btn-md-lg animGlow ' + css(styles.btnPrepare)}>
-                    <div className="d-none d-md-inline-block">ตรวจสอบอุปกรณ์ในการสอบ</div>
-                    <div>Prepare your device</div>
-                    <div className="d-none d-md-inline-block">[CLICK HERE]</div>
-                </a>
+                {/*<a href={`${Config.basePath}/prepare-device`}*/}
+                {/*   className={'btn btn-info btn-md-lg animGlow ' + css(styles.btnPrepare)}>*/}
+                {/*    <div className="d-none d-md-inline-block">ตรวจสอบอุปกรณ์ในการสอบ</div>*/}
+                {/*    <div>Prepare your device</div>*/}
+                {/*    <div className="d-none d-md-inline-block">[CLICK HERE]</div>*/}
+                {/*</a>*/}
             </div>
             <div className={css(styles.content)}>
                 <div>
