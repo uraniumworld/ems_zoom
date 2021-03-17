@@ -8,9 +8,9 @@ const TimerClock = ({serverTime=0,expire,onTimeout})=>{
     const timer = useRef();
     useEffect(()=>{
         updateUI();
-        timer.current=setInterval(()=>{
-            updateUI();
-        },1000);
+        // timer.current=setTimeout(()=>{
+        //     updateUI();
+        // },1000);
         return ()=>{
             clearInterval(timer.current);
         }
@@ -19,19 +19,20 @@ const TimerClock = ({serverTime=0,expire,onTimeout})=>{
     useEffect(()=>{
         let clientTime=moment().unix();
         timeDiff.current=serverTime-clientTime;
+        clearInterval(timer.current);
+        updateUI();
     },[serverTime])
 
     useEffect(()=>{
         clearInterval(timer.current);
-        timer.current=setInterval(()=>{
-            updateUI();
-        },1000);
-    },[expire,timeDiff.current]);
+        updateUI();
+    },[expire]);
 
     function updateUI(){
-        let expireTime = moment(expire);
-        let timeUpDuration = (moment().unix()+timeDiff.current)-expireTime.unix();
-        // let diff = expireTime.diff()+timeDiff.current;
+        if(serverTime==0)return;
+        let _clientTime = moment().add(timeDiff.current,'seconds');
+        let _expireTime = moment(expire);
+        let timeUpDuration = _expireTime.diff(_clientTime);
         if(timeUpDuration>0){
             let d = moment.utc(timeUpDuration).format("HH:mm:ss")
             setDuration(d);
@@ -42,6 +43,9 @@ const TimerClock = ({serverTime=0,expire,onTimeout})=>{
                 clearInterval(timer.current);
             }
         }
+        timer.current=setTimeout(()=>{
+            updateUI();
+        },1000);
     }
     return <div className={css(styles.container)}>
         <div>Expire in</div>
