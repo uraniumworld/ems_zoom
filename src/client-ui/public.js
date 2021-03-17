@@ -260,7 +260,7 @@ const Public = () => {
                 </Button>
                 <Button variant="success" onClick={e => {
                     handleClose(true);
-                    document.location.href = `sebs://ems.kku.ac.th/dev/startEMS.seb?rnd=${Math.random()}`;
+                    document.location.href = `sebs://ems.kku.ac.th/${Config.basePath}/startEMS.seb?rnd=${Math.random()}`;
                 }}>
                     {lang === 'TH' ?
                         <span>ใช่ ฉันติดตั้งโปรแกรม Safe exam browser เรียบร้อยแล้ว</span>
