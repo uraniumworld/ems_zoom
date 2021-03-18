@@ -41,7 +41,7 @@ function App() {
                     <Switch>
                         <Route path="/" exact component={Public}/>
                         <Route path="/prepare-device" component={PrepareDevice}/>
-                        <Route path="/external-submit" component={ExternalSubmit}/>
+                        <Route path="/external-submit/:StdRegistID/:SchdDetailID" component={ExternalSubmit}/>
                         <Student/>
                     </Switch>
                 </Route>
