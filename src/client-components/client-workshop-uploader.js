@@ -35,8 +35,8 @@ const ClientWorkshopUploader = ({
     async function uploadFile(e) {
         let file = e.target.files[0];
         if (!file) return;
-        if(file.size>10*1048576){
-            toast.error(`Max upload size is 10 MB`);
+        if(file.size>20*1048576){
+            toast.error(`Max upload size is 20 MB`);
             return;
         }
         const formData = new FormData();
@@ -126,7 +126,7 @@ const ClientWorkshopUploader = ({
                 (() => {
                     if (userAnswer) {
                         return <div>
-                            <div variant="primary" className="font-weight-bold mr-2">1. Upload file.</div>
+                            <div variant="primary" className="font-weight-bold mr-2">1. Upload file. ({'max size 20 MB'})</div>
                             {newUpload ?
                                 <>
                                     <span className="mr-2">[ Please upload a new file ]</span>

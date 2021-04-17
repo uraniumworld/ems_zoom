@@ -69,7 +69,7 @@
     <key>backgroundOpenSEBConfig</key>
     <false />
     <key>blacklistURLFilter</key>
-    <string>^.*?:\/\/((google\.com)|(.*?\.google\.com))\/((/.*?)|(/.*?))(()|(\?.*?))$;^.*?:\/\/((facebook\.com)|(.*?\.facebook\.com))\/((/.*?)|(/.*?))(()|(\?.*?))$;^.*?:\/\/((youtube\.com)|(.*?\.youtube\.com))\/((/.*?)|(/.*?))(()|(\?.*?))$;^.*?:\/\/((twitter\.com)|(.*?\.twitter\.com))\/((/.*?)|(/.*?))(()|(\?.*?))$;^.*?:\/\/((instagram\.com)|(.*?\.instagram\.com))\/((/.*?)|(/.*?))(()|(\?.*?))$;^.*?:\/\/((messenger\.com)|(.*?\.messenger\.com))\/((/.*?)|(/.*?))(()|(\?.*?))$;^.*?:\/\/((www\.kku\.ac\.th)|(.*?\.www\.kku\.ac\.th))\/((/.*?)|(/.*?))(()|(\?.*?))$;^.*?:\/\/((i\.kku\.ac\.th)|(.*?\.i\.kku\.ac\.th))\/((/.*?)|(/.*?))(()|(\?.*?))$</string>
+    <string>^.*?:\/\/((google\.com)|(.*?\.google\.com))\/((/.*?)|(/.*?))(()|(\?.*?))$;^.*?:\/\/((facebook\.com)|(.*?\.facebook\.com))\/((/.*?)|(/.*?))(()|(\?.*?))$;^.*?:\/\/((twitter\.com)|(.*?\.twitter\.com))\/((/.*?)|(/.*?))(()|(\?.*?))$;^.*?:\/\/((instagram\.com)|(.*?\.instagram\.com))\/((/.*?)|(/.*?))(()|(\?.*?))$;^.*?:\/\/((messenger\.com)|(.*?\.messenger\.com))\/((/.*?)|(/.*?))(()|(\?.*?))$;^.*?:\/\/((www\.kku\.ac\.th)|(.*?\.www\.kku\.ac\.th))\/((/.*?)|(/.*?))(()|(\?.*?))$;^.*?:\/\/((i\.kku\.ac\.th)|(.*?\.i\.kku\.ac\.th))\/((/.*?)|(/.*?))(()|(\?.*?))$;^.*?:\/\/((youtu\.be)|(.*?\.youtu\.be))\/((/.*?)|(/.*?))(()|(\?.*?))$;^.*?:\/\/((youtube\.com)|(.*?\.youtube\.com))\/((/.*?)|(/.*?))(()|(\?.*?))$</string>
     <key>blockPopUpWindows</key>
     <false />
     <key>browserExamKey</key>
@@ -1335,16 +1335,6 @@
         <key>regex</key>
         <false />
         <key>expression</key>
-        <string>youtube.com/*</string>
-        <key>action</key>
-        <integer>0</integer>
-      </dict>
-      <dict>
-        <key>active</key>
-        <true />
-        <key>regex</key>
-        <false />
-        <key>expression</key>
         <string>twitter.com/*</string>
         <key>action</key>
         <integer>0</integer>
@@ -1395,6 +1385,76 @@
         <key>regex</key>
         <false />
         <key>expression</key>
+        <string>youtu.be/sSFCgdmyYR4</string>
+        <key>action</key>
+        <integer>1</integer>
+      </dict>
+      <dict>
+        <key>active</key>
+        <true />
+        <key>regex</key>
+        <false />
+        <key>expression</key>
+        <string>youtu.be/twfdzZPk0f8</string>
+        <key>action</key>
+        <integer>1</integer>
+      </dict>
+      <dict>
+        <key>active</key>
+        <true />
+        <key>regex</key>
+        <false />
+        <key>expression</key>
+        <string>youtu.be/T3ZYPFSeyPs</string>
+        <key>action</key>
+        <integer>1</integer>
+      </dict>
+      <dict>
+        <key>active</key>
+        <true />
+        <key>regex</key>
+        <false />
+        <key>expression</key>
+        <string>youtu.be/DBI_VThRbTE</string>
+        <key>action</key>
+        <integer>1</integer>
+      </dict>
+      <dict>
+        <key>active</key>
+        <true />
+        <key>regex</key>
+        <false />
+        <key>expression</key>
+        <string>youtu.be/22H9WzeuhtU</string>
+        <key>action</key>
+        <integer>1</integer>
+      </dict>
+      <dict>
+        <key>active</key>
+        <true />
+        <key>regex</key>
+        <false />
+        <key>expression</key>
+        <string>youtu.be/*</string>
+        <key>action</key>
+        <integer>0</integer>
+      </dict>
+      <dict>
+        <key>active</key>
+        <true />
+        <key>regex</key>
+        <false />
+        <key>expression</key>
+        <string>youtube.com/*</string>
+        <key>action</key>
+        <integer>0</integer>
+      </dict>
+      <dict>
+        <key>active</key>
+        <true />
+        <key>regex</key>
+        <false />
+        <key>expression</key>
         <string>*</string>
         <key>action</key>
         <integer>1</integer>
@@ -1405,7 +1465,7 @@
     <key>useAsymmetricOnlyEncryption</key>
     <false />
     <key>whitelistURLFilter</key>
-    <string>^.*?:\/\/((((.*?)|(.*?\..*?)))|(((.*?)|(.*?\..*?))\/.*?))(()|(\?.*?))$</string>
+    <string>^.*?:\/\/((youtu\.be)|(.*?\.youtu\.be))\//sSFCgdmyYR4(()|(\?.*?))$;^.*?:\/\/((youtu\.be)|(.*?\.youtu\.be))\//twfdzZPk0f8(()|(\?.*?))$;^.*?:\/\/((youtu\.be)|(.*?\.youtu\.be))\//T3ZYPFSeyPs(()|(\?.*?))$;^.*?:\/\/((youtu\.be)|(.*?\.youtu\.be))\//DBI_VThRbTE(()|(\?.*?))$;^.*?:\/\/((youtu\.be)|(.*?\.youtu\.be))\//22H9WzeuhtU(()|(\?.*?))$;^.*?:\/\/((((.*?)|(.*?\..*?)))|(((.*?)|(.*?\..*?))\/.*?))(()|(\?.*?))$</string>
     <key>zoomMode</key>
     <integer>0</integer>
   </dict>

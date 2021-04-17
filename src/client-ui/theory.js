@@ -120,6 +120,7 @@ const Theory = ({student,scheduleInfo, serverTime, onSubmitted}) => {
                             onTimeout={e=>onTimeout()}
                 />
                 <div className="text-center mt-4 mb-2">Questions Progress</div>
+
                 <Row>
                     {questions.map((q, i) => <Col key={'state_' + q.TheoryID} className="col-2 col-md-3">
                         <div style={{padding:'2px'}}>
@@ -138,6 +139,17 @@ const Theory = ({student,scheduleInfo, serverTime, onSubmitted}) => {
                             </div>
                         </div>
                     </Col>)}
+                </Row>
+                <hr/>
+                <Row>
+                    <Col className="text-center text-md-left">
+                        <strong>How to submit?</strong>
+                        <iframe width="90%" height="auto"
+                                src="https://www.youtube.com/embed/22H9WzeuhtU?start=4"
+                                title="YouTube video player" frameBorder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowFullScreen></iframe>
+                    </Col>
                 </Row>
                 <div className="d-block d-md-none">
                     <Row>

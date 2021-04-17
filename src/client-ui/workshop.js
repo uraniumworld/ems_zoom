@@ -10,7 +10,7 @@ import {
     Modal,
     Nav,
     Navbar,
-    Row
+    Row, Tab, Tabs
 } from "react-bootstrap";
 import Footer from "../components/footer";
 import React, {useContext, useEffect, useState} from "react";
@@ -57,6 +57,7 @@ const Workshop = ({student,scheduleInfo, serverTime, onSubmitted,meetUrl,meetQRC
     const [showConfirmSubmit, setShowConfirmSubmit] = useState(false);
     const [office,setOffice] = useState([]);
     const [showTip,setShowTip] = useState(false);
+    const [tabKey,setTabKey] = useState('unlock');
     const [buttonDisabled, setButtonDisabled] = useState({
         submit: false,
     });
@@ -139,6 +140,34 @@ const Workshop = ({student,scheduleInfo, serverTime, onSubmitted,meetUrl,meetQRC
             }
             let lang=getStudentLang(student);
             return <div>
+                <div className='mb-4'>
+                    <Tabs
+                          id="controlled-tab-example"
+                          activeKey={tabKey}
+                          onSelect={(k) => setTabKey(k)}
+                    >
+                        <Tab eventKey="unlock" title="How to start an exam?">
+                            <div className="mt-2">
+                                <h3>1. How to download and unlock file?</h3>
+                                <iframe width="560" height="315" src="https://www.youtube.com/embed/T3ZYPFSeyPs?start=59"
+                                        title="YouTube video player" frameBorder="0"
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                        allowFullScreen></iframe>
+                            </div>
+                        </Tab>
+                        <Tab eventKey="submit" title="How to submit?">
+                            <div className="mt-2">
+                                <h3>2. How to submit file?</h3>
+                                <iframe width="560" height="315"
+                                        src="https://www.youtube.com/embed/22H9WzeuhtU?start=18"
+                                        title="YouTube video player" frameBorder="0"
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                        allowFullScreen></iframe>
+                            </div>
+                        </Tab>
+                    </Tabs>
+                </div>
+
                 {file.downloaded=='1'?
                     <h2>{lang=='th'?
                         'ไฟล์กระดาษคำตอบ'
