@@ -440,7 +440,7 @@ const ViewStudent = () => {
                                         <Card.Header>Leave logs</Card.Header>
                                         <Card.Body>
                                             <div ref={divLeaveLog} style={{maxHeight:'200px',overflowY:'auto'}}>
-                                                {rejectLogs.length>0?
+                                                {rejectLogs && rejectLogs.length>0?
                                                     <ListGroup>
                                                         {
                                                             rejectLogs.map((logData,i)=>{
