@@ -120,6 +120,10 @@ export function getChatMessage(SchdID,SchdDetailID,group_name,Username){
     return request('get-message',{SchdID,SchdDetailID,group_name,Username},'no_seb_resful_api.php');
 }
 
+export function getSEB(){
+    return request('safe-exam-browser',null,'examination_resful_api.php');
+}
+
 export function confirmBox(title,detail,fn){
     confirmAlert({
         title:title,

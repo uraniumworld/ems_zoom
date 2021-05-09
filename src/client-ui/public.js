@@ -2,7 +2,7 @@ import {Alert, Badge, Button, Card, Col, Container, Image, Modal, Row} from "rea
 import {StyleSheet, css} from "aphrodite";
 import Config from "../config";
 import {useEffect, useState} from "react";
-import {getContent} from "../components/services";
+import {getContent, getSEB} from "../components/services";
 import {CSSTransition, TransitionGroup} from 'react-transition-group';
 import classNames from "classnames";
 import MetaTags from 'react-meta-tags';
@@ -19,6 +19,7 @@ const Public = () => {
     const handleClose = () => setShowModal(false);
     const handleShow = () => setShowModal(true);
     const [lang, setLang] = useState("TH");
+    const [useSEB, setUseSEB] = useState();
     const history = useHistory();
     const [showMacModal, setShowMacModal] = useState(false);
     let query = new URLSearchParams(useLocation().search);
@@ -36,6 +37,9 @@ const Public = () => {
         if(start=='1'){
             handleShow();
         }
+        getSEB().then(v=>{
+            setUseSEB(v.requiredSafeExamBrowser);
+        });
     }, [contentType]);
 
 
@@ -182,7 +186,11 @@ const Public = () => {
                             <Image className="d-none d-md-inline" src={`${basePath}/images/online-exam-01.jpg`} fluid/>
                             <a href="#" target='_blank' onClick={e => {
                                 e.preventDefault();
-                                setShowModal(true);
+                                if(useSEB){
+                                    setShowModal(true);
+                                }else{
+                                    document.location.href=`${basePath}/exam`
+                                }
                             }}>
                                 <Image src={`${basePath}/images/button3.png`} fluid
                                        className={'animGlow ' + css(styles.imgBtn, styles.startExam)}/>
