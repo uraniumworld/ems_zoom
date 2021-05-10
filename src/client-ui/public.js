@@ -35,7 +35,11 @@ const Public = () => {
         })
         let start=query.get('start');
         if(start=='1'){
-            handleShow();
+            if(useSEB){
+                handleShow();
+            }else{
+                document.location.href=`${basePath}/exam`
+            }
         }
         getSEB().then(v=>{
             setUseSEB(v.requiredSafeExamBrowser);
@@ -125,7 +129,6 @@ const Public = () => {
                             Office 2010+ or 365 | OS: <Image src={`${Config.basePath}/images/windows.png`} width="30"/>Support
                             Windows 7 / 8.1 / 10 <Badge variant='warning'>Only</Badge>
                         </div>
-                        {getPlatform() != 'mac' &&
                         <>
                             <div>
                                 <a href="#" onClick={e => {
@@ -157,14 +160,14 @@ const Public = () => {
                                     {lang === 'TH' ?
                                         <div>
                                             <div>เนื่องจากการสอบภาคปฏบัติรองรับคอมพิวเตอร์ที่ใช้<span style={{color:'red'}}>ระบบปฏิบัติการ Windows</span> เท่านั้น</div>
-                                            <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ดังนั้นหากนักศึกษาไม่มีอุปกรณ์ในการสอบออนไลน์สามารถยื่นคำร้องขอใช้เครื่องคอมพิวเตอร์ของศูนย์นวัตกรรมการเรียนการสอน ณ ชั้น 6 อาคารสารสนเทศในการสอบได้ โดยการกรอกแบบฟอร์มต่อไปนี้</div>
-                                            <a target='_blank' href="https://kku.world/6p7ss">แบบฟอร์มยื่นคำร้องขอใช้เครื่องในการสอบ</a>
+                                            <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ดังนั้นหากนักศึกษาไม่มีอุปกรณ์ในการสอบออนไลน์ สามารถยื่นคำร้องเพื่อขอเข้ามาสอบ ณ ชั้น 6 อาคารสารสนเทศได้ โดยส่งคำร้องมาทางอีเมลล์ <span style={{color:'green'}}>chatkam@kku.ac.th</span></div>
+                                            {/*<a target='_blank' href="https://kku.world/6p7ss">แบบฟอร์มยื่นคำร้องขอใช้เครื่องในการสอบ</a>*/}
                                         </div>
                                         :
                                         <div>
                                             <div>Because the practice exam is only supported by <span style={{color:'red'}}>OS Windows</span> computers.</div>
-                                            <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Therefore, if student do not have any device to exam, you can submit a request to use the computer of the Learning and Teaching Innovation Center at floor 6 ICT building for the exam. By filling out the following form.</div>
-                                            <a target='_blank' href="https://kku.world/6p7ss">Request Form</a>
+                                            <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Therefore, if student do not have any device to exam, you can submit a request to use the computer of the Learning and Teaching Innovation Center at floor 6 ICT building for the exam. By email <span style={{color:'green'}}>chatkam@kku.ac.th</span></div>
+                                            {/*<a target='_blank' href="https://kku.world/6p7ss">Request Form</a>*/}
                                         </div>
                                     }
                                 </Modal.Body>
@@ -177,7 +180,6 @@ const Public = () => {
                                 </Modal.Footer>
                             </Modal>
                         </>
-                        }
                     </Col>
                 </Row>
                 <div className="mt-5" style={{position: 'relative'}}>

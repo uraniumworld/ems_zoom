@@ -39,7 +39,8 @@ const ExamScheduleDay = ({schedulesDate, schedulesDateTime, student,reload}) => 
         return moment(buffer);
     }
 
-    if (typeof schedulesDate == 'undefined' || !serverTime) return <Alert variant='info'>Schedule Loading...</Alert>
+
+    if (typeof schedulesDate == 'undefined' || !serverTime || !state.forceSEB) return <Alert variant='info'>Schedule Loading...</Alert>
     return <div>
         <Header/>
         <Container className="mt-4">
@@ -84,7 +85,7 @@ const ExamScheduleDay = ({schedulesDate, schedulesDateTime, student,reload}) => 
                                                 </>
                                                 :
                                                 <>
-                                                    {getPlatform()=='win'?
+                                                    {(getPlatform()=='win' || !state.forceSEB.forceSafeExamBrowser)?
                                                         <>
                                                             {serverTime < getExamEndJSTime(schd)?
                                                                 <Button variant='primary'
