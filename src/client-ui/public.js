@@ -119,25 +119,45 @@ const Public = () => {
                         <div className="text-center">
                             <Badge variant="danger">Theory</Badge> - OS: <Image
                             src={`${Config.basePath}/images/windows.png`} width="30"/>
-                            Support Windows 7 / 8.1 / 10 / <Image src={`${Config.basePath}/images/mac.png`}
-                                                                  width="25"/> / <Image
+                            Support Windows 7 / 8.1 / 10 / 11 | Android | <Image src={`${Config.basePath}/images/mac.png`}
+                                                                  width="25"/> | <Image
                             src={`${Config.basePath}/images/ios.png`} width="50"/>
                         </div>
                         <div className="text-center">
                             <Badge variant="primary">Workshop</Badge> - <Image width="60px"
                                                                                src={`${Config.basePath}/images/office.png`}/> MS
                             Office 2010+ or 365 | OS: <Image src={`${Config.basePath}/images/windows.png`} width="30"/>Support
-                            Windows 7 / 8.1 / 10 <Badge variant='warning'>Only</Badge>
+                            Windows 7 / 8.1 / 10 / 11 | <Image src={`${Config.basePath}/images/mac.png`} width="25"/> Mac
                         </div>
+                        <hr/>
                         <>
-                            <div>
-                                <a href="#" onClick={e => {
-                                    e.preventDefault();
-                                    setShowMacModal(true);
-                                }}>
-                                    <Image className="mt-4" src={Config.basePath + '/images/please-read.png'} fluid/>
-                                </a>
+                            <div className="mt-2" style={{color:'#2463a7'}}>
+                                <h3 className="text-center">ประกาศ (05/2022)</h3>
+                                <div className="text-center">
+                                    ขณะนี้ทางระบบได้ปิดการใช้งาน Program <strong>Safe exam browser</strong> เป็นการชั่วคราว ดังนั้นนักศึกษาไม่ต้องติดตั้ง Safe exam browser ก่อนการสอบ
+                                    นักศึกษาสามารถใช้ <strong>Google chrome</strong>, Firefox, MS Edge, Safari ในการสอบได้เลย
+                                </div>
+                                <hr/>
+                                <div className="mt-3" style={{display:'flex',justifyContent:'center'}}>
+                                    <div>
+                                        <div className="text-center font-weight-bold">เตรียมพร้อมอุปกรณ์ก่อนสอบ</div>
+                                        <ul>
+                                            <li>ตรวจสอบเวลาเครื่องว่าตรงกับเวลาบัจจุบันหรือไม่</li>
+                                            <li>เตรียมอุปกรณ์สำหรับชาร์จ Smart phone ที่ใช้เข้า Google meet ให้พร้อม</li>
+                                            <li>ในกรณีผู้สอบหลุดออกจาก Google meet ในขณะสอบ..ระบบจะยุติการสอบชั่วคราวโดยอัตโนมัติ
+                                                ดังนั้นให้ตรวจสอบสัญญาณอินเตอร์เน็ตก่อนสอบด้วยครับ</li>
+                                        </ul>
+                                    </div>
+                                </div>
                             </div>
+                            {/*<div>*/}
+                            {/*    <a href="#" onClick={e => {*/}
+                            {/*        e.preventDefault();*/}
+                            {/*        setShowMacModal(true);*/}
+                            {/*    }}>*/}
+                            {/*        <Image className="mt-4" src={Config.basePath + '/images/please-read.png'} fluid/>*/}
+                            {/*    </a>*/}
+                            {/*</div>*/}
                             <Modal centered show={showMacModal} onHide={e => setShowMacModal(false)}>
                                 <Modal.Header>
                                     <Modal.Title>

@@ -3,7 +3,7 @@
   <component name="WebServers">
     <option name="servers">
       <webServer id="44908a48-dde1-48d4-8fcb-05d6d30495e4" name="10.101.78.11" url="http://ems.kku.ac.th/v2">
-        <fileTransfer rootFolder="/ems_data/ems.docker/ems.kku.ac.th/ems_zoom" accessType="SFTP" host="10.101.78.11" port="22" sshConfigId="7980c626-55c1-45f2-9138-70fa868f638f" sshConfig="xmuz@10.101.78.11:22 password">
+        <fileTransfer rootFolder="/ems_data/ems.docker/ems.kku.ac.th/ems_zoom" accessType="SFTP" host="localhost" port="22101" sshConfigId="7980c626-55c1-45f2-9138-70fa868f638f" sshConfig="xmuz@localhost:22101 password">
           <advancedOptions>
             <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
           </advancedOptions>
